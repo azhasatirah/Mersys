@@ -1,0 +1,85 @@
+.title{
+    font-family: 'Brush Script MT', cursive;
+    font-size:50px;
+    color: white;
+}
+.back-button{
+    width:30px;
+    height: auto;
+    color:gray;
+}
+.ss-input{
+    border-top:none;
+    border-left:none;
+    border-right:none;
+    border-radius:0px;
+}
+.ss-input-danger{
+    border-top:none;
+    border-left:none;
+    border-right:none;
+    border-radius:0px;
+    border-bottom: solid 1px rgb(248, 2, 2)
+}
+label{
+    color:gray;
+}
+a:active{
+    color:black;
+}
+a:hover{
+    color:black;
+}
+a{
+    color:gray;
+}
+select{
+    color:gray;
+}
+.ss-input:focus{
+    border-color: inherit;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-bottom: solid 1px mediumturquoise;
+}
+.ss-input-danger:focus{
+    border-color: inherit;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-bottom: solid 1px rgb(248, 2, 2)
+}
+.form-siswa{
+    border-radius:10px;
+    width: 27rem;
+}
+body{
+    background-color: rgb(243, 243, 243);
+}
+.validasi{
+    margin-top: -15px;
+    font-size:13px;
+    color:rgb(248, 2, 2);
+    display:none;
+}
+#boarddata{
+    background-color:#fcc3c1;
+    max-width:30rem;
+    height:58rem;
+}
+.form-header{
+    margin-top: -5px;
+}
+.logo{
+    width:auto;
+    height:7rem;
+    margin-top: -30px;
+}
+.back-button{
+    color:#80191d;
+}
+// #btnDaftar{
+//     background-color: #80191d;
+// }
+// #btnMasuk{
+//     background-color: #80191d;
+// }

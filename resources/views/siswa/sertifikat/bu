@@ -1,0 +1,85 @@
+<html>
+
+<head></head>
+<style>
+    #body {
+
+        width: 760px;
+        height: 526px;
+        padding: 20px;
+        text-align: center;
+        /* border: 10px solid #787878 */
+        background-image: url(http://mersys.merachel.com/img/nilai.jpg);
+
+    }
+
+    #content {
+        width: 787px;
+        height: 550px;
+        padding: 15px;
+        text-align: center;
+        /* border: 5px solid #787878 */
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+
+<body>
+    <a href="{{url('karyawan/tutor/sertifikat/belakang/cetak')}}">Print </a>
+    <div id="body">
+
+        <div id="content">
+
+
+            <br><br><br><br>
+
+            <br><br>
+            <span style="font-size:17px; font-family: Champagne &amp; Limousines; width:50px;  color:#990000;">STUDY
+                PROGRAM: <u> Basic Fashion Illustration </u></span><br><br>
+
+
+            <table
+                style="width:500px; border: 1px solid black; font-family: Champagne &amp; Limousines; margin-left: 9rem;">
+                <tbody>
+                    <tr>
+                        <td>KIND Of EVALUATION</td>
+                        <td>SCORE</td>
+                        <td>GRADE</td>
+                        <td>DESCRIPTION</td>
+                    </tr>
+
+                    <tr>
+                        <td> Desain </td>
+                        <td> 84 </td>
+                        <td> B </td>
+                        <td> Good </td>
+                    </tr>
+                    <tr>
+                        <td> Pola </td>
+                        <td> 84 </td>
+                        <td> B </td>
+                        <td> Good </td>
+                    </tr>
+
+                    <tr>
+                        <td>Final Score</td>
+                        <td> 84 </td>
+                        <td> B </td>
+                        <td> Good </td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+
+
+
+        </div>
+    </div>
+</body>
+
+</html>
