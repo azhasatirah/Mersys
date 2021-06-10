@@ -76,7 +76,7 @@ class JadwalChangesController extends Controller
         ->join('kursus_siswa as ks','ks.IDKursusSiswa','=','jadwal_change.IDKursusSiswa')
         ->select('jadwal_change.*','karyawan.NamaKaryawan','ks.UUID as UIDKelas','siswa.UUID as UIDSiswa')
         ->where('IDJadwalChange',$id)->get();
-        if($answer){
+        if($answer=="true"){
             DB::table('jadwal_change')->where('IDJadwalChange',$id)->update(['Status'=>'CLS']);
             $TmpJadwalChanges = DB::table('jadwal_change_detail')->where('IDJadwalChange',$id)->get();
             $JadwalChanges =[];
@@ -98,18 +98,22 @@ class JadwalChangesController extends Controller
             broadcast(new \App\Events\NotifEvent($DataNotif[0]->UIDSiswa));
             return response()->json('perubahan jadwal disetujui');
         }
-        DB::table('jadwal_change')->where('IDJadwalChange',$id)->update(['Status'=>'DEL']);
-        DB::table('notif')->insert([
-            'Notif'=>$DataNotif[0]->NamaKaryawan. " menolak permintaan perubahan jadwal anda",
-            'NotifFrom'=> session()->get('UID'),
-            'NotifTo'=>$DataNotif[0]->UIDSiswa,
-            'IsRead'=>false,
-            'Link'=>'/siswa/kursus/show/'.$DataNotif[0]->UIDKelas,
-            'created_at'=>Carbon::now(),
-            'updated_at'=>Carbon::now(),
-        ]);
-        broadcast(new \App\Events\NotifEvent($DataNotif[0]->UIDSiswa));
-        return response()->json('perubahan jadwal ditolak');
+        if($answer =="false"){
+            
+            DB::table('jadwal_change')->where('IDJadwalChange',$id)->update(['Status'=>'DEL']);
+            DB::table('notif')->insert([
+                'Notif'=>$DataNotif[0]->NamaKaryawan. " menolak permintaan perubahan jadwal anda",
+                'NotifFrom'=> session()->get('UID'),
+                'NotifTo'=>$DataNotif[0]->UIDSiswa,
+                'IsRead'=>false,
+                'Link'=>'/siswa/kursus/show/'.$DataNotif[0]->UIDKelas,
+                'created_at'=>Carbon::now(),
+                'updated_at'=>Carbon::now(),
+            ]);
+            broadcast(new \App\Events\NotifEvent($DataNotif[0]->UIDSiswa));
+            return response()->json('perubahan jadwal ditolak');
+        }
+        return response()->json('Terjadi kesalahan');
     }
     public function getChanges($id){
         //->join('jadwal_changes_detail as jcd','jc.IDJadwalChanges','=','jcd.IDJadwalChanges')
