@@ -70,7 +70,7 @@
       $(document).ready(function () {
         console.log($('#uid-user').val());
       });
-      window.Echo.channel('Pendaftaran').listen('.'+$('#uid-user').val(), function (e) {
+      {{--window.Echo.channel('Pendaftaran').listen('.'+$('#uid-user').val(), function (e) {
         console.log(e);
         soundNotif.play();
         swal({
@@ -87,7 +87,7 @@
               }
           });
 
-      });
+      });--}}
       $(function(){
         $(document).on('click','#btnLogout',function(){
           swal({

@@ -30,7 +30,7 @@
     <link href="{{ url('/assets/karyawan/build/css/custom.min.css')}}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <script type="application/javascript" src="{{ asset('js/app.js') }}"></script>
+    {{--<script type="application/javascript" src="{{ asset('js/app.js') }}"></script>--}}
     @stack('styles')
   </head>
 
@@ -401,7 +401,7 @@
         });
         window.location.replace(link);
       }
-      window.Echo.channel('Notif').listen('.'+MyRole, function (e) {
+      {{--window.Echo.channel('Notif').listen('.'+MyRole, function (e) {
         console.log(e);
         soundNotif.play();
         showNotif();
@@ -410,7 +410,7 @@
         console.log(e);
         soundNotif.play();
         showNotif();
-      });
+      });--}}
     </script>
     @stack('scripts')
   </body>

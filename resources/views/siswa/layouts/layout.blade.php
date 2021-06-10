@@ -31,7 +31,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.css">
   
 
-    <script type="application/javascript" src="{{ asset('js/app.js') }}"></script>
+    {{-- <script type="application/javascript" src="{{ asset('js/app.js') }}"></script>--}}
     @stack('styles')
   </head>
 
@@ -367,7 +367,7 @@
         });
         window.location.replace(link);
       }
-      window.Echo.channel('Notif').listen('.siswa', function (e) {
+      {{-- window.Echo.channel('Notif').listen('.siswa', function (e) {
         console.log(e);
         soundNotif.play();
         showNotif();
@@ -377,7 +377,7 @@
         soundNotif.play();
         showNotif();
       });
-      window.Echo.channel('Pendaftaran').listen('.'+$('#uid-user').val(), function (e) {
+     window.Echo.channel('Pendaftaran').listen('.'+$('#uid-user').val(), function (e) {
         console.log(e);
         soundNotif.play();
         swal({
@@ -394,7 +394,7 @@
               }
           });
 
-      });
+      });--}}
       $(function(){
         $(document).on('click','#btnLogout',function(){
           swal({
