@@ -115,8 +115,8 @@ class AuthController extends Controller
                     'created_at'=>Carbon::now(),
                     'updated_at'=>Carbon::now(),
                 ]);
-                broadcast(new \App\Events\NotifEvent('admin'));
-                broadcast(new \App\Events\NotifEvent('owner'));
+                //broadcast(new \App\Events\NotifEvent('admin'));
+                //broadcast(new \App\Events\NotifEvent('owner'));
                 return redirect('siswa/info')->withErrors( $Status['Pesan']);
             }else{
                 return redirect()->back()->withErrors($Status['Pesan'])->withInput();
@@ -133,7 +133,7 @@ class AuthController extends Controller
                     'created_at'=>Carbon::now(),
                     'updated_at'=>Carbon::now(),
                 ]);
-                broadcast(new \App\Events\NotifEvent('owner'));
+                //broadcast(new \App\Events\NotifEvent('owner'));
                 return redirect('karyawan')->withErrors( $Status['Pesan']);
             }else{
                 return redirect()->back()->withErrors($Status['Pesan'])->withInput();

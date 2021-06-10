@@ -66,7 +66,7 @@ class JadwalChangesController extends Controller
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);
-        broadcast(new \App\Events\NotifEvent($DataNotif[0]->UIDTutor));
+        //broadcast(new \App\Events\NotifEvent($DataNotif[0]->UIDTutor));
         return response()->json(true);
     }
     public function confirmChanges($id,$answer){
@@ -95,7 +95,7 @@ class JadwalChangesController extends Controller
                 'created_at'=>Carbon::now(),
                 'updated_at'=>Carbon::now(),
             ]);
-            broadcast(new \App\Events\NotifEvent($DataNotif[0]->UIDSiswa));
+            //broadcast(new \App\Events\NotifEvent($DataNotif[0]->UIDSiswa));
             return response()->json('perubahan jadwal disetujui');
         }
         if($answer =="false"){
@@ -110,7 +110,7 @@ class JadwalChangesController extends Controller
                 'created_at'=>Carbon::now(),
                 'updated_at'=>Carbon::now(),
             ]);
-            broadcast(new \App\Events\NotifEvent($DataNotif[0]->UIDSiswa));
+            //broadcast(new \App\Events\NotifEvent($DataNotif[0]->UIDSiswa));
             return response()->json('perubahan jadwal ditolak');
         }
         return response()->json('Terjadi kesalahan');

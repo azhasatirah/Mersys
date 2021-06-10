@@ -51,8 +51,8 @@ class JadwalController extends Controller
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);
-        broadcast(new \App\Events\NotifEvent($DataTutor[0]->UUID));
-        broadcast(new \App\Events\NotifEvent($DataNotif[0]->UIDSiswa));
+        //broadcast(new \App\Events\NotifEvent($DataTutor[0]->UUID));
+        //broadcast(new \App\Events\NotifEvent($DataNotif[0]->UIDSiswa));
         return redirect('karyawan/admin/jadwal');
     }
     
@@ -242,7 +242,7 @@ class JadwalController extends Controller
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);
-        broadcast(new \App\Events\NotifEvent($DataTutor[0]->UIDSiswa));
+        //broadcast(new \App\Events\NotifEvent($DataTutor[0]->UIDSiswa));
         return response()->json('Kelas dimulai');
     }
     public function endKursus(Request $request){
@@ -272,7 +272,7 @@ class JadwalController extends Controller
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);
-        broadcast(new \App\Events\NotifEvent($DataTutor[0]->UIDSiswa));
+        //broadcast(new \App\Events\NotifEvent($DataTutor[0]->UIDSiswa));
         return response()->json('Kelas dimulai');
         return response()->json('Kelas selesai');
     }
@@ -418,7 +418,7 @@ class JadwalController extends Controller
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);
-        broadcast(new \App\Events\NotifEvent('admin'));
+        //broadcast(new \App\Events\NotifEvent('admin'));
         return redirect('siswa/kursus');
     }
     public function jadwalTutor(){

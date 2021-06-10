@@ -45,7 +45,7 @@ class TestPsikologiController extends Controller
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);
-        broadcast(new \App\Events\NotifEvent('owner'));
+        //broadcast(new \App\Events\NotifEvent('owner'));
         return redirect()->back()->withErrors('Terimakasih sudah mengisi test')->withInput();
     }
 }

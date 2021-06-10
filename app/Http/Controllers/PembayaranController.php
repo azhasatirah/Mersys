@@ -190,7 +190,7 @@ class PembayaranController extends Controller
                 'created_at'=>Carbon::now(),
                 'updated_at'=>Carbon::now(),
             ]);
-            broadcast(new \App\Events\NotifEvent('admin'));
+            //broadcast(new \App\Events\NotifEvent('admin'));
         }else{
             DB::table('notif')->insert([
                 'Notif'=> session()->get('Username')." mengupload bukti pembayaran untuk pendaftaran siswa",
@@ -201,7 +201,7 @@ class PembayaranController extends Controller
                 'created_at'=>Carbon::now(),
                 'updated_at'=>Carbon::now(),
             ]);
-            broadcast(new \App\Events\NotifEvent('admin'));
+            //broadcast(new \App\Events\NotifEvent('admin'));
         }
 
         return redirect('/siswa/transaksi')->withErrors($Status['Pesan']);
@@ -252,7 +252,7 @@ class PembayaranController extends Controller
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);
-        broadcast(new \App\Events\NotifEvent('owner'));
+        //broadcast(new \App\Events\NotifEvent('owner'));
         return redirect('karyawan/admin/pendaftaran/siswa');
 
     }
@@ -328,7 +328,7 @@ class PembayaranController extends Controller
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);
-        broadcast(new \App\Events\PendaftaranEvent($DataNotif[0]->UIDSiswa));
+        //broadcast(new \App\Events\PendaftaranEvent($DataNotif[0]->UIDSiswa));
         return redirect('karyawan/owner/pendaftaran/siswa');
 
     }
@@ -363,7 +363,7 @@ class PembayaranController extends Controller
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);
-        broadcast(new \App\Events\NotifEvent('owner'));
+        //broadcast(new \App\Events\NotifEvent('owner'));
         return redirect('karyawan/admin/transaksi');
 
     }
@@ -449,7 +449,7 @@ class PembayaranController extends Controller
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);
-        broadcast(new \App\Events\NotifEvent($Pembayaran2[0]->UIDSiswa));
+        //broadcast(new \App\Events\NotifEvent($Pembayaran2[0]->UIDSiswa));
         return redirect('karyawan/owner/transaksi');
 
     }
