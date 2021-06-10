@@ -847,9 +847,9 @@ class JadwalController extends Controller
         // dd($LostDataFinal);
         // return view('recoverLostData',['siswa'=>$LostData]);
         //dd($LostData);
-        // DB::table('absen')->insert($DataAbsen);
-        // DB::table('jadwal')->insert($DataJadwal);
-        // DB::table('kursus_materi')->insert($DataMateri);
+        DB::table('absen')->insert($DataAbsen);
+        DB::table('jadwal')->insert($DataJadwal);
+        DB::table('kursus_materi')->insert($DataMateri);
         dd('the data has been recovered');
         //return redirect('siswa/kursus');
     }
@@ -888,9 +888,9 @@ class JadwalController extends Controller
                 }
             }
         }
-        
-        // DB::table('materi_program')->insert($materi_program);
-        dd('the data has been recovered');
+        //dd($materi_program);
+        DB::table('materi_program')->insert($materi_program);
+        dd('the jjjdata has been recovered');
     }
 
 
