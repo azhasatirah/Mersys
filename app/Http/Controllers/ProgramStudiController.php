@@ -48,7 +48,7 @@ class ProgramStudiController extends Controller
         $Video = DB::table('program_studi_video')->join('program_studi','program_studi_video.IDProgram','=','program_studi.IDProgram')->where('program_studi.UUID',$id)->get();
         $BahanTutor = DB::table('program_studi_bahan_tutor')->join('program_studi','program_studi_bahan_tutor.IDProgram','=','program_studi.IDProgram')->where('program_studi.UUID',$id)->get();
         $Cicilan = DB::table('cicilan')->join('program_studi','cicilan.IDProgram','=','program_studi.IDProgram')->where('program_studi.UUID',$id)
-        ->select('Cicilan.*')->get();
+        ->select('cicilan.*')->get();
         $LevelProgram = DB::table('level_program')->where('Status','OPN')->get();
         $KategoriProgram = DB::table('kategori_program')->where('Status','OPN')->get();
         $KategoriGlobalProgram = DB::table('kategori_global_program')->where('Status','OPN')->get();
