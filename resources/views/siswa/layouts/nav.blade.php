@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{url('/assets/scss/pembayaran.css')}}">
     <link rel="stylesheet" href="{{url('/assets/scss/welcome.css')}}">
 
-    <script type="application/javascript" src="{{ asset('js/app.js') }}"></script>
+    {{-- <script type="application/javascript" src="{{ asset('js/app.js') }}"></script> --}}
     <title>@yield('title')</title>
   </head>
   <body>
@@ -70,24 +70,24 @@
       $(document).ready(function () {
         console.log($('#uid-user').val());
       });
-      {{--window.Echo.channel('Pendaftaran').listen('.'+$('#uid-user').val(), function (e) {
-        console.log(e);
-        soundNotif.play();
-        swal({
-              title: "Pendaftaran anda sudah di konfirmasi!",
-              text: "Anda harus login ulang",
-              icon: "success",
-              buttons: true,
-              dangerMode: true,
-          }).then((willDelete) => {
-              if (willDelete) {
-                $('#dataLogout').submit();
-              } else {
-                  swal("Dibatalkan!");
-              }
-          });
+      // window.Echo.channel('Pendaftaran').listen('.'+$('#uid-user').val(), function (e) {
+      //   console.log(e);
+      //   soundNotif.play();
+      //   swal({
+      //         title: "Pendaftaran anda sudah di konfirmasi!",
+      //         text: "Anda harus login ulang",
+      //         icon: "success",
+      //         buttons: true,
+      //         dangerMode: true,
+      //     }).then((willDelete) => {
+      //         if (willDelete) {
+      //           $('#dataLogout').submit();
+      //         } else {
+      //             swal("Dibatalkan!");
+      //         }
+      //     });
 
-      });--}}
+      // });
       $(function(){
         $(document).on('click','#btnLogout',function(){
           swal({

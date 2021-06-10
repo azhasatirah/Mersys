@@ -367,34 +367,34 @@
         });
         window.location.replace(link);
       }
-      {{-- window.Echo.channel('Notif').listen('.siswa', function (e) {
-        console.log(e);
-        soundNotif.play();
-        showNotif();
-      });
-      window.Echo.channel('Notif').listen('.'+$('#uid-user').val(), function (e) {
-        console.log(e);
-        soundNotif.play();
-        showNotif();
-      });
-     window.Echo.channel('Pendaftaran').listen('.'+$('#uid-user').val(), function (e) {
-        console.log(e);
-        soundNotif.play();
-        swal({
-              title: "Pendaftaran anda sudah di konfirmasi!",
-              text: "Anda harus login ulang",
-              icon: "success",
-              buttons: true,
-              dangerMode: true,
-          }).then((willDelete) => {
-              if (willDelete) {
-                $('#dataLogout').submit();
-              } else {
-                  swal("Dibatalkan!");
-              }
-          });
+      // window.Echo.channel('Notif').listen('.siswa', function (e) {
+      //   console.log(e);
+      //   soundNotif.play();
+      //   showNotif();
+      // });
+      // window.Echo.channel('Notif').listen('.'+$('#uid-user').val(), function (e) {
+      //   console.log(e);
+      //   soundNotif.play();
+      //   showNotif();
+      // });
+      // window.Echo.channel('Pendaftaran').listen('.'+$('#uid-user').val(), function (e) {
+      //   console.log(e);
+      //   soundNotif.play();
+      //   swal({
+      //         title: "Pendaftaran anda sudah di konfirmasi!",
+      //         text: "Anda harus login ulang",
+      //         icon: "success",
+      //         buttons: true,
+      //         dangerMode: true,
+      //     }).then((willDelete) => {
+      //         if (willDelete) {
+      //           $('#dataLogout').submit();
+      //         } else {
+      //             swal("Dibatalkan!");
+      //         }
+      //     });
 
-      });--}}
+      // });
       $(function(){
         $(document).on('click','#btnLogout',function(){
           swal({

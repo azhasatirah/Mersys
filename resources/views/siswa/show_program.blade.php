@@ -356,10 +356,10 @@
 </div>
 
 @push('scripts')
-<script type="application/javascript" src="{{ asset('js/app.js') }}"></script>
+{{-- <script type="application/javascript" src="{{ asset('js/app.js') }}"></script> --}}
 <script>
     const token = $('#token').val();
-    let active_content = "ubahjadwal";
+    let active_content = "pertemuan";
     const btn_prodi = $('#btn-prodi');
     const btn_pertemuan = $('#btn-pertemuan');
     const btn_modul = $('#btn-modul');
@@ -382,6 +382,16 @@
     let jadwal = [];
     let ReqJadwalChanges = [];
     let JadwalChanges = [];
+
+    const Hari = [
+        {'Hari':'Senin','No':1},
+        {'Hari':'Selasa','No':2},
+        {'Hari':'Rabu','No':3},
+        {'Hari':'Kamis','No':4},
+        {'Hari':'Jumat','No':5},
+        {'Hari':'Sabtu','No':6},
+        {'Hari':'Minggu','No':7},
+    ]
 
     toastr.options = {
         'timeOut' : 0,
@@ -413,11 +423,11 @@
         getChanges();
     });
 
-    window.Echo.channel('Event'+$('#UUIDKelas').val()).listen('.Kelas', function (e) {
-        console.log(e);
-        showJadwal();
+    // window.Echo.channel('Event'+$('#UUIDKelas').val()).listen('.Kelas', function (e) {
+    //     console.log(e);
+    //     showJadwal();
 
-    });
+    // });
 
     
     function setDataChangeJadwal(){
@@ -436,7 +446,7 @@
     function showJadwal(){
         // console.log('get req jadwal siswa/jadwal/getdata'+$('#UUIDKelas').val());
         $.get('/siswa/jadwal/getdata/'+$('#UUIDKelas').val(),(data)=>{
-            console.log(data);
+       
             $('#data-table-jadwal').empty();
             $('#data-table-jadwal-selesai').empty();
             TabelJadwal.clear().draw();
@@ -471,7 +481,7 @@
                     jadwal_selesai.push(element)
                     TabelJadwalSelesai.row.add([
                         element['NoRecord'],
-                        element['Hari'],
+                        Hari.filter((ele)=> ele.No == new Date(element['Tanggal']).getDay())[0].Hari,
                         element['Jam'],
                         element['Tanggal'],
                         element['NamaMateri'],
@@ -481,7 +491,7 @@
                     jadwal.push(element)
                     TabelJadwal.row.add([
                         element['NoRecord'],
-                        element['Hari'],
+                        Hari.filter((ele)=> ele.No == new Date(element['Tanggal']).getDay())[0].Hari,
                         element['Jam'],
                         element['Tanggal'],
                         element['NamaMateri'],
@@ -506,7 +516,6 @@
     function masukKelas(id){
         $.post('/siswa/absen',$('#formdata'+id).serialize()).done((data)=>{
             showJadwal();
-            console.log(data);
         }).fail(function(){
             console.log('gagal');
             swal('gagal');
@@ -514,7 +523,6 @@
     }
 
     $('#content-prodi').on('change', function () {
-        console.log('hello');
         toastr.success(
             '<div class="d-flex justify-content-between">'+
                 '<p >Perhatian - Kamu belum menyimpan perubahan!</p>'+
@@ -684,7 +692,7 @@
             .done(function (pesan) {
                 swal(pesan.Pesan);
             }).fail(function (pesan) {
-                console.log(pesan.Message);
+           
                 swal('gagal' + pesan.Pesan);
             });
     }
@@ -695,7 +703,7 @@
         let reqJam = $('#input-ubah-jadwal-jam').val()
         let jadwalChangedIndex = jadwal.findIndex(ele => ele.NoRecord == InputNoRecord)
         let jadwalPrevChanged = jadwal[jadwalChangedIndex].Tanggal+' '+jadwal[jadwalChangedIndex].Jam
-        console.log(jadwalPrevChanged)
+ 
         if(reqJam == jadwal[jadwalChangedIndex].Jam && 
         jadwal[jadwalChangedIndex].Tanggal == reqTanggal){
             swal('Anda belum mengubah jadwal')
@@ -754,7 +762,7 @@
             }else{
                 let tmp_new_jadwal = filterCheckPrevRecord(jadwal,reqJadwal,jadwalPrevChanged)
                 let ite = 0
-                console.log(tmp_new_jadwal)
+             
                 let newJadwal = tmp_new_jadwal.filter(ele=>ele.NoRecord != InputNoRecord).map((ele)=>{
                     let data = {
                         'UIDProgram':jadwal[jadwalChangedIndex].UUIDProgram,
@@ -814,7 +822,7 @@
                 })
                 ReqJadwalChanges = DataChanges
                 setAndShowDataModalChanges(newJadwal)
-                console.log(newJadwal)
+             
             }
         }
         //kunai
@@ -884,11 +892,12 @@
     }
     function getChanges(){
         $.get("/siswa/jadwalchanges/get/"+$('#UUIDKelas').val(), (ele)=>{
-            console.log(ele)
+    
             JadwalChanges = ele
             statusUbahJadwal()
-            JadwalChanges.forEach((ele)=>{
-                console.log(ele.JadwalChanges[0].TanggalFrom)
+            JadwalChanges.sort((a,b)=> b.IDJadwalChange - a.IDJadwalChange).forEach((ele)=>{
+                //console.log(ele)
+              //  console.log(ele.JadwalChanges[0].TanggalFrom)
                 let ChangesSebelum =""
                 let ChangesSesudah =""
                 let StatusChange = ele.Status == 'OPN'?'Permintaan Terkirim':ele.Status=='CLS'?'Permintaan Disetujui':'Permintaan Ditolak'
@@ -911,7 +920,7 @@
                         "</tr>"
                     
                 })
-                console.log(ChangesSebelum)
+              // console.log(ChangesSebelum)
                 $('#list-history-changes').append(
                     "<a style=\"cursor: pointer\" onclick=\"showHistoryChanges("+ele.IDJadwalChange+")\" class=\"list-group-item list-group-item-action\">"+
                         "<h2>"+ele.JadwalChanges[0].TanggalFrom+"<span class=\"text-success\">( "+StatusChange+" )</span></h2>"+

@@ -65,7 +65,7 @@
                         <button type="button" id="btn-bahantutor" onclick="changeActiveContent('bahantutor')"
                             class="btn btn-nav">Bahan Tutor</button>
                         <button type="button" id="btn-ubahjadwal" onclick="changeActiveContent('ubahjadwal')"
-                            class="btn btn-nav">Ubah jadwal</button>
+                            class="btn btn-nav">Perubahan Jadwal</button>
                     </div>
                 </div>
 
@@ -75,22 +75,25 @@
                 {{-- konten pertemuan dan materi --}}
 
                 <div style="display: none" id="content-pertemuan" class="row mt-3">
-                    <table id="table-jadwal" class="table table-borderless">
-                        <thead>
-                            <tr>
-                                <th>Tanggal</th>
-                                <th>Jam</th>
-                                <th>Kelas</th>
-                                <th>Nama Materi</th>
-                                <th>Kode Kursus</th>
-                                <th>Nama Siswa</th>
-                                <th>Status</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                    <div class="col-md-12">
+
+                        <table id="table-jadwal" class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Jam</th>
+                                    <th>Kelas</th>
+                                    <th>Nama Materi</th>
+                                    <th>Kode Kursus</th>
+                                    <th>Nama Siswa</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
                 {{-- konten Modul --}}
@@ -272,6 +275,15 @@
     const content_bahantutor = $('#content-bahantutor');
     const TabelDataJadwal = $('#table-jadwal').DataTable();
     let JadwalChanges = [];
+    const Hari = [
+        {'Hari':'Senin','No':1},
+        {'Hari':'Selasa','No':2},
+        {'Hari':'Rabu','No':3},
+        {'Hari':'Kamis','No':4},
+        {'Hari':'Jumat','No':5},
+        {'Hari':'Sabtu','No':6},
+        {'Hari':'Minggu','No':7},
+    ]
     toastr.options = {
         'timeOut' : 0,
         "positionClass": "toast-bottom-full-width",
@@ -405,6 +417,8 @@
                 btn_tool.removeClass('active');
                 btn_video.removeClass('active');
                 btn_bahantutor.removeClass('active');
+                btn_ubahjadwal.removeClass('active');
+                content_ubahjadwal.hide();
                 content_prodi.show();
                 content_pertemuan.hide();
                 content_modul.hide();
@@ -419,6 +433,8 @@
                 btn_tool.removeClass('active');
                 btn_video.removeClass('active');
                 btn_bahantutor.removeClass('active');
+                btn_ubahjadwal.removeClass('active');
+                content_ubahjadwal.hide();
                 content_prodi.hide();
                 content_pertemuan.show();
                 content_modul.hide();
@@ -433,6 +449,8 @@
                 btn_tool.removeClass('active');
                 btn_video.removeClass('active');
                 btn_bahantutor.removeClass('active');
+                btn_ubahjadwal.removeClass('active');
+                content_ubahjadwal.hide();
                 content_prodi.hide();
                 content_pertemuan.hide();
                 content_modul.show();
@@ -447,6 +465,8 @@
                 btn_tool.addClass('active');
                 btn_video.removeClass('active');
                 btn_bahantutor.removeClass('active');
+                btn_ubahjadwal.removeClass('active');
+                content_ubahjadwal.hide();
                 content_prodi.hide();
                 content_pertemuan.hide();
                 content_modul.hide();
@@ -461,6 +481,8 @@
                 btn_tool.removeClass('active');
                 btn_video.addClass('active');
                 btn_bahantutor.removeClass('active');
+                btn_ubahjadwal.removeClass('active');
+                content_ubahjadwal.hide();
                 content_prodi.hide();
                 content_pertemuan.hide();
                 content_modul.hide();
@@ -475,12 +497,16 @@
                 btn_tool.removeClass('active');
                 btn_video.removeClass('active');
                 btn_bahantutor.addClass('active');
+                btn_ubahjadwal.removeClass('active');
+                content_ubahjadwal.hide();
                 content_prodi.hide();
                 content_pertemuan.hide();
                 content_modul.hide();
                 content_tool.hide();
                 content_video.hide();
                 content_bahantutor.show();
+
+
                 break;
             case 'ubahjadwal':
                 btn_prodi.removeClass('active');
@@ -529,7 +555,7 @@
         $.get("/karyawan/tutor/jadwalchanges/get/"+$('#UUIDKelas').val(), (ele)=>{
             console.log(ele)
             JadwalChanges = ele
-            JadwalChanges.forEach((ele)=>{
+            JadwalChanges.sort((a,b)=> b.IDJadwalChange - a.IDJadwalChange).forEach((ele)=>{
                 console.log(ele.JadwalChanges[0].TanggalFrom)
                 let ChangesSebelum =""
                 let ChangesSesudah =""
