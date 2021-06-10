@@ -13,7 +13,7 @@ class RekeningController extends Controller
 {
     public function index(){
         $Bank = Bank::getAllBank();
-        return view('karyawan.manage.rekening',[
+        return view('karyawan.manage.Rekening',[
             'Bank'=>$Bank
         ]);
     }
