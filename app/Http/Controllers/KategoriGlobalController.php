@@ -14,7 +14,7 @@ class KategoriGlobalController extends Controller
     public function index(){
         $KategoriGlobal = KategoriGlobal::getAllKategoriGlobal();
         //dd($KategoriProgram);
-        return view('karyawan.master.KategoriGlobal');
+        return view('karyawan.master.kategoriglobal');
     }
     public function create(){
         return view('karyawan.master.kategori program.create');
