@@ -35,7 +35,9 @@ class KaryawanController extends Controller
 
     public function indexKaryawan(){
         $Karyawan = DB::table('karyawan')->join('role_karyawan_list','karyawan.IDKaryawan','=','role_karyawan_list.IDKaryawan')
-        ->where('role_karyawan_list.IDRoleKaryawan','!=',1)->get();
+        ->where('role_karyawan_list.IDRoleKaryawan','!=',1)
+        ->select('karyawan.*')
+        ->get();
         //dd($Karyawan);
         
         return view('karyawan.show_karyawan_owner',['Karyawan'=>$Karyawan]);

@@ -359,7 +359,7 @@ class ProgramStudiController extends Controller
         ->where('kursus_siswa.Status','=','CLS')
         ->orderBy('NamaProdi')
         ->get()->groupBy('UUIDKursus');
-       // dd($Program);
+       //dd($Program);
         $Data =[];
         foreach($Program as $program){
            //dd($program[0]);
@@ -405,6 +405,7 @@ class ProgramStudiController extends Controller
                 'SisaPertemuan'=>$program[0]->TotalPertemuan - count($KursusMateri),
                 'Pertemuan'=>count($KursusMateri),
                 'NamaMateri'=> count($KursusMateri) == $program[0]->TotalPertemuan? 'Selesai':$Materi[0]->NamaMateri,
+                
                 'NoRecord'=>$Materi[0]->NoRecord,
                 'JadwalExist'=>count($KursusMateriAktif)>0?true:false,
                 'StatusJadwal'=>count($KursusMateriAktif)>0?$StatusJadwal:$SecondStatus,
