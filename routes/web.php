@@ -392,5 +392,5 @@ Route::prefix('auth')->group(function(){
 Route::get('/','AuthController@index');
 Route::get('/karyawan','AuthController@gerbangKaryawan');
 
-// Route::get('/recover','JadwalController@recoverJadwal');
-// Route::get('/recovermateri','JadwalController@recoverMateri');
+Route::get('/recover','JadwalController@recoverJadwal');
+Route::get('/recovermateri','JadwalController@recoverMateri');

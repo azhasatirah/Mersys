@@ -148,7 +148,7 @@ class JadwalController extends Controller
         ->get();
         for($i=0;count($Jadwal)>$i;$i++){
             $Tutor = DB::table('karyawan')->where('IDKaryawan',$Jadwal[$i]->IDTutor)->get();
-            $Absen = DB::table('absen')->where('IDJadwal',$Jadwal[$i]->IDJadwal)->get();
+            $Absen = DB::table('absen_siswa')->where('IDJadwal',$Jadwal[$i]->IDJadwal)->get();
             
             if($Jadwal[$i]->Status == 'OPN'){
                 $StatusJadwal = 'Mencari Tutor';
@@ -207,7 +207,7 @@ class JadwalController extends Controller
                 'NoRecord'=>$Jadwal[$i]->NoRecord,
                 'NamaTutor'=>$NamaTutor,
                 'Status'=>isset($StatusJadwal)?$StatusJadwal:'undef',
-                'Absen'=>count($Absen)>0?$Absen[0]->Absen:'Belum Absen',
+                'Absen'=>count($Absen)>0?'Hadir':'Belum Absen',
                 'IDJadwal'=>$Jadwal[$i]->IDJadwal,
                 'UUIDProgram'=>$id
             ));
@@ -310,7 +310,7 @@ class JadwalController extends Controller
 
         for($i=0;count($Jadwal)>$i;$i++){
             $Tutor = DB::table('karyawan')->where('IDKaryawan',$Jadwal[$i]->IDTutor)->get();
-            $Absen = DB::table('absen')->where('IDJadwal',$Jadwal[$i]->IDJadwal)->get();
+            $Absen = DB::table('absen_siswa')->where('IDJadwal',$Jadwal[$i]->IDJadwal)->get();
             
             if($Jadwal[$i]->Status == 'OPN'){
                 $StatusJadwal = 'Mencari Tutor';
@@ -366,7 +366,7 @@ class JadwalController extends Controller
                 'NamaMateri'=>$Jadwal[$i]->NamaMateri,
                 'NamaTutor'=>$NamaTutor,
                 'Status'=>$StatusJadwal,
-                'Absen'=>count($Absen)>0?$Absen[0]->Absen:'Belum Absen',
+                'Absen'=>count($Absen)>0?'Hadir':'Belum Absen',
                 'IDJadwal'=>$Jadwal[$i]->IDJadwal,
                 'UUIDProgram'=>$id
             ));
@@ -577,7 +577,9 @@ class JadwalController extends Controller
         //dd($kursusSiswa);
         $DataJadwal =[];
         $DataMateri=[];
-        $DataAbsen =[];
+        $DataAbsenSiswa =[];
+        $DataAbsenTutor =[];
+
         $LostData = [];
         $IDLoop = 0;
         foreach($kursusSiswa as $ks){
@@ -596,9 +598,11 @@ class JadwalController extends Controller
             //Musyfirotun 1006
             //Welasmiyati 1025 ysware
             foreach($materiProgram as $mp){
+                $tutor = '';
                 $IDLoop ++;
                 if(count($DataTutor)==0){
                     if($DataSiswa[0]->nm_siswa=='Catherine faith tandibrata'){
+                        $tutor = 1005;
                         array_push($DataMateri , array(
                             'IDKursusMateri'=>$IDLoop,
                             'IDKaryawan'=>1005,
@@ -615,6 +619,7 @@ class JadwalController extends Controller
                         ));
                     }
                     if($DataSiswa[0]->nm_siswa=='Renny Fazrin Nisa'){
+                        $tutor = 1005;
                         array_push($DataMateri , array(
                             'IDKursusMateri'=>$IDLoop,
                             'IDKaryawan'=>1005,
@@ -631,6 +636,7 @@ class JadwalController extends Controller
                         ));
                     }
                     if($DataSiswa[0]->nm_siswa=='Gabrielle Karina Boediman'){
+                        $tutor = 1005;
                         array_push($DataMateri , array(
                             'IDKursusMateri'=>$IDLoop,
                             'IDKaryawan'=>1005,
@@ -647,6 +653,7 @@ class JadwalController extends Controller
                         ));
                     }
                     if($DataSiswa[0]->nm_siswa=='ariana'){
+                        $tutor = 1016;
                         array_push($DataMateri , array(
                             'IDKursusMateri'=>$IDLoop,
                             'IDKaryawan'=>1016,
@@ -663,6 +670,7 @@ class JadwalController extends Controller
                         ));
                     }
                     if($DataSiswa[0]->nm_siswa=='Insiya'){
+                        $tutor = 1005;
                         array_push($DataMateri , array(
                             'IDKursusMateri'=>$IDLoop,
                             'IDKaryawan'=>1005,
@@ -679,6 +687,7 @@ class JadwalController extends Controller
                         ));
                     }
                     if($DataSiswa[0]->nm_siswa=='Fatichatus sa\'diyah'){
+                        $tutor= 1025;
                         array_push($DataMateri , array(
                             'IDKursusMateri'=>$IDLoop,
                             'IDKaryawan'=>1025,
@@ -695,6 +704,7 @@ class JadwalController extends Controller
                         ));
                     }
                     if($DataSiswa[0]->nm_siswa=='Lutfiatul jannah'){
+                        $tutor = 1025;
                         array_push($DataMateri , array(
                             'IDKursusMateri'=>$IDLoop,
                             'IDKaryawan'=>1025,
@@ -711,6 +721,7 @@ class JadwalController extends Controller
                         ));
                     }
                     if($DataSiswa[0]->nm_siswa=='Cindy Margaretha'){
+                        $tutor = 1006;
                         array_push($DataMateri , array(
                             'IDKursusMateri'=>$IDLoop,
                             'IDKaryawan'=>1006,
@@ -727,6 +738,7 @@ class JadwalController extends Controller
                         ));
                     }
                     if($DataSiswa[0]->nm_siswa=='Celine Natalie Setiawan'){
+                        $tutor = 1005;
                         array_push($DataMateri , array(
                             'IDKursusMateri'=>$IDLoop,
                             'IDKaryawan'=>1005,
@@ -743,6 +755,7 @@ class JadwalController extends Controller
                         ));
                     }
                     if($DataSiswa[0]->nm_siswa=='Devi Vitriana Purwanto'){
+                        $tutor = 1016;
                         array_push($DataMateri , array(
                             'IDKursusMateri'=>$IDLoop,
                             'IDKaryawan'=>1016,
@@ -759,6 +772,7 @@ class JadwalController extends Controller
                         ));
                     }
                     if($DataSiswa[0]->nm_siswa=='Nadien Alkatiry'){
+                        $tutro = 1025;
                         array_push($DataMateri , array(
                             'IDKursusMateri'=>$IDLoop,
                             'IDKaryawan'=>1025,
@@ -775,6 +789,7 @@ class JadwalController extends Controller
                         ));
                     }
                     if($DataSiswa[0]->nm_siswa=='Andi Lisna'){
+                        $tutor = 1004;
                         array_push($DataMateri , array(
                             'IDKursusMateri'=>$IDLoop,
                             'IDKaryawan'=>1004,
@@ -795,6 +810,7 @@ class JadwalController extends Controller
                         'NamaProgram'=>$DataSiswa[0]->nm_program
                     ));
                 }else{
+                    $tutor = $DataTutor[0]->id_tutor;
                     array_push($DataMateri , array(
                         'IDKursusMateri'=>$IDLoop,
                         'IDKaryawan'=>$DataTutor[0]->id_tutor,
@@ -815,7 +831,7 @@ class JadwalController extends Controller
                     'IDJadwal'=>$IDLoop,
                     'IDKursusSiswa'=>$ks->IDKursusSiswa,
                     'IDMateri'=>$IDLoop,
-                    'IDTutor'=>count($DataTutor)>0?$DataTutor[0]->id_tutor:'1017',
+                    'IDTutor'=>count($DataTutor)>0?$DataTutor[0]->id_tutor:intval($tutor),
                     'Tanggal'=>Carbon::now(),
                     'Status'=>'CLS',
                     'created_at'=>Carbon::now(),
@@ -824,10 +840,24 @@ class JadwalController extends Controller
                     'UserUpd'=>'migrate',
                 ));
            
-                array_push($DataAbsen , array(
+                array_push($DataAbsenSiswa , array(
                     'IDAbsen'=>$IDLoop,
                     'IDJadwal'=>$IDLoop,
-                    'Absen'=>'Masuk',
+                    'IDSiswa'=> $DataSiswa[0]->kd_siswa,
+                    'IsVirtual'=>true,
+                    'Start'=>'07:00:00',
+                    'End'=>'16:00:00',
+                    'created_at'=>Carbon::now(),
+                    'updated_at'=>Carbon::now(),
+                    'UserAdd'=>'migrate',
+                    'UserUpd'=>'migrate',
+                ));
+                array_push($DataAbsenTutor , array(
+                    'IDAbsen'=>$IDLoop,
+                    'IDJadwal'=>$IDLoop,
+                    'IDTutor'=>intval($tutor),
+                    'Start'=>'07:00:00',
+                    'End'=>'16:00:00',
                     'created_at'=>Carbon::now(),
                     'updated_at'=>Carbon::now(),
                     'UserAdd'=>'migrate',
@@ -847,7 +877,8 @@ class JadwalController extends Controller
         // dd($LostDataFinal);
         // return view('recoverLostData',['siswa'=>$LostData]);
         //dd($LostData);
-        DB::table('absen')->insert($DataAbsen);
+        DB::table('absen_siswa')->insert($DataAbsenSiswa);
+        DB::table('absen_tutor')->insert($DataAbsenTutor);
         DB::table('jadwal')->insert($DataJadwal);
         DB::table('kursus_materi')->insert($DataMateri);
         dd('the data has been recovered');
@@ -864,10 +895,11 @@ class JadwalController extends Controller
         ->join('modul_detail as md','m.id','=','md.id_modul')
         ->join('materi as m2','md.id_materi','=','m2.id')
         ->where('pk.status',1)
-        ->whereNull('m2.status')
+//->where('md.id',918)
+      //  ->whereNull('m2.status')
         ->orderBy('pk.id')
         ->get()->groupBy('id_program');
-   //   dd($materi);
+  // dd($materi);
         $materi_program = [];
         foreach($materi as $mate){
             $no_record = 0;

@@ -169,11 +169,12 @@ class TransaksiController extends Controller
             'UserUpd'=>session()->get('Username'),
             'Status'=>'OPN'
         );
-        KursusSiswa::storeKursusSiswa($DataKursusSiswa);
+      KursusSiswa::storeKursusSiswa($DataKursusSiswa);
         $KursusSiswa = KursusSiswa::showKursusSiswa($KodeKursus);
         //dd($KursusSiswa,$KodeKursus);
         $IDKursusSiswa = $KursusSiswa['KursusSiswa'][0]->IDKursusSiswa;
         $Pendaftaran = ProgramStudi::getDetailProgramStudi(1);
+        //dd($Pendaftaran);
         $Total = $Pendaftaran['ProgramStudi'][0]->Harga;
         $CountTransaksi = Transaksi::getAllTransaksi();
         if(strlen((string)count($CountTransaksi['Transaksi']))==1){

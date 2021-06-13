@@ -212,7 +212,7 @@ class PembayaranController extends Controller
     public function adminDetailPembayaranPendaftaran($ID)
     {
         $Pembayaran = Pembayaran::getDetailPembayaranBySiswa($ID);
-        //dd($Pembayaran['Pembayaran']);
+        dd($Pembayaran['Pembayaran']);
         return view('karyawan.pendaftaran.admin.rincian',['Pembayaran'=>$Pembayaran]);
     }
 
