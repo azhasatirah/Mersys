@@ -877,10 +877,10 @@ class JadwalController extends Controller
         // dd($LostDataFinal);
         // return view('recoverLostData',['siswa'=>$LostData]);
         //dd($LostData);
-        DB::table('absen_siswa')->insert($DataAbsenSiswa);
-        DB::table('absen_tutor')->insert($DataAbsenTutor);
-        DB::table('jadwal')->insert($DataJadwal);
-        DB::table('kursus_materi')->insert($DataMateri);
+        //DB::table('absen_siswa')->insert($DataAbsenSiswa);
+        //DB::table('absen_tutor')->insert($DataAbsenTutor);
+        //DB::table('jadwal')->insert($DataJadwal);
+       // DB::table('kursus_materi')->insert($DataMateri);
         dd('the data has been recovered');
         //return redirect('siswa/kursus');
     }
@@ -895,11 +895,11 @@ class JadwalController extends Controller
         ->join('modul_detail as md','m.id','=','md.id_modul')
         ->join('materi as m2','md.id_materi','=','m2.id')
         ->where('pk.status',1)
-//->where('md.id',918)
-      //  ->whereNull('m2.status')
+        //->where('md.id',918)
+        //  ->whereNull('m2.status')
         ->orderBy('pk.id')
         ->get()->groupBy('id_program');
-  // dd($materi);
+        // dd($materi);
         $materi_program = [];
         foreach($materi as $mate){
             $no_record = 0;
@@ -921,8 +921,23 @@ class JadwalController extends Controller
             }
         }
         //dd($materi_program);
-        DB::table('materi_program')->insert($materi_program);
+        //DB::table('materi_program')->insert($materi_program);
         dd('the jjjdata has been recovered');
+    }
+
+    public function updateTotalPertemuan(){
+        $ProgramStudi = DB::table('program_studi')->get();
+        $tm =[];
+        // foreach($ProgramStudi as $ps){
+        //     $Materi = DB::table('materi_program')->where('IDProgram',$ps->IDProgram)->get();
+        //     array_push($tm,$Materi->count());
+        //     DB::table('program_studi')->where('IDProgram',$ps->IDProgram)->update([
+        //         'TotalPertemuan'=>$Materi->count(),
+        //     ]);
+            
+        // }
+        //dd($tm);
+        //dd('done boss :(');
     }
 
 
