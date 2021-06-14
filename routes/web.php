@@ -31,6 +31,9 @@ Route::get('/notif/update/{id}','NotifController@update');
 Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 
     //multi karyawanwww
+
+    Route::post('/deleteakunkaryawan','KaryawanController@deleteKaryawan');
+    Route::post('/undeleteakunkaryawan','KaryawanController@unDeleteKaryawan');
     Route::post('password/update','AuthController@changePasswordKaryawan');
     Route::get('/transaksi/getdata','TransaksiController@getData');
 
@@ -392,7 +395,7 @@ Route::prefix('auth')->group(function(){
 Route::get('/','AuthController@index');
 Route::get('/karyawan','AuthController@gerbangKaryawan');
 
-Route::get('/updatetutor','JadwalController@updateIDTutor');
+// Route::get('/updatetutor','JadwalController@updateIDTutor');
 // Route::get('/updatetotalpertemuan','JadwalController@updateTotalPertemuan');
 // Route::get('/recover','JadwalController@recoverJadwal');
 // Route::get('/recovermateri','JadwalController@recoverMateri');

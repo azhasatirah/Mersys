@@ -42,7 +42,22 @@ class KaryawanController extends Controller
         
         return view('karyawan.show_karyawan_owner',['Karyawan'=>$Karyawan]);
     }
+    public function deleteKaryawan(Request $request){
+        DB::table('karyawan')->where('IDKaryawan',$request->idkaryawan)->update([
+            'Status'=>'DEL'
+        ]);
+        $msg ='Berhasil menonaktifkan karyawan';
 
+        return redirect()->back()->with('msg',$msg);
+    }
+    public function unDeleteKaryawan(Request $request){
+        DB::table('karyawan')->where('IDKaryawan',$request->idkaryawan)->update([
+            'Status'=>'CLS'
+        ]);
+        $msg ='Berhasil mengaktifkan karyawan';
+        
+        return redirect()->back()->with('msg',$msg);
+    }
     public function getJadwalGroupByTutor($start_date){
         /*
         * backend
