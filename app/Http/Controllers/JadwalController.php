@@ -221,6 +221,16 @@ class JadwalController extends Controller
             'Status'=>'CFM',
             'Start'=>Carbon::now()
         ]);
+        DB::table('absen_tutor')->insert([
+            'IDJadwal'=>$request->idjadwal,
+            'IDTutor'=>session()->get('IDUser'),
+            'Start'=>Carbon::now()->toTimeString(),
+            'End'=>Carbon::now()->toTimeString(),
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+            'UserAdd'=>session()->get('Username'),
+            'UserUpd'=>session()->get('Username'),
+        ]);
         $DataNotif = table('kursus_materi as km')
         ->join('kursus_siswa as ks','km.IDKursus','=','ks.IDKursusSiswa')
         ->join('siswa as s','ks.IDSiswa','=','s.IDSiswa')
@@ -250,6 +260,16 @@ class JadwalController extends Controller
         ->update([
             'Status'=>'CLS',
             'End'=>Carbon::now()
+        ]);
+        DB::table('absen_siswa')->where('IDJadwal',$request->idjadwal)->update([
+            'End'=>Carbon::now()->toTimeString(),
+            'updated_at'=>Carbon::now(),
+            'UserUpd'=>session()->get('Username'),
+        ]);
+        DB::table('absen_tutor')->where('IDJadwal',$request->idjadwal)->update([
+            'End'=>Carbon::now()->toTimeString(),
+            'updated_at'=>Carbon::now(),
+            'UserUpd'=>session()->get('Username'),
         ]);
         $DataNotif = table('kursus_materi as km')
         ->join('kursus_siswa as ks','km.IDKursus','=','ks.IDKursusSiswa')

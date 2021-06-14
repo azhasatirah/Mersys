@@ -12,9 +12,12 @@ use Illuminate\Support\Facades\DB;
 class AbsenController extends Controller
 {
     public function absen(Request $request){
-        DB::table('absen')->insert([
+        DB::table('absen_siswa')->insert([
             'IDJadwal'=>$request->idjadwal,
-            'Absen'=>'masuk',
+            'IDSiswa'=>session()->get('IDUser'),
+            'IsVirtual'=>true,
+            'Start'=>Carbon::now()->toTimeString(),
+            'End'=>Carbon::now()->toTimeString(),
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
             'UserAdd'=>session()->get('Username'),

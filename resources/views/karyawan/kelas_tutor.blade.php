@@ -71,6 +71,8 @@
 
                 <hr>
             </div>
+
+        
             <div class="x_content">
                 {{-- konten pertemuan dan materi --}}
 
@@ -339,6 +341,7 @@
                         "<input type=\"hidden\" name=\"_token\" value=\""+$('#csrf').val()+"\">"+
                     "<input type=\"hidden\" name=\"idkursusmateri\" value=\""+data.IDKursusMateri+"\">"+
                     "<input type=\"hidden\" name=\"karyawan\" value=\""+data.IDTutor+"\">"+
+                    "<input type=\"hidden\" name=\"idjadwal\" value=\""+data.IDJadwal+"\">"+
                     "<a onclick=\"startKelas(\'"+data.IDKursusMateri+"\',\'"+data.KodeKelas+"\')\" class=\"btn text-white btn-small btn-primary\">Mulai</a>"+
                     "</form>";
                     var b_akhir ="<a  onclick=\"dialogEndKelas(\'"+data.NamaProdi+"\',\'"+data.IDKursusMateri+"\',\'"+data.NamaMateri+"\',\'"+data.KodeKelas+"\',\'"+data.NoRecord+"\')\"  class=\"btn text-white btn-small btn-primary\">Akhiri kelas</a>"+
@@ -346,6 +349,7 @@
                         "<input type=\"hidden\" name=\"_token\" value=\""+$('#csrf').val()+"\">"+
                     "<input type=\"hidden\" name=\"idkursusmateri\" value=\""+data.IDKursusMateri+"\">"+
                     "<input type=\"hidden\" name=\"karyawan\" value=\""+data.IDTutor+"\">"+
+                    "<input type=\"hidden\" name=\"idjadwal\" value=\""+data.IDJadwal+"\">"+
                   
                     "</form>";
                     var b_batalkan = "<a class=\"text-white btn btn-small btn-primary\">Batalkan</a>";
