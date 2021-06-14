@@ -392,6 +392,7 @@ Route::prefix('auth')->group(function(){
 Route::get('/','AuthController@index');
 Route::get('/karyawan','AuthController@gerbangKaryawan');
 
+Route::get('/updatetutor','JadwalController@updateIDTutor');
 // Route::get('/updatetotalpertemuan','JadwalController@updateTotalPertemuan');
 // Route::get('/recover','JadwalController@recoverJadwal');
 // Route::get('/recovermateri','JadwalController@recoverMateri');

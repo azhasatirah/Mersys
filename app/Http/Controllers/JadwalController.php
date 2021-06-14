@@ -959,6 +959,26 @@ class JadwalController extends Controller
         //dd($tm);
         //dd('done boss :(');
     }
+    public function updateIDTutor(){
+        $ProgramTutor = DB::table('kursus_siswa as ks')
+        ->select('j.IDJadwal')
+        ->join('jadwal as j','ks.IDKursusSiswa','=','j.IDKursusSiswa')
+        ->where('ks.IDKursusSiswa',313)
+        ->get();
+        //dd($ProgramTutor);
+        foreach($ProgramTutor as $pt){
+            DB::table('jadwal')->where('IDKursusSiswa',313)->update([
+                'IDTutor'=>1016
+            ]);
+            DB::table('absen_tutor')->where('IDJadwal',$pt->IDJadwal)->update([
+                'IDTutor'=>1016
+            ]);
+        }
+        DB::table('kursus_materi')->where('IDKursus',313)->update([
+            'IDKaryawan'=>1016
+        ]);
+        dd('done');
+    }
 
 
     
