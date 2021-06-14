@@ -98,6 +98,7 @@ function storeDaftar(){
 //     $('#modal-syarat').modal('show');
 // }
 function cekUsername(ele){
+    console.log($('#datadaftar').serialize());
     $.post('auth/cekusername/',$('#datadaftar').serialize(),data=>
         validasiInput(ele,data,$('#validUsernameDaftar'),'* Username sudah dipakai!')
     );
