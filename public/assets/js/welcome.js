@@ -98,15 +98,20 @@ function storeDaftar(){
 //     $('#modal-syarat').modal('show');
 // }
 function cekUsername(ele){
-    let formData = $('#datadaftar').serialize()
-    $.get('auth/cekusername/'+ $('#inUsernameDaftar').val(),data=>
-        validasiInput(ele,data,$('#validUsernameDaftar'),'* Username sudah dipakai!')
-    );
+    let formData = $('#inUsernameDaftar').val()
+    if(formData != ''){
+        $.get('auth/cekusername/'+ formData,data=>
+            validasiInput(ele,data,$('#validUsernameDaftar'),'* Username sudah dipakai!')
+        );
+    }
 }
 function cekEmail(ele){
-    $.get('auth/cekemail/'+ $('#inEmailDaftar').val(),data=>
-        validasiInput(ele,data,$('#validEmailDaftar'),'* Email sudah dipakai!')
-    );
+    let formData = $('#inEmailDaftar').val()
+    if(formData != ''){
+        $.get('auth/cekemail/'+ formData,data=>
+            validasiInput(ele,data,$('#validEmailDaftar'),'* Email sudah dipakai!')
+        );
+    }
 }
 function passwordAssist(ele){
     const lower = (val) => val == val.toLowerCase();
