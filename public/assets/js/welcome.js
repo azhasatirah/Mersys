@@ -98,13 +98,13 @@ function storeDaftar(){
 //     $('#modal-syarat').modal('show');
 // }
 function cekUsername(ele){
-    console.log($('#datadaftar').serialize());
-    $.post('auth/cekusername/',$('#datadaftar').serialize(),data=>
+    let formData = $('#datadaftar').serialize()
+    $.get('auth/cekusername/'+ $('#inUsernameDaftar').val(),data=>
         validasiInput(ele,data,$('#validUsernameDaftar'),'* Username sudah dipakai!')
     );
 }
 function cekEmail(ele){
-    $.post('auth/cekemail/',$('#datadaftar').serialize(),data=>
+    $.get('auth/cekemail/'+ $('#inEmailDaftar').val(),data=>
         validasiInput(ele,data,$('#validEmailDaftar'),'* Email sudah dipakai!')
     );
 }

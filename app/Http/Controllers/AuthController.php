@@ -149,11 +149,11 @@ class AuthController extends Controller
         $Status = Auth::daftarSiswa($Data);
         return $Status;
     }
-    public function cekUsername(Request $request){
-        return response()->json(Auth::cekUsername($request->username));
+    public function cekUsername($id){
+        return response()->json(Auth::cekUsername($id));
     }
-    public function cekEmail(Request $request){
-        return response()->json(Auth::cekEmail($request->email));
+    public function cekEmail($id){
+        return response()->json(Auth::cekEmail($id));
     }
     public function logout(){
         session()->flush();

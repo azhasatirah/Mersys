@@ -387,8 +387,8 @@ Route::prefix('auth')->group(function(){
     Route::post('/login','AuthController@login');
     Route::post('/daftar','AuthController@store');
     Route::post('/logout','AuthController@logout');
-    Route::post('/cekusername','AuthController@cekUsername');
-    Route::post('/cekemail','AuthController@cekEmail');
+    Route::get('/cekusername/{id}','AuthController@cekUsername');
+    Route::get('/cekemail/{id}','AuthController@cekEmail');
 });
 
 //gerbang user
