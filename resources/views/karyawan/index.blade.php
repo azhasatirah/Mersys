@@ -16,13 +16,14 @@
               <span class="count_top"><i class="fa fa-clock-o"></i> Jumlah karyawan</span>
               <div class="count">{{$Dasbor['JumlahKaryawan']}}</div>
           </div>
+          @if(session()->get('Level')==1)
           <div class="col-md-3 col-sm-4  tile_stats_count">
               <span class="count_top"><i class="fa fa-user"></i> Omset</span>
               <div 
               style="font-size:17px"
               class="count green">Rp. {{number_format($Dasbor['Omset'])}}</div>
-        
           </div>
+          @endif
           <div class="col-md-3 col-sm-4  tile_stats_count">
               <span class="count_top"><i class="fa fa-user"></i> Transaksi</span>
               <div class="count">{{$Dasbor['Transaksi']}}</div>
