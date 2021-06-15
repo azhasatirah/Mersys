@@ -13,7 +13,7 @@ class KaryawanController extends Controller
         $Dasbor = [];
         $Siswa = DB::table('siswa')->where('Status','!=','DEL')->get();
         $Karyawan = DB::table('karyawan')->where('Status','!=','DEL')->get();
-        $Transaksi = DB::table('transaksi')->get();
+        $Transaksi = DB::table('transaksi')->where('Status','!=','DEL')->get();
         $KasBank = DB::table('kas_bank')->get();
         $Dasbor = array(
             'JumlahSiswa'=>count($Siswa),

@@ -281,7 +281,7 @@ class TransaksiController extends Controller
         ->select('transaksi.KodeTransaksi','transaksi.Total','transaksi.SubTotal','transaksi.IDTransaksi',
             'transaksi.Status','transaksi.UUID as UUIDTransaksi',
             'transaksi.Hutang','transaksi.created_at','siswa.NamaSiswa','program_studi.NamaProdi')
-        ->where('transaksi.IDSiswa',session()->get('IDUser'))->get();
+        ->where('transaksi.IDSiswa',session()->get('IDUser'))->where('transaksi.Status','!=','DEL')->get();
         
         $DataTransaksi=[];
         //dd($Transaksi);
