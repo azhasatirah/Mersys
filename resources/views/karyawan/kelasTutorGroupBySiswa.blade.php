@@ -15,16 +15,35 @@
 
         <tr class="bg-dark">
             <td >{{$loop->iteration}}</td>
-            <td>{{$item[0]->KodeSiswa}}</td>
+            <td>{{$item['KodeSiswa']}}</td>
             <td>
-                {{$item[0]->NamaSiswa}}
+                {{$item['NamaSiswa']}}
 
             </td>
             <td>
-                <a href="{{url('karyawan/tutor/kelas')}}/{{$item[0]->UUIDSiswa}}" class="btn btn-primary btn-sm">
+                <a href="{{url('karyawan/tutor/kelas')}}/{{$item['UUIDSiswa']}}" class="btn btn-primary btn-sm">
                     <i class="fa fa-eye" aria-hidden="true"></i>
                     Lihat
                 </a>
+                @if (count($item['TestPsiko'])!=0)
+                <a data-toggle="modal" data-target="#htp{{$item['UUIDSiswa']}}" href="javascript:void(0)" class="btn btn-primary btn-sm">
+                    Hasil test psikologi
+                    </a> 
+                <div class="modal fade" id="htp{{$item['UUIDSiswa']}}" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    <img style="max-width:750px;heigh:auto" src="{{asset('images/hasil-psikologi')}}/{{$item['TestPsiko'][0]->HasilTestPsikologi}}"
+                                     alt="">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                                    </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
             </td>
         </tr>
         @endforeach

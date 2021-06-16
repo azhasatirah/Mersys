@@ -127,10 +127,13 @@
                                                 </div>
                                                 <div class="col-md-7">
                                                     <p>
+                                                        Kode Karyawan : {{$item->KodeKaryawan}} <br> 
                                                         Nama : {{$item->NamaKaryawan}} <br>
                                                         Email : {{$item->Email}} <br>
                                                         Jenis Kelamin : {{$item->JenisKelamin}} <br>
-                                                        Alamat : {{$item->Alamat}} <br>   
+                                                        Tempat lahir : {{$item->TempatLahir}} <br> 
+                                                        Tanggal Lahir : {{$item->TanggalLahir}} <br> 
+                                                        No hp : {{$item->NoHP}} <br>    
                                                     </p>
                                                 </div>
                                             </div>
@@ -168,10 +171,13 @@
                                             </div>
                                             <div class="col-md-7">
                                                 <p>
+                                                    Kode Karyawan : {{$item->KodeKaryawan}} <br> 
                                                     Nama : {{$item->NamaKaryawan}} <br>
                                                     Email : {{$item->Email}} <br>
                                                     Jenis Kelamin : {{$item->JenisKelamin}} <br>
-                                                    Alamat : {{$item->Alamat}} <br>   
+                                                    Tempat lahir : {{$item->TempatLahir}} <br> 
+                                                    Tanggal Lahir : {{$item->TanggalLahir}} <br> 
+                                                    No hp : {{$item->NoHP}} <br>   
                                                 </p>
                                             </div>
                                         </div>

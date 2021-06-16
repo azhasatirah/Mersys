@@ -334,15 +334,25 @@ class ProgramStudiController extends Controller
         dd($request);
     }
     public function kelasTutorGroupBySiswa(){
+        $Data = [];
         $Siswa = DB::table('jadwal as j')
         ->select(
-            's.NamaSiswa','s.IDSiswa','s.UUID as UUIDSiswa','s.KodeSiswa'
+            's.NamaSiswa','s.IDSiswa','s.UUID as UUIDSiswa','s.KodeSiswa','s.IDSiswa'
         )
         ->join('kursus_siswa as ks','j.IDKursusSiswa','=','ks.IDKursusSiswa')
         ->join('siswa as s','ks.IDSiswa','=','s.IDSiswa')
         ->where('j.IDTutor',session()->get('IDUser'))
         ->get()->groupBy('NamaSiswa');
-        return view('karyawan/kelasTutorGroupBySiswa',['Siswa'=>$Siswa]);
+        foreach($Siswa as $item ){
+            array_push($Data, array(
+                'KodeSiswa'=>$item[0]->KodeSiswa,
+                'NamaSiswa'=>$item[0]->NamaSiswa,
+                'UUIDSiswa'=>$item[0]->UUIDSiswa,
+                'TestPsiko'=>DB::table('test_psikologi')->where('IDSiswa',$item[0]->IDSiswa)->get()
+            ));
+        }
+        //dd($Data);
+        return view('karyawan/kelasTutorGroupBySiswa',['Siswa'=>$Data]);
     }
     public function kelasTutor($id){
 

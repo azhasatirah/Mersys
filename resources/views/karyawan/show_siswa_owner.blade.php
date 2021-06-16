@@ -78,7 +78,7 @@
                                 <div class="modal-content">
                                     <div class="modal-body">
                                         <div class="container-fluid">
-                                            <img src="{{asset('images/hasil-psikologi')}}/{{$item['Psikologi']}}"
+                                            <img style="max-width:750px;heigh:auto" src="{{asset('images/hasil-psikologi')}}/{{$item['Psikologi']}}"
                                              alt="">
                                         </div>
                                     </div>
