@@ -19,14 +19,14 @@
         border-bottom: 3px solid #007bff;
         border-radius: 0px;
     }
-    #toast-container > .toast-success {
+
+    #toast-container>.toast-success {
         background-color: black;
         max-width: 40rem;
         background-image: none !important;
     }
-
 </style>
-
+<a onclick="countHarga()" id="" class="btn btn-primary" href="#" role="button">hitung harga</a>
 <div class="row bg-white">
     <div class="col-md-12 col-sm-12  ">
         <div class="x_panel" style="border:0px;">
@@ -40,7 +40,6 @@
                     </ul>
                 </div>
                 {{-- nav menu --}}
-
                 <div class="col-md-12" style=" border-bottom: 0.01em solid #0D6c757d;">
                     <div class="btn-group" role="group" aria-label="Basic example">
                         <button style="padding-left:0px" onclick="changeActiveContent('prodi')" id="btn-prodi"
@@ -55,27 +54,46 @@
                             class="btn btn-nav">Video</button>
                         <button type="button" id="btn-bahantutor" onclick="changeActiveContent('bahantutor')"
                             class="btn btn-nav">Bahan Tutor</button>
-
                     </div>
                 </div>
 
                 <hr>
             </div>
             <div class="x_content">
-
                 {{-- konten program studi dan harga --}}
                 <div style="display: none" id="content-prodi" class="row mt-3">
-
+                    <div class="col-md-12" style="display: none" id="prodi-changes-control">
+                        <div class="col-md-12 mx-3 mb-3 bg-dark text-white" style="width:25rem;border-radius:5px">
+                            <div style="margin: 15px">
+                                <h4>Anda telah mengubah data program studi</h4>
+                                <a onclick="resetProdi()" class="btn btn-sm btn-danger text-white"
+                                    href="javascript:void(0)" role="button">Reset</a>
+                                <a onclick="updateProdi()" class="btn btn-sm btn-primary text-white"
+                                    href="javascript:void(0)" role="button">Simpan perubahan</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="display: none" id="prodi-changes-control">
+                        <div class="col-md-12 mx-3 mb-3 bg-dark text-white" style="width:25rem;border-radius:5px">
+                            <div style="margin: 15px">
+                                <h4>Anda telah mengubah data cicilan</h4>
+                                <a onclick="resetProdiCicilan()" class="btn btn-sm btn-danger text-white"
+                                    href="javascript:void(0)" role="button">Reset</a>
+                                <a onclick="updateProdiCicilan()" class="btn btn-sm btn-primary text-white"
+                                    href="javascript:void(0)" role="button">Simpan perubahan</a>
+                            </div>
+                        </div>
+                    </div>
                     <form class="col-md-12" id="form-prodi">
-                        @csrf
-                        <input type="hidden" name="idprodi" value="{{$Prodi[0]->IDProgram}}">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ csrf_token() }}" />
+                        <input type="hidden" id="idprodi" name="idprodi" value="{{$Prodi[0]->IDProgram}}">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="harga-program">Harga Program</label>
                                 <input type="text" name="hargaprodi" id="input-harga-program"
-                                    class="form-control rounded" value="{{$Prodi[0]->Harga}}">
+                                    class="form-control rounded" >
 
-                                
+
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -83,7 +101,7 @@
                                         <label for="">Harga Tool</label>
                                         <input type="text" name="" id="input-harga-total-tool"
                                             class="form-control rounded" readonly placeholder="">
-                                        
+
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -91,7 +109,7 @@
                                         <label for="">Harga Modul</label>
                                         <input type="text" name="" id="input-harga-total-modul"
                                             class="form-control rounded" readonly placeholder="">
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -99,35 +117,32 @@
                                 <label for="">Subtotal (Harga Lunas)</label>
                                 <input type="text" name="" id="input-harga-total" class="form-control rounded" readonly
                                     placeholder="">
-                                
+
                             </div>
                             <div class="form-group">
                                 <label for="">Cicilan</label>
                                 <select class="custom-select" onchange="showCicilan()" name="cicilanprodi"
                                     id="input-cicilan-prodi">
-                                    <option value="n" @if ($Prodi[0]->Cicilan =='n'){{'selected'}} @endif>Tidak</option>
-                                    <option value="y" @if ($Prodi[0]->Cicilan =='y'){{'selected'}} @endif>Iya</option>
+                                    <option value="n">Tidak</option>
+                                    <option value="y">Iya</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="col-md-1"></div>
                         {{-- info prodi --}}
-
                         <div class="col-md-5 ">
                             <div class="form-group">
                                 <label for="">Nama</label>
-                                <input type="text" name="namaprodi" id="input-nama-prodi" class="form-control rounded"
-                                    value="{{$Prodi[0]->NamaProdi}}">
-                                
+                                <input type="text" name="namaprodi" id="input-nama-prodi" class="form-control rounded">
+
                             </div>
 
                             <div class="form-group">
                                 <label for="">Level</label>
                                 <select class="custom-select rounded" name="levelprodi" id="input-level-prodi">
                                     @foreach ($LevelProgram as $level)
-                                    <option value="{{$level->IDLevel}}" @if ($level->IDLevel ==
-                                        $Prodi[0]->IDLevel){{'selected'}}@endif>{{$level->NamaLevel}}</option>
+                                    <option value="{{$level->IDLevel}}" >{{$level->NamaLevel}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -135,9 +150,7 @@
                                 <label for="">Kategori Program</label>
                                 <select class="custom-select rounded" name="kategoriprodi" id="input-kategori-prodi">
                                     @foreach ($KategoriProgram as $kategoriprogram)
-                                    <option value="{{$kategoriprogram->IDKategoriProgram}}" @if ($kategoriprogram->
-                                        IDKategoriProgram ==
-                                        $Prodi[0]->IDKategoriProgram){{'selected'}}@endif>{{$kategoriprogram->KategoriProgram}}
+                                    <option value="{{$kategoriprogram->IDKategoriProgram}}">{{$kategoriprogram->KategoriProgram}}
                                     </option>
                                     @endforeach
                                 </select>
@@ -147,9 +160,7 @@
                                 <select class="custom-select rounded" name="kategoriglobalprodi"
                                     id="input-kategori-global-prodi">
                                     @foreach ($KategoriGlobalProgram as $kategoriglobal)
-                                    <option value="{{$kategoriglobal->IDKategoriGlobalProgram}}" @if ($kategoriglobal->
-                                        IDKategoriGlobalProgram ==
-                                        $Prodi[0]->IDKategoriGlobalProgram){{'selected'}}@endif>{{$kategoriglobal->KategoriGlobalProgram}}
+                                    <option value="{{$kategoriglobal->IDKategoriGlobalProgram}}" >{{$kategoriglobal->KategoriGlobalProgram}}
                                     </option>
                                     @endforeach
                                 </select>
@@ -158,7 +169,6 @@
                     </form>
 
                     <div class="col-md-12" id="table-cicilan">
-
                         <table class="table table-borderless">
                             <thead>
                                 <tr>
@@ -167,89 +177,41 @@
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach ($Cicilan as $cicilan)
-                                <tr>
-                                    <td>
-                                        <input type="number" class="form-control" name="" id=""
-                                            value="{{$cicilan->Cicilan}}">
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control" name="" id=""
-                                            value="{{$cicilan->Harga}}">
-                                    </td>
-                                    <td>
-                                        <a name="" id="" class="btn btn-danger btn-sm" href="#" role="button">
-                                            <i class="fa fa-trash" aria-hidden="true"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                @endforeach
+                            <tbody id="list-cicilanss-prodi">
+                            
+
+
 
                             </tbody>
                         </table>
-                        <button class="btn btn-primary btn-sm ml-3" data-toggle="modal" data-target="#cicilan-modal-add">
+                        <button class="btn btn-primary btn-sm ml-3" data-toggle="modal"
+                            data-target="#cicilan-modal-add">
                             Tambah cicilan
                         </button>
-                       
+
                     </div>
                 </div>
-                <!-- Button trigger modal -->
-
-                
-
-
                 {{-- konten pertemuan dan materi --}}
-
                 <div style="display: none" id="content-pertemuan" class="row mt-3">
                     <table class="table table-borderless">
                         <thead>
                             <tr>
-                                <th style="width: 5%">Pertemuan</th>
+                                <th style="width: 3%">Pertemuan</th>
                                 <th>Materi</th>
-                                <th>Kategori</th>
-                                <th style="width: 5%"></th>
+                                <th style="width: 15%">Kategori</th>
+                                <th style="width: 7%"></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($MateriProgram as $materiprogram)
-                            <tr>
-                                <td scope="row">
-                                    <input type="text" class="form-control" readonly
-                                        value="{{$materiprogram->NoRecord}}" name="" id="">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" name=""
-                                        value="{{$materiprogram->NamaMateri}}" id="">
-                                </td>
-                                <td>
-                                    <select class="custom-select" name="" id="">
-                                        @foreach ($KategoriMateri as $kategorimateri)
-
-                                        <option value="{{$kategorimateri->IDKategoriMateri}}" @if ($kategorimateri->
-                                            IDKategoriMateri == $materiprogram->IDKategoriMateri)
-
-                                            @endif>{{$kategorimateri->NamaKategoriMateri}}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td>
-
-                                    <a name="" id="" class="btn btn-danger btn-sm" href="#" role="button">
-                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
+                        <tbody id="list-pertemuan" >
                         </tbody>
-                        <a name="" id="" class="btn btn-sm btn-primary ml-3" href="javascript:void(0)" role="button">
+                        <a name="" class="btn btn-sm btn-primary ml-3" href="javascript:void(0)" role="button"
+                        data-toggle="modal" data-target="#modal-add-pertemuan">
                             <i class="fa fa-plus-circle" aria-hidden="true"></i>
                             Tambah Pertemuan</a>
                     </table>
 
                 </div>
                 {{-- konten Modul --}}
-
                 <div style="display: none" id="content-modul" class="row mt-3">
                     <table class="table table-borderless">
                         <thead>
@@ -260,38 +222,14 @@
                                 <th style="width: 5%"></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($Modul as $modul)
-
-                            <tr>
-                                <td scope="row">
-                                    <input type="text" class="form-control" value="{{$modul->Judul}}" name="" id="">
-                                </td>
-                                <td>
-                                    <a name="" id="" class="btn btn-primary"
-                                        href="{{url('karyawan/admin/program/stream/modul')}}/{{explode('.',$modul->Modul)[0]}}"
-                                        target="_blank" role="button">{{$modul->Modul}}</a>
-                                    {{-- <input type="file" class="form-control-file" name="" id="" placeholder="" aria-describedby="fileHelpId">   --}}
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" value="{{$modul->Harga}}" name="" id="">
-                                </td>
-                                <td>
-                                    <a name="" id="" class="btn btn-danger btn-sm" href="#" role="button">
-                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                        <a name="" id="" class="btn btn-sm btn-primary ml-3" href="javascript:void(0)" role="button">
+                        <tbody id="list-modul"></tbody>
+                        <a data-target="#modal-add-modul" data-toggle="modal" class="btn btn-sm btn-primary ml-3" href="javascript:void(0)" role="button">
                             <i class="fa fa-plus-circle" aria-hidden="true"></i>
                             Tambah Modul</a>
                     </table>
 
                 </div>
                 {{-- konten Tool --}}
-
                 <div style="display:none" id="content-tool" class="row mt-3">
                     <table class="table table-borderless">
                         <thead>
@@ -301,116 +239,48 @@
                                 <th style="width: 5%"></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($Tool as $tool)
-
-                            <tr>
-                                <td scope="row">
-                                    <input type="text" class="form-control" value="{{$tool->NamaTool}}" name="" id="">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" value="{{$tool->Harga}}" name="" id="">
-                                </td>
-                                <td>
-                                    <a name="" id="" class="btn btn-danger btn-sm" href="#" role="button">
-                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                        <a name="" id="" class="btn btn-sm btn-primary ml-3" href="javascript:void(0)" role="button">
+                        <tbody id="list-tool"></tbody>
+                        <a data-toggle="modal" data-target="#modal-add-tool" class="btn btn-sm btn-primary ml-3" href="javascript:void(0)" role="button">
                             <i class="fa fa-plus-circle" aria-hidden="true"></i>
                             Tambah Tool</a>
                     </table>
 
                 </div>
                 {{-- konten Video --}}
-
                 <div style="display: none" id="content-video" class="row mt-3">
                     <table class="table table-borderless">
                         <thead>
                             <tr>
                                 <th style="width: 40%">Judul</th>
-                                <th>Link</th>
+                                <th>Video</th>
                                 <th style="width: 5%"></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($Video as $video)
-                            <tr>
-                                <td scope="row">
-                                    <input type="text" class="form-control" value="{{$video->Judul}}" name="" id="">
-                                </td>
-                                <td>
-                                    <iframe src="{{$video->Link}}" frameborder="0" allowfullscreen></iframe>
-                                    <input type="text" class="form-control" value="{{$video->Link}}" name="" id="">
-                                </td>
-                                <td>
-                                    <a name="" id="" class="btn btn-danger btn-sm" href="#" role="button">
-                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                        <a name="" id="" class="btn btn-sm btn-primary ml-3" href="javascript:void(0)" role="button">
+                        <tbody id="list-video"></tbody>
+                        <a data-toggle="modal" data-target="#modal-add-video" class="btn btn-sm btn-primary ml-3" href="javascript:void(0)" role="button">
                             <i class="fa fa-plus-circle" aria-hidden="true"></i>
                             Tambah Video</a>
-                        <h5>Format link : https://www.youtube.com/embed/id_video</h5>
                     </table>
 
                 </div>
                 {{-- konten Bahan Tutor --}}
-
                 <div style="display: none" id="content-bahantutor" class="row mt-3">
                     <table class="table table-borderless">
                         <thead>
                             <tr>
                                 <th style="width: 35%">Nama</th>
                                 <th>File</th>
-                                <th style="width: 35%">Tipe Bahan</th>
                                 <th style="width: 5%"></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($BahanTutor as $bahantutor)
-                            <tr>
-                                <td scope="row">
-                                    <input type="text" class="form-control" value="{{$bahantutor->NamaBahan}}" name=""
-                                        id="">
-                                </td>
-                                <td>
-                                    <a name="" id="" class="btn btn-primary"
-                                        href="{{url('program_studi/bahan_tutor')}}/{{$bahantutor->File}}"
-                                        target="_blank" role="button">{{$bahantutor->File}}</a>
-                                    {{-- <input type="file" class="form-control-file" name="" id="" placeholder="" aria-describedby="fileHelpId">   --}}
-                                </td>
-                                <td>
-                                    <select class="custom-select" name="" id="">
-                                        <option value="presentasi" @if($bahantutor->Type ==
-                                            'presentasi'){{'selected'}}@endif >Presentasi (PPT)</option>
-                                        <option value="kurikulum" @if($bahantutor->Type ==
-                                            'kurikulum'){{'selected'}}@endif>Kurikulum</option>
-                                        <option value="pegangantutor" @if($bahantutor->Type ==
-                                            'pegangantutor'){{'selected'}}@endif>Pegangan Tutor</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <a name="" id="" class="btn btn-danger btn-sm" href="#" role="button">
-                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
+                        <tbody id="list-bahan">
                         </tbody>
-                        <a name="" id="" class="btn btn-sm btn-primary ml-3" href="javascript:void(0)" role="button">
+                        <a data-toggle="modal" data-target="#modal-add-bahan" class="btn btn-sm btn-primary ml-3" href="javascript:void(0)" role="button">
                             <i class="fa fa-plus-circle" aria-hidden="true"></i>
                             Tambah Bahan Tutor</a>
 
                     </table>
                 </div>
-
             </div>
         </div>
 
@@ -418,172 +288,428 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="cicilan-modal-add" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+<div class="modal fade" id="cicilan-modal-add" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form id="cicilan-form-add">
+            <form id="form-cicilan-add">
+                @csrf
+                <input type="hidden" id="cicilanidprogram" name="cicilanidprogram">
                 <div class="modal-header">
                     <h5 class="modal-title">Cicilan</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                      <label for="">Dicicil berapa kali</label>
-                      <input type="text" class="form-control" name="cicilan-cicilan" id="cicilan-cicilan-add" aria-describedby="helpId" placeholder="">
+                        <label for="">Dicicil berapa kali</label>
+                        <input type="text" class="form-control" name="cicilancicilan" id="cicilan-cicilan-add"
+                            aria-describedby="helpId" placeholder="">
                     </div>
                     <div class="form-group">
                         <label for="">Harga cicilan</label>
-                        <input type="text" class="form-control" name="cicilan-harga" id="cicilan-harga-add" aria-describedby="helpId" placeholder="">
-                      </div>
+                        <input type="text" class="form-control" name="cicilanharga" id="cicilan-harga-add"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <a  onclick="addItem('cicilan-form-add')" class=" text-white btn btn-primary">Save</a>
+                    <a onclick="storeCicilan()" class=" text-white btn btn-primary">Save</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<div class="modal fade" id="modal-add-pertemuan" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+<div class="modal fade" id="modal-add-pertemuan" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
+            <form id="form-pertemuan-add">
+                @csrf
+                <input  type="hidden" value="{{$Prodi[0]->IDProgram}}" name="idprogram">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pertemuan</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-            </div>
-            <div class="modal-body">
-                Body
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save</button>
-            </div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Nama Materi</label>
+                        <input type="text" class="form-control" name="pertemuanmateri" id="pertemuan-materi-add"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Kategori Materi</label>
+                        <select class="custom-select" name="pertemuankategori" id="pertemuan-kategori-add">
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a onclick="storePertemuan()" class=" text-white btn btn-primary">Save</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-<div class="modal fade" id="modal-add-modul" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+<div class="modal fade" id="modal-add-modul" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
+            <form id="form-modul-add" enctype="multipart/form-data">
+                @csrf
+                <input  type="hidden" value="{{$Prodi[0]->IDProgram}}" name="idprogram">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah modul</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-            </div>
-            <div class="modal-body">
-                Body
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save</button>
-            </div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Nama</label>
+                        <input type="text" class="form-control" name="nama" id="modul-nama-add"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                    <div class="form-group">
+                      <label for="">Modul</label>
+                      <input type="file" class="form-control" name="modul" id="modul-modul-add" >
+                    </div>
+                    <div class="form-group">
+                        <label for="">Harga</label>
+                        <input type="text" class="form-control" name="harga" id="modul-harga-add"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a onclick="storeModul()" id="btn-store-modul" class=" text-white btn btn-primary">Save</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-<div class="modal fade" id="modal-add-tool" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+{{-- kunai --}}
+
+<div class="modal fade" id="modal-add-tool" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
+            <form id="form-tool-add">
+                @csrf
+                <input  type="hidden" value="{{$Prodi[0]->IDProgram}}" name="idprogram">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah tool</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-            </div>
-            <div class="modal-body">
-                Body
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save</button>
-            </div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Nama Tool</label>
+                        <input type="text" class="form-control" name="namatool" id="tool-nama-add"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Harga Tool</label>
+                        <input type="text" class="form-control" name="hargatool" id="tool-harga-add"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a onclick="storeTool()" class=" text-white btn btn-primary">Save</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-<div class="modal fade" id="modal-add-video" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+<div class="modal fade" id="modal-add-video" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
+            <form id="form-video-add">
+                @csrf
+                <input  type="hidden" value="{{$Prodi[0]->IDProgram}}" name="idprogram">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah video</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-            </div>
-            <div class="modal-body">
-                Body
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save</button>
-            </div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Judul</label>
+                        <input type="text" class="form-control" name="judul" id="video-judul-add"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Embed video</label>
+                        <input type="text" class="form-control" name="video" id="video-video-add"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a onclick="storeVideo()" class=" text-white btn btn-primary">Save</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-<div class="modal fade" id="modal-add-bahantutor" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+<div class="modal fade" id="modal-add-bahan" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
+            <form id="form-bahan-add" enctype="multipart/form-data">
+                @csrf
+                <input  type="hidden" value="{{$Prodi[0]->IDProgram}}" name="idprogram">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Bahan</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-            </div>
-            <div class="modal-body">
-                Body
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save</button>
-            </div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Nama</label>
+                        <input type="text" class="form-control" name="nama" id="bahan-nama-add"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                    <div class="form-group">
+                      <label for="">Bahan</label>
+                      <input type="file" class="form-control" name="modul" id="bahan-bahan-add" >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a onclick="storeBahan()" id="btn-store-bahan" class=" text-white btn btn-primary">Save</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modal-add-cicilan" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+
+<!-- Modal edit cicilan --> 
+<div class="modal fade" id="cicilan-modal-edit" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
+            <form id="form-cicilan-edit">
+                @csrf
+                <input type="hidden" id="cicilanidprogramedit" name="cicilanidprogram">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Cicilan</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-            </div>
-            <div class="modal-body">
-                Body
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save</button>
-            </div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Dicicil berapa kali</label>
+                        <input type="text" class="form-control" name="cicilancicilan" id="cicilan-cicilan-edit"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Harga cicilan</label>
+                        <input type="text" class="form-control" name="cicilanharga" id="cicilan-harga-edit"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a onclick="updateCicilan()" class=" text-white btn btn-primary">Edit</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-<div class="modal fade" id="modal-add-cicilan" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+
+<div class="modal fade" id="modal-edit-pertemuan" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
+            <form id="form-pertemuan-edit">
+                @csrf
+                <input  type="hidden" value="{{$Prodi[0]->IDProgram}}" name="idprogram">
+                <input type="hidden" name="idmateriprogram" id="pertemuan-idmateriprogram-edit">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit pertemuan</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-            </div>
-            <div class="modal-body">
-                Body
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save</button>
-            </div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Pertemuan ke</label>
+                        <input type="text" class="form-control" readonly name="pertemuanmateri" id="pertemuan-pertemuan-edit"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Nama Materi</label>
+                        <input type="text" class="form-control" name="pertemuanmateri" id="pertemuan-materi-edit"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Kategori Materi</label>
+                        <select class="custom-select" name="pertemuankategori" id="pertemuan-kategori-edit">
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a onclick="updatePertemuan()" class=" text-white btn btn-primary">Edit</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+<div class="modal fade" id="modal-edit-tool" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="form-tool-edit">
+                @csrf
+                <input  type="hidden" value="{{$Prodi[0]->IDProgram}}" name="idprogram">
+                <input type="hidden" id="tool-idtool-edit" name="idtool">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit tool</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Nama Tool</label>
+                        <input type="text" class="form-control" name="namatool" id="tool-nama-edit"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Harga Tool</label>
+                        <input type="text" class="form-control" name="hargatool" id="tool-harga-edit"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a onclick="updateTool()" class=" text-white btn btn-primary">Edit</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-edit-video" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="form-video-edit">
+                @csrf
+                <input  type="hidden" value="{{$Prodi[0]->IDProgram}}" name="idprogram">
+                <input type="hidden" id="video-idvideo-edit" name="idvideo">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit video</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Judul</label>
+                        <input type="text" class="form-control" name="judul" id="video-judul-edit"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Embed vide0</label>
+                        <input type="text" class="form-control" name="video" id="video-video-edit"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a onclick="updateVideo()" class=" text-white btn btn-primary">Edit</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-edit-modul" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="form-modul-edit">
+                @csrf
+                <input  type="hidden" value="{{$Prodi[0]->IDProgram}}" name="idprogram">
+                <input id="modul-idmodul-edit" type="hidden" name="idmodul">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit modul</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Nama</label>
+                        <input type="text" class="form-control" name="nama" id="modul-nama-edit"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                    <div class="form-group">
+                      <label for="">Modul</label>
+                      <input type="file" class="form-control" name="modul" id="modul-modul-edit" >
+                    </div>
+                    <div class="form-group">
+                        <label for="">Harga</label>
+                        <input type="text" class="form-control" name="harga" id="modul-harga-edit"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a onclick="updateModul()" class=" text-white btn btn-primary">Edit</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-edit-bahan" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="form-bahan-edit" enctype="multipart/form-data">
+                @csrf
+                <input  type="hidden" value="{{$Prodi[0]->IDProgram}}" name="idprogram">
+                <input type="hidden" id="bahan-idbahan-edit" name="idbahan">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Bahan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Nama</label>
+                        <input type="text" class="form-control" name="nama" id="bahan-nama-edit"
+                            aria-describedby="helpId" placeholder="">
+                    </div>
+                    <div class="form-group">
+                      <label for="">Bahan</label>
+                      <input type="file" class="form-control" name="modul" id="bahan-bahan-edit" >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a onclick="updateBahan()" id="btn-update-bahan" class=" text-white btn btn-primary">Edit</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 @push('scripts')
-
 <script>
+    let csrf_token = $('csrf_token').val();
     let active_content = "prodi";
     const btn_prodi = $('#btn-prodi');
     const btn_pertemuan = $('#btn-pertemuan');
@@ -597,74 +723,67 @@
     const content_tool = $('#content-tool');
     const content_video = $('#content-video');
     const content_bahantutor = $('#content-bahantutor');
-    let program_studi;
+    let program_studi = [];
     let pertemuan_materi;
-   
+    let id_prodi = $('#idprodi').val();;
 
-    //items//
-    let CicilanCreate =0;
-    let modul = 0;
-    let tool = 0;
-    let video = 0;
-    let bahantutor = 0;
 
+    //items in server
+    let cicilan_ss = [];
+    let pertemuan_ss = [];
+    let tool_ss = [];
+    let video_ss = [];
+    let bahantutor_ss = [];
+    let kategori_materi= [];
+    let modul_ss = [];
+    let bahan_ss = [];
+    //items in client
+    let cicilan_cs = [];
+    let modul_cs = [];
+    let tool_cs = [];
+    let video_cs = [];
+    let bahantutor_cs = [];
     //HARGA//
-    let hargaTotalModul=0;
-    let hargaTotalTool=0;
+    let hargaTotalModul = 0;
+    let hargaTotalTool = 0;
 
-
-    toastr.options = {
-        'allowHtml': true,
-        'maxOpened':1,
-        'tapToDismiss':false,
-        'timeOut' : 0,
-        "positionClass": "toast-bottom-full-width",
-        'extendedTimeOut' : 0,
-        'preventDuplicates' :true
-    }
     $(document).ready(function () {
         showContent();
         showCicilan();
         //fungsi input map program studi
         setProgramStudi();
-        console.log(program_studi);
+        showTool();
+        showModul()
+        showPertemuan();
+        showVideo()
+        showBahan()
+        // do {
+        //     console.log(i)
+        //     i++
+        // } while (program_studi.length == 0);
     });
 
-    $('#content-prodi').on('change', function () {
-        showToastProgramStudi();
+    content_prodi.on('keyup', function () {
+        showProdiChangesControl();
     });
-    function showToastProgramStudi(){
-        if(prodiIsChange()){
-            toastr.success(
-                '<div id="prodi-changed" class="d-flex justify-content-between">'+
-                    '<p >Perhatian - Kamu belum menyimpan perubahan!</p>'+
-                    '<a onclick="updateProdi()" id="" class="ml-4 btn btn-primary btn-sm" href="javascript:void(0)" role="button">Simpan perubahan</a>'+
-                '</div>'
-            );
+    content_prodi.on('change', function () {
+        showProdiChangesControl();
+    });
+
+    //mengganti tab yang aktif
+    function changeActiveContent(data) {
+        if (prodiIsChange()) {
+            swal({
+                title: "Perhatian!",
+                text: "Anda belum menyimpan perubahan yang ada!",
+                icon: "warning",
+                button: "Oke",
+            });
         }else{
-            toastr.clear();
+
+            active_content = data;
+            showContent();
         }
-    }
-    function setProgramStudi(){
-        program_studi = {
-            'program-harga': $('#input-harga-program').val(),
-            'program-cicilan': $('#input-cicilan-prodi').val(),
-            'program-nama': $('#input-nama-prodi').val(),
-            'program-level': $('#input-level-prodi').val(),
-            'program-kategori-program': $('#input-kategori-prodi').val(),
-            'program-kategori-global-program': $('#input-kategori-global-prodi').val(),
-        }
-    }
-    function prodiIsChange(){
-        let ps = program_studi;
-        let isChange = 
-            ps['program-harga']!= $('#input-harga-program').val()||
-            ps['program-cicilan']!= $('#input-cicilan-prodi').val()||
-            ps['program-nama']!= $('#input-nama-prodi').val()||
-            ps['program-level']!= $('#input-level-prodi').val()||
-            ps['program-kategori-program']!= $('#input-kategori-prodi').val()||
-            ps['program-kategori-global-program']!= $('#input-kategori-global-prodi').val();
-        return isChange;
     }
     function showContent() {
         switch (active_content) {
@@ -755,6 +874,7 @@
         }
     }
 
+    //prodi
     function showCicilan() {
         if ($('#input-cicilan-prodi').val() == 'y') {
             $('#table-cicilan').show();
@@ -762,43 +882,572 @@
             $('#table-cicilan').hide();
         }
     }
-    //mengganti tab yang aktif
-    function changeActiveContent(data) {
-        if(prodiIsChange()){
-            swal({
-                title: "Perhatian!",
-                text: "Anda belum menyimpan perubahan yang ada!",
-                icon: "warning",
-                button: "Oke",
-            });
-        }else{
-            active_content = data;
-            showContent();
+    function showProdiChangesControl() {
+        if (prodiIsChange()) {
+            $('#prodi-changes-control').show();
+        } else {
+            $('#prodi-changes-control').hide();
         }
     }
-
+    function setProgramStudi() {
+        $('#cicilanidprogram').val(id_prodi)
+        $('.idprogram').val(id_prodi)
+        $.get('/karyawan/admin/prodidetail/getprodi/'+id_prodi).done((ele)=>{
+            program_studi = ele['Prodi']
+            cicilan_ss = ele['Cicilan']
+            $('#input-harga-program').val(program_studi[0].Harga);
+            $('#input-nama-prodi').val(program_studi[0].NamaProdi);
+            $('#input-cicilan-prodi').val(program_studi[0].Cicilan);
+            $('#input-level-prodi').val(program_studi[0].IDLevel);
+            $('#input-kategori-prodi').val(program_studi[0].IDKategoriProgram);
+            $('#input-kategori-global-prodi').val(program_studi[0].IDKategoriGlobalProgram);
+            showCicilan()
+            showCicilanSS();
+            console.log('program studi')
+        })
+    }
+    function prodiIsChange() {
+        let ps = program_studi;
+        let isChange =
+            ps[0].Harga != $('#input-harga-program').val() ||
+            ps[0].Cicilan != $('#input-cicilan-prodi').val() ||
+            ps[0].NamaProdi != $('#input-nama-prodi').val() ||
+            ps[0].IDLevel != $('#input-level-prodi').val() ||
+            ps[0].IDKategoriProgram != $('#input-kategori-prodi').val() ||
+            ps[0].IDKategoriGlobalProgram != $('#input-kategori-global-prodi').val();
+        return isChange;
+    }
+    
     function updateProdi() {
-        console.log('okei');
-        toastr.clear();
-        // setProgramStudi();
-        // $.post('/karyawan/admin/master/program/update', $('#form-prodi').serialize())
-        //     .done(function (pesan) {
-        //         swal(pesan.Pesan);
-        //     }).fail(function (pesan) {
-        //         console.log(pesan.Message);
-        //         swal('gagal' + pesan.Pesan);
-        // });
- 
+        $.post('/karyawan/admin/master/program/update', $('#form-prodi').serialize())
+            .done(function (pesan) {
+                $('#prodi-changes-control').hide();
+                setProgramStudi();
+                swal(pesan.Pesan);
+            }).fail(function (pesan) {
+                console.log(pesan.Message);
+                swal('gagal' + pesan.Pesan);
+        });
+
     }
-    function resetItems(){
-        CicilanCreate =0;
-        modul = 0;
-        tool = 0;
-        video = 0;
-        bahantutor = 0;
+
+    function editCicilanSS(id){
+        let cicilan = cicilan_ss.filter(ele=> ele.IDCicilan == id)
+        $('#cicilan-cicilan-edit').val(cicilan[0].Cicilan)
+        $('#cicilan-harga-edit').val(cicilan[0].Harga)
+        $('#cicilanidprogramedit').val(cicilan[0].IDCicilan)
     }
-    function addItem(item){
-        $.post('/admin/program/',$('#'+item).serialize());
+
+    function showCicilanSS(){
+        let element_cicilan = $('#list-cicilanss-prodi')
+        element_cicilan.empty();
+        if(cicilan_ss.length != 0){
+            cicilan_ss.forEach((ele)=>{
+                element_cicilan.append(
+                    "<tr>"+
+                        "<td>"+
+                            "<input type=\"number\" readonly class=\"form-control\" value=\""+ele.Cicilan+"\">"+
+                        "</td>"+
+                        "<td>"+
+                            "<input type=\"text\" readonly class=\"form-control\" value=\""+ele.Harga+"\">"+
+                        "</td>"+
+                        "<td>"+
+                            "<a onclick=\"deleteCicilanSS("+ele.IDCicilan+")\" class=\"btn btn-danger btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
+                                "<i class=\"fa fa-trash\" aria-hidden=\"true\"></i>"+
+                            "</a>"+
+                            "<a onclick=\"editCicilanSS("+ele.IDCicilan+")\" data-toggle=\"modal\" data-target=\"#cicilan-modal-edit\" class=\"btn btn-primary btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
+                                "<i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>"+
+                            "</a>"+
+                        "</td>"+
+                    "</tr>"
+                )
+            })
+        }
+    }
+    function storeCicilan(){
+        console.log( $('#form-cicilan-add').serialize())
+        $.ajax({
+            type: "post",
+            url: "/karyawan/admin/prodidetail/storecicilan",
+            data: $('#form-cicilan-add').serialize(),
+            async: false,
+            success: function (response) {
+                $('#cicilan-modal-add').modal('hide')
+                swal(response)
+                setProgramStudi()
+            }
+        });
+    }
+    function updateCicilan(){
+        $.ajax({
+            type: "post",
+            url: "/karyawan/admin/prodidetail/updatecicilan",
+            data: $('#form-cicilan-edit').serialize(),
+            async: false,
+            success: function (response) {
+                $('#cicilan-modal-edit').modal('hide')
+                swal(response)
+                setProgramStudi()
+            }
+        });
+    }
+
+    function deleteCicilanSS(id){
+        $.get('/karyawan/admin/master/cicilan/delete/'+id, (ele)=>{
+            setProgramStudi()
+            swal(ele['Pesan'])
+        });
+    }
+    function showPertemuan(){
+        $('#list-pertemuan').empty()
+        $('#pertemuan-kategori-add').empty()
+            $('#pertemuan-kategori-edit').empty()
+        $.get('/karyawan/admin/prodidetail/getpertemuan/'+id_prodi).done((ele)=>{
+            kategori_materi = ele['KategoriMateri']
+            pertemuan_ss = ele['PertemuanMateri']
+            console.log(kategori_materi,pertemuan_ss)
+        }).done((ele)=>{
+            let option_kategori = ""
+            kategori_materi.forEach(ele => option_kategori += "<option value=\""+ele.IDKategoriMateri+"\">"+ele.NamaKategoriMateri+"</option>")
+            $('#pertemuan-kategori-add').append(option_kategori)
+            $('#pertemuan-kategori-edit').append(option_kategori)
+            pertemuan_ss.forEach((ele)=>{
+                let btn = pertemuan_ss.length == ele.NoRecord ?
+                    "<a class=\"btn btn-danger btn-sm\" data-toggle=\"modal\"  onclick=\"deletePertemuan("+ele.IDMateriProgram+")\" href=\"javascript:void(0)\" role=\"button\">"+
+                        "<i class=\"fa fa-trash\" aria-hidden=\"true\"></i>"+
+                    "</a>"+
+                    "<a class=\"btn btn-primary btn-sm\" data-toggle=\"modal\" data-target=\"#modal-edit-pertemuan\" onclick=\"editPertemuan("+ele.IDMateriProgram+")\" href=\"javascript:void(0)\" role=\"button\">"+
+                        "<i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>"+
+                    "</a>":
+                    "<a class=\"btn btn-primary btn-sm\" data-toggle=\"modal\" data-target=\"#modal-edit-pertemuan\" onclick=\"editPertemuan("+ele.IDMateriProgram+")\" href=\"javascript:void(0)\" role=\"button\">"+
+                        "<i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>"+
+                    "</a>"
+                $('#list-pertemuan').append(
+                    "<tr>"+
+                        "<td scope=\"row\">"+
+                            "<p>"+ele.NoRecord+"</p>"+
+                        "</td>"+
+                        "<td>"+
+                            "<p>"+ele.NamaMateri+"</p>"+
+                        "</td>"+
+                        "<td>"+
+                            kategori_materi.filter(km=>km.IDKategoriMateri == ele.IDKategoriMateri)[0].NamaKategoriMateri+
+                        "</td>"+
+                        "<td>"+
+                            btn+
+                        "</td>"+
+                    "</tr>"
+                );  
+            })
+        })
+    }
+    function editPertemuan(id){
+        let pertemuan = pertemuan_ss.filter(ele => ele.IDMateriProgram == id)
+        $('#pertemuan-idmateriprogram-edit').val(pertemuan[0].IDMateriProgram);
+        $('#pertemuan-pertemuan-edit').val(pertemuan[0].NoRecord);
+        $('#pertemuan-materi-edit').val(pertemuan[0].NamaMateri);
+        $('#pertemuan-kategori-edit').val(pertemuan[0].IDKategoriMateri);
+
+    }
+    function storePertemuan(){
+        $.ajax({
+            type: "post",
+            url: "/karyawan/admin/prodidetail/storepertemuan",
+            data: $('#form-pertemuan-add').serialize(),
+            async: false,
+            success: function (response) {
+                $('#modal-add-pertemuan').modal('hide')
+                swal(response)
+                showPertemuan()
+            }
+        });
+    }
+    function deletePertemuan(id){
+        swal({
+            title: "Apakah anda yakin?",
+            text: "Materi ini akan hilang setelah dihapus!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+              $.get('/karyawan/admin/prodidetail/deletepertemuan/'+id).done((ele)=>{
+                  swal(ele)
+                  showPertemuan()
+              })
+            } else {
+                swal("Dibatalkan!");
+            }
+        });
+    }
+    function updatePertemuan(){
+        $.ajax({
+            type: "post",
+            url: "/karyawan/admin/prodidetail/updatepertemuan",
+            data: $('#form-pertemuan-edit').serialize(),
+            async: false,
+            success: function (response) {
+                $('#modal-edit-pertemuan').modal('hide')
+                swal(response)
+                showPertemuan()
+            }
+        });
+    }
+    function showTool(){
+        $('#list-tool').empty();
+        $.get('/karyawan/admin/prodidetail/gettool/'+id_prodi).done((ele)=>{
+            tool_ss = ele
+            console.log('tool')
+            tool_ss.forEach((ele)=> hargaTotalTool += ele.Harga)
+            tool_ss.forEach((ele)=>{
+                $('#list-tool').append(
+                    "<tr>"+
+                        "<td scope=\"row\">"+
+                            "<input type=\"text\" value=\""+ele.NamaTool+"\" readonly class=\"form-control\" >"+
+                            "</td>"+
+                        "<td>"+
+                            "<input type=\"text\" value=\""+ele.Harga+"\" readonly class=\"form-control\" >"+
+                        "</td>"+
+                        "<td>"+
+                            "<a onclick=\"deleteTool("+ele.IDTool+")\" class=\"btn btn-danger btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
+                                "<i class=\"fa fa-trash\" aria-hidden=\"true\"></i>"+
+                            "</a>"+
+                            "<a onclick=\"editTool("+ele.IDTool+")\" data-toggle=\"modal\" data-target=\"#modal-edit-tool\" class=\"btn btn-primary btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
+                                "<i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>"+
+                            "</a>"+
+                        "</td>"+
+                    "</tr>"
+                );
+            })
+        })
+    }
+    function storeTool(){
+        $.ajax({
+            type: "post",
+            url: "/karyawan/admin/prodidetail/storetool",
+            data: $('#form-tool-add').serialize(),
+            async: false,
+            success: function (response) {
+                swal(response)
+                $('#modal-add-tool').modal('hide')
+                showTool()
+            }
+        });
+
+    }
+    function editTool(id){
+        let tool = tool_ss.filter(ele => ele.IDTool == id)
+        $('#tool-idtool-edit').val(tool[0].IDTool);
+        $('#tool-nama-edit').val(tool[0].NamaTool);
+        $('#tool-harga-edit').val(tool[0].Harga);
+    }
+    function updateTool(){
+        $.ajax({
+            type: "post",
+            url: "/karyawan/admin/prodidetail/updatetool",
+            data: $('#form-tool-edit').serialize(),
+            async: false,
+            success: function (response) {
+                swal(response)
+                $('#modal-edit-tool').modal('hide')
+                showTool()
+            }
+        });
+    }
+    function deleteTool(id){
+        swal({
+            title: "Apakah anda yakin?",
+            text: "Tool ini akan hilang setelah dihapus!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+              $.get('/karyawan/admin/prodidetail/deletetool/'+id).done((ele)=>{
+                  swal(ele)
+                  showTool()
+              })
+            } else {
+                swal("Dibatalkan!");
+            }
+        });
+    }
+    //kunai
+    function showVideo(){
+        $('#list-video').empty();
+        $.get('/karyawan/admin/prodidetail/getvideo/'+id_prodi).done((ele)=>{
+            video_ss = ele
+            video_ss.forEach((ele)=>{
+                $('#list-video').append(
+                    "<tr>"+
+                        "<td scope\"row\">"+
+                            "<h5>"+ele.Judul+"</h5>"+
+                        "</td>"+
+                        "<td>"+
+                           ele.Link+
+                        "</td>"+
+                        "<td>"+
+                            "<a onclick=\"deleteVideo("+ele.IDVideo+")\" class=\"btn btn-danger btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
+                                "<i class=\"fa fa-trash\" aria-hidden=\"true\"></i>"+
+                            "</a>"+
+                            "<a data-toggle=\"modal\" data-target=\"#modal-edit-video\" onclick=\"editVideo("+ele.IDVideo+")\" class=\"btn btn-primary btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
+                                "<i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>"+
+                            "</a>"+
+                        "</td>"+
+                    "</tr>"
+                )
+            })
+        })
+    }
+    function storeVideo(){
+        $.ajax({
+            type: "post",
+            url: "/karyawan/admin/prodidetail/storevideo",
+            data: $('#form-video-add').serialize(),
+            async: false,
+            success: function (response) {
+                swal(response)
+                $('#modal-add-video').modal('hide')
+                showVideo()
+            }
+        })
+    }
+    function editVideo(id){
+        let video = video_ss.filter(ele=> ele.IDVideo == id)
+        $('#video-judul-edit').val(video[0].Judul);
+        $('#video-video-edit').val(video[0].Link);
+        $('#video-idvideo-edit').val(video[0].IDVideo);
+    }
+    function updateVideo(){
+        $.ajax({
+            type: "post",
+            url: "/karyawan/admin/prodidetail/updatevideo",
+            data: $('#form-video-edit').serialize(),
+            async: false,
+            success: function (response) {
+                swal(response)
+                $('#modal-edit-video').modal('hide')
+                showVideo()
+            }
+        })
+    }
+    function deleteVideo(id){
+        swal({
+            title: "Apakah anda yakin?",
+            text: "Video ini akan hilang setelah dihapus!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+              $.get('/karyawan/admin/prodidetail/deletevideo/'+id).done((ele)=>{
+                  swal(ele)
+                  showVideo()
+              })
+            } else {
+                swal("Dibatalkan!");
+            }
+        });
+    }
+    function showModul(){
+        $('#list-modul').empty()
+        $.get('/karyawan/admin/prodidetail/getmodul/'+ id_prodi).done((ele)=>{
+            modul_ss = ele
+            console.log('modul')
+            modul_ss.forEach((ele)=> hargaTotalModul += ele.Harga)
+            modul_ss.forEach((ele)=>{
+                $('#list-modul').append(
+                    "<tr>"+
+                        "<td scope=\"row\">"+
+                            "<p>"+ele.Judul+"</p>"+
+                        "</td>"+
+                        "<td>"+
+                            "<a class=\"btn btn-sm btn-primary\""+
+                            "href=\"/karyawan/admin/program/stream/modul/"+ele.Modul.split('.')[0]+"\""+
+                            "target=\"_blank\" role=\"button\">"+ele.Modul+"</a>"+
+                        "</td>"+
+                        "<td>"+
+                            "<p>"+ele.Harga+"</p>"+
+                        "</td>"+
+                        "<td>"+
+                            "<a onclick=\"deleteModul("+ele.IDModul+")\" class=\"btn btn-danger btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
+                                "<i class=\"fa fa-trash\" aria-hidden=\"true\"></i>"+
+                            "</a>"+
+                            "<a data-toggle=\"modal\" data-target=\"#modal-edit-modul\" onclick=\"editModul("+ele.IDModul+")\" class=\"btn btn-primary btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
+                                "<i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>"+
+                            "</a>"+
+                        "</td>"+
+                    "</tr>"
+                );
+            })
+        });
+    }
+
+    function storeModul(){
+        console.log('hae')
+        $('#btn-store-modul').attr('disbled',true);
+        let form = $('#form-modul-add')
+        $.ajax({
+            type: "post",
+            url: "/karyawan/admin/prodidetail/storemodul",
+            data: new FormData(form[0]),
+            contentType: false,       
+            cache: false,             
+            processData:false,
+            async: false,
+            success: function (response) {
+                swal(response)
+                $('#modal-add-modul').modal('hide')
+                showModul()
+                $('#btn-store-modul').attr('disbled',false);
+            }
+        })
+    }
+    function editModul(id){
+        let modul = modul_ss.filter(ele=> ele.IDModul == id)
+        $('#modul-idmodul-edit').val(modul[0].IDModul)
+        $('#modul-nama-edit').val(modul[0].Judul)
+        $('#modul-harga-edit').val(modul[0].Harga)
+    }
+    
+    function updateModul(){
+        let form = $('#form-modul-edit')
+        $.ajax({
+            type: "post",
+            url: "/karyawan/admin/prodidetail/updatemodul",
+            data: new FormData(form[0]),
+            contentType: false,       
+            cache: false,             
+            processData:false,
+            async: false,
+            success: function (response) {
+                swal(response)
+                $('#modal-edit-modul').modal('hide')
+                showModul()
+            }
+        })
+    }
+    function deleteModul(id){
+        swal({
+            title: "Apakah anda yakin?",
+            text: "Modul ini akan hilang setelah dihapus!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+              $.get('/karyawan/admin/prodidetail/deletemodul/'+id).done((ele)=>{
+                  swal(ele)
+                  showModul()
+              })
+            } else {
+                swal("Dibatalkan!");
+            }
+        });
+    }
+    function showBahan(){
+        $('#list-bahan').empty()
+        $.get('/karyawan/admin/prodidetail/getbahan/'+ id_prodi).done((ele)=>{
+            bahan_ss = ele
+            bahan_ss.forEach((ele)=>{
+                $('#list-bahan').append(
+                    "<tr>"+
+                        "<td scope=\"row\">"+
+                            "<p>"+ele.NamaBahan+"</p>"+
+                        "</td>"+
+                        "<td>"+
+                            "<a class=\"btn btn-sm btn-primary\""+
+                            "href=\"/karyawan/admin/program/stream/modul/"+ele.File.split('.')[0]+"\""+
+                            "target=\"_blank\" role=\"button\">"+ele.File+"</a>"+
+                        "</td>"+
+                        "<td>"+
+                            "<a onclick=\"deleteBahan("+ele.IDBahanTutor+")\" class=\"btn btn-danger btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
+                                "<i class=\"fa fa-trash\" aria-hidden=\"true\"></i>"+
+                            "</a>"+
+                            "<a data-toggle=\"modal\" data-target=\"#modal-edit-bahan\" onclick=\"editBahan("+ele.IDBahanTutor+")\" class=\"btn btn-primary btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
+                                "<i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>"+
+                            "</a>"+
+                        "</td>"+
+                    "</tr>"
+                );
+            })
+        });
+    }
+
+    function storeBahan(){
+        console.log('hae')
+        $('#btn-store-bahan').attr('disbled',true);
+        let form = $('#form-bahan-add')
+        $.ajax({
+            type: "post",
+            url: "/karyawan/admin/prodidetail/storebahan",
+            data: new FormData(form[0]),
+            contentType: false,       
+            cache: false,             
+            processData:false,
+            async: false,
+            success: function (response) {
+                swal(response)
+                $('#modal-add-bahan').modal('hide')
+                showBahan()
+                $('#btn-store-bahan').attr('disbled',false);
+            }
+        })
+    }
+    function editBahan(id){
+        let bahan = bahan_ss.filter(ele=> ele.IDBahanTutor == id)
+        $('#bahan-idbahan-edit').val(bahan[0].IDBahanTutor)
+        $('#bahan-nama-edit').val(bahan[0].NamaBahan)
+    }
+    
+    function updateBahan(){
+        let form = $('#form-bahan-edit')
+        $.ajax({
+            type: "post",
+            url: "/karyawan/admin/prodidetail/updatebahan",
+            data: new FormData(form[0]),
+            contentType: false,       
+            cache: false,             
+            processData:false,
+            async: false,
+            success: function (response) {
+                swal(response)
+                $('#modal-edit-bahan').modal('hide')
+                showBahan()
+            }
+        })
+    }
+    function deleteBahan(id){
+        swal({
+            title: "Apakah anda yakin?",
+            text: "Bahan tutor ini akan hilang setelah dihapus!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+              $.get('/karyawan/admin/prodidetail/deletebahan/'+id).done((ele)=>{
+                  swal(ele)
+                  showBahan()
+              })
+            } else {
+                swal("Dibatalkan!");
+            }
+        });
+    }
+    function countHarga(){
+        console.log('hitung')
+        let HargaProgram = program_studi[0].Harga
+        let HargaTool = 0
+        let HargaModul = 0
+        let HaragaTotal = 0
+        tool_ss.forEach(ele=>HargaTool += ele.Harga)
+        modul_ss.forEach(ele=>HargaModul += ele.Harga)
+        HargaTotal = HargaProgram + HargaTool + HargaModul
+        $('#input-harga-total').val(HargaTotal);
+        $('#input-harga-total-tool').val(HargaTool);
+        $('#input-harga-total-modul').val(HargaModul);
+
     }
 </script>
 @endpush

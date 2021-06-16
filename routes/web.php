@@ -83,6 +83,37 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     //route admin
     Route::group(['middleware'=>['RoleKaryawan:2'],'prefix'=>'admin'],function(){
 
+        //kunai
+        Route::get('prodidetail/getprodi/{id}','ProgramStudiController@pdGetProdi');
+        Route::post('prodidetail/storecicilan','ProgramStudiController@pdStoreCicilan');
+        Route::post('prodidetail/updatecicilan','ProgramStudiController@pdUpdateCicilan');
+        
+        Route::get('prodidetail/getpertemuan/{id}','ProgramStudiController@pdGetPertemuan');
+        Route::get('prodidetail/deletepertemuan/{id}','ProgramStudiController@pdDeletePertemuan');
+        Route::post('prodidetail/storepertemuan','ProgramStudiController@pdStorePertemuan');
+        Route::post('prodidetail/updatepertemuan','ProgramStudiController@pdUpdatePertemuan');
+
+        Route::get('prodidetail/getmodul/{id}','ProgramStudiController@pdGetModul');
+        Route::get('prodidetail/deletemodul/{id}','ProgramStudiController@pdDeleteModul');
+        Route::post('prodidetail/storemodul','ProgramStudiController@pdStoreModul');
+        Route::post('prodidetail/updatemodul','ProgramStudiController@pdUpdateModul');
+
+        Route::get('prodidetail/gettool/{id}','ProgramStudiController@pdGetTool');
+        Route::get('prodidetail/deletetool/{id}','ProgramStudiController@pdDeleteTool');
+        Route::post('prodidetail/storetool','ProgramStudiController@pdStoreTool');
+        Route::post('prodidetail/updatetool','ProgramStudiController@pdUpdateTool');
+
+        Route::get('prodidetail/getvideo/{id}','ProgramStudiController@pdGetVideo');
+        Route::get('prodidetail/deletevideo/{id}','ProgramStudiController@pdDeleteVideo');
+        Route::post('prodidetail/storevideo','ProgramStudiController@pdStoreVideo');
+        Route::post('prodidetail/updatevideo','ProgramStudiController@pdUpdateVideo');
+
+        Route::get('prodidetail/getbahan/{id}','ProgramStudiController@pdGetBahan');
+        Route::get('prodidetail/deletebahan/{id}','ProgramStudiController@pdDeleteBahan');
+        Route::post('prodidetail/storebahan','ProgramStudiController@pdStoreBahan');
+        Route::post('prodidetail/updatebahan','ProgramStudiController@pdUpdateBahan');
+
+
         Route::get('/notif','NotifController@notifAdmin');
         Route::get('/notif/user/{id}','NotifController@notifUser');
 
@@ -299,6 +330,8 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 });
 
 Route::group(['middleware'=>['Role:siswa'],'prefix'=>'siswa'],function(){
+
+   
 
     Route::post('jadwalchanges/store','JadwalChangesController@storeChanges');
     Route::get('jadwalchanges/get/{id}','JadwalChangesController@getChanges');

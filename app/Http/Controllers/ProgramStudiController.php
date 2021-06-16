@@ -7,6 +7,7 @@ use Illuminate\support\str;
 use Illuminate\support\Carbon;
 use Auth;
 use DB;
+use File;
 use App\Models\ProgramStudi;
 use App\Models\KategoriProgram;
 use App\Models\LevelProgram;
@@ -443,6 +444,290 @@ class ProgramStudiController extends Controller
             'Video'=>$Video,
             'BahanTutor'=>$BahanTutor,
         ]);
+    }
+
+    public function pdGetProdi($id){
+        //kunai
+        $Prodi = DB::table('program_studi')->where('IDProgram',$id)->get();
+        $Cicilan = DB::table('cicilan')->where('IDProgram',$id)->where('Status','!=','DEL')->get();
+        return response()->json(['Prodi'=>$Prodi,'Cicilan'=>$Cicilan]);
+    }
+    public function pdStoreCicilan(Request $request){
+        DB::table('cicilan')->insert([
+            'IDProgram'=>$request->cicilanidprogram,
+            'Cicilan'=>$request->cicilancicilan,
+            'Harga'=>$request->cicilanharga,
+            'Status'=>'OPN',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+            'UserAdd'=>session()->get('Username'),
+            'UserUpd'=>session()->get('Username')
+        ]);
+        return response()->json('Berhasil ditambahkan');
+    }
+    public function pdUpdateCicilan(Request $request){
+        DB::table('cicilan')->where('IDCicilan',$request->cicilanidprogram)->update([
+            'Cicilan'=>$request->cicilancicilan,
+            'Harga'=>$request->cicilanharga,
+            'updated_at'=>Carbon::now(),
+            'UserUpd'=>session()->get('Username')
+        ]);
+        return response()->json('Berhasil di edit');
+    }
+
+    public function pdGetPertemuan($id){
+        //kunai
+        $Pertemuan = DB::table('materi_program')->where('IDProgram',$id)->where('Status','!=','DEL')->get();
+        $Kategori = DB::table('kategori_materi')->where('Status','!=','DEL')->get();
+        return response()->json(['PertemuanMateri'=>$Pertemuan,'KategoriMateri'=>$Kategori]);
+    }
+    public function pdStorePertemuan(Request $request){
+        $Materi = DB::table('materi_program')->where('IDProgram',$request->idprogram)
+        ->where('Status','OPN')->orderBy('NoRecord','asc')->get();
+        DB::table('materi_program')->insert([
+            'IDProgram'=>$request->idprogram,
+            'NamaMateri'=>$request->pertemuanmateri,
+            'IDKategoriMateri'=>$request->pertemuankategori,
+            'NoRecord'=>$Materi[count($Materi) -1]->NoRecord +1,
+            'Status'=>'OPN',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+            'UserAdd'=>session()->get('Username'),
+            'UserUpd'=>session()->get('Username')
+        ]);
+        return response()->json('Berhasil ditambahkan');
+    }
+    public function pdUpdatePertemuan(Request $request){
+        DB::table('materi_program')->where('IDMateriProgram',$request->idmateriprogram)->update([
+            'NamaMateri'=>$request->pertemuanmateri,
+            'IDKategoriMateri'=>$request->pertemuankategori,
+            'updated_at'=>Carbon::now(),
+            'UserUpd'=>session()->get('Username')
+        ]);
+        return response()->json('Berhasil di edit');
+    }
+    public function pdDeletePertemuan($id){
+
+        DB::table('materi_program')->where('IDMateriProgram',$id)->update(['Status'=>'DEL']);
+        return response()->json('Berhasil di hapus');
+    }
+    public function pdGetTool($id){
+        $Tool = DB::table('program_studi_tool')->where('Status','!=','DEL')
+        ->where('IDProgram',$id)->get();
+        return response()->json($Tool);
+    }
+    public function pdStoreTool(Request $request){
+        DB::table('program_studi_tool')->insert([
+            'IDProgram'=>$request->idprogram,
+            'NamaTool'=>$request->namatool,
+            'Harga'=>$request->hargatool,
+            'Status'=>'OPN',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+            'UserAdd'=>session()->get('Username'),
+            'UserUpd'=>session()->get('Username')
+        ]);
+        return response()->json('Data berhasil ditambahkan');
+    }
+    public function pdUpdateTool(Request $request){
+       // dd($request);
+        DB::table('program_studi_tool')->where('IDTool',$request->idtool)->update([
+            'NamaTool'=>$request->namatool,
+            'Harga'=>$request->hargatool,
+            'updated_at'=>Carbon::now(),
+            'UserUpd'=>session()->get('Username')
+        ]);
+        return response()->json('Data berhasil diedit');
+    }
+    public function pdDeleteTool($id){
+        DB::table('program_studi_tool')->where('IDTool',$id)->update(['Status'=>'DEL']);
+        return response()->json('Berhasil di hapus');
+    }
+    public function pdGetVideo($id){
+        $Video = DB::table('program_studi_video')->where('Status','OPN')->where('IDProgram',$id)->get();
+        return response()->json($Video);
+    }
+    public function pdStoreVideo(Request $request){
+        DB::table('program_studi_video')->insert([
+            'UUID'=>str_replace('-','',str::uuid()),
+            'IDProgram'=>$request->idprogram,
+            'Judul'=>$request->judul,
+            'Link'=>$request->video,
+            'Status'=>'OPN',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+            'UserAdd'=>session()->get('Username'),
+            'UserUpd'=>session()->get('Username')
+        ]);
+        return response()->json('Data berhasil ditambahkan');
+    }
+    public function pdUpdateVideo(Request $request){
+        DB::table('program_studi_video')->where('IDVideo',$request->idvideo)->update([
+            'Judul'=>$request->judul,
+            'Link'=>$request->video,
+            'updated_at'=>Carbon::now(),
+            'UserUpd'=>session()->get('Username')
+        ]);
+        return response()->json('Data berhasil ditambahkan');
+    }
+    public function pdDeleteVideo($id){
+        DB::table('program_studi_video')->where('IDVideo',$id)->update(['Status'=>'DEL']);
+        return response()->json('Berhasil di hapus');
+    }
+
+    public function pdGetModul($id){
+        $Modul = DB::table('program_studi_modul')->where('Status','OPN')
+        ->where('IDProgram',$id)->get();
+        return response()->json($Modul);
+    }
+    public function pdStoreModul(Request $request){
+        //dd($request);
+        $btr = $request->file('modul'); 
+        $FormatFile = $btr->getClientOriginalExtension();
+        $NamaBahan = 'MDL'.date('dmyhis').'.'.'ss'.$FormatFile;
+        $Status = $btr->move(public_path('program_studi/modul'),$NamaBahan);
+        $Data = array(
+            'IDProgram'=>$request->idprogram,
+            'UUID'=>str_replace('-','',str::uuid()),
+            'Judul'=>$request->nama,
+            'Modul'=>$NamaBahan,
+            'Harga'=>$request->harga,
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+            'UserAdd'=>session()->get('Username'),
+            'UserUpd'=>session()->get('Username'),
+            'Status'=>'OPN'
+        );
+        DB::table('program_studi_modul')->insert($Data);
+        return response()->json('Berhasil ditambahkan');
+    }
+    public function pdUpdateModul(Request $request){
+        if(count($request->file())>0){
+            $Modul = DB::table('program_studi_modul')->where('IDModul',$request->idmodul)->get();
+            if(!unlink(public_path('program_studi/modul/').$Modul[0]->Modul)){
+                return response()->json('gagal');
+            }else{
+                $btr = $request->file('modul'); 
+                $FormatFile = $btr->getClientOriginalExtension();
+                $NamaBahan = 'MDL'.date('dmyhis').'.'.'ss'.$FormatFile;
+                $Status = $btr->move(public_path('program_studi/modul'),$NamaBahan);
+                $Data = array(
+                    'Judul'=>$request->nama,
+                    'Modul'=>$NamaBahan,
+                    'Harga'=>$request->harga,
+                    'updated_at'=>Carbon::now(),
+                    'UserUpd'=>session()->get('Username')
+                );
+                DB::table('program_studi_modul')->where('IDModul',$request->idmodul)->update($Data);
+                return response()->json('Berhasil diubah');
+            }
+        }else{
+            $Data = array(
+                'Judul'=>$request->nama,
+                'Harga'=>$request->harga,
+                'updated_at'=>Carbon::now(),
+                'UserUpd'=>session()->get('Username')
+            );
+            DB::table('program_studi_modul')->where('IDModul',$request->idmodul)->update($Data);
+            return response()->json('Berhasil diubah');
+        }
+    }
+    public function pdDeleteModul($id){
+        $Modul = DB::table('program_studi_modul')->where('IDModul',$id)->get();
+        if(file_exists(public_path('program_studi/modul/').$Modul[0]->Modul)){
+            if(!unlink(public_path('program_studi/modul/').$Modul[0]->Modul)){
+                return response()->json('gagal');
+            }else{
+                DB::table('program_studi_modul')->where('IDModul',$id)->update(['Status'=>'DEL']);
+                return response()->json('Berhasil di hapus');
+            }
+        }else{
+            DB::table('program_studi_modul')->where('IDModul',$id)->update(['Status'=>'DEL']);
+            return response()->json('Berhasil di hapus');
+        }
+    }
+    public function pdGetBahan($id){
+        $Modul = DB::table('program_studi_bahan_tutor')->where('Status','OPN')
+        ->where('IDProgram',$id)->get();
+        return response()->json($Modul);
+    }
+    public function pdStoreBahan(Request $request){
+        //dd($request);
+        $btr = $request->file('modul'); 
+        $FormatFile = $btr->getClientOriginalExtension();
+        $NamaBahan = 'BTR'.date('dmyhis').'.'.'ss'.$FormatFile;
+        $Status = $btr->move(public_path('program_studi/modul'),$NamaBahan);
+        $Data = array(
+            'IDProgram'=>$request->idprogram,
+            'UUID'=>str_replace('-','',str::uuid()),
+            'NamaBahan'=>$request->nama,
+            'File'=>$NamaBahan,
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+            'UserAdd'=>session()->get('Username'),
+            'UserUpd'=>session()->get('Username'),
+            'Status'=>'OPN'
+        );
+        DB::table('program_studi_bahan_tutor')->insert($Data);
+        return response()->json('Berhasil ditambahkan');
+    }
+    public function pdUpdateBahan(Request $request){
+        if(count($request->file())>0){
+            $Modul = DB::table('program_studi_bahan_tutor')->where('IDBahanTutor',$request->idbahan)->get();
+            if(file_exists(public_path('program_studi/modul/').$Modul[0]->File)){
+                if(!unlink(public_path('program_studi/modul/').$Modul[0]->File)){
+                    return response()->json('gagal');
+                }else{
+                    $btr = $request->file('modul'); 
+                    $FormatFile = $btr->getClientOriginalExtension();
+                    $NamaBahan = 'BTR'.date('dmyhis').'.'.'ss'.$FormatFile;
+                    $Status = $btr->move(public_path('program_studi/modul'),$NamaBahan);
+                    $Data = array(
+                        'NamaBahan'=>$request->nama,
+                        'File'=>$NamaBahan,
+                        'updated_at'=>Carbon::now(),
+                        'UserUpd'=>session()->get('Username')
+                    );
+                    DB::table('program_studi_bahan_tutor')->where('IDBahanTutor',$request->idbahan)->update($Data);
+                    return response()->json('Berhasil diubah');
+                }
+            }else{
+                $btr = $request->file('modul'); 
+                $FormatFile = $btr->getClientOriginalExtension();
+                $NamaBahan = 'BTR'.date('dmyhis').'.'.'ss'.$FormatFile;
+                $Status = $btr->move(public_path('program_studi/modul'),$NamaBahan);
+                $Data = array(
+                    'NamaBahan'=>$request->nama,
+                    'File'=>$NamaBahan,
+                    'updated_at'=>Carbon::now(),
+                    'UserUpd'=>session()->get('Username')
+                );
+                DB::table('program_studi_bahan_tutor')->where('IDBahanTutor',$request->idbahan)->update($Data);
+                return response()->json('Berhasil diubah');
+            }
+        }else{
+            $Data = array(
+                'NamaBahan'=>$request->nama,
+                'updated_at'=>Carbon::now(),
+                'UserUpd'=>session()->get('Username')
+            );
+            DB::table('program_studi_bahan_tutor')->where('IDBahanTutor',$request->idbahan)->update($Data);
+            return response()->json('Berhasil diubah');
+        }
+    }
+    public function pdDeleteBahan($id){
+        $Modul = DB::table('program_studi_bahan_tutor')->where('IDBahanTutor',$id)->get();
+        if(file_exists(public_path('program_studi/modul/').$Modul[0]->File)){
+            if(!unlink(public_path('program_studi/modul/').$Modul[0]->File)){
+                return response()->json('gagal');
+            }else{
+                DB::table('program_studi_bahan_tutor')->where('IDBahanTutor',$id)->update(['Status'=>'DEL']);
+                return response()->json('Berhasil di hapus');
+            }
+        }else{
+            DB::table('program_studi_bahan_tutor')->where('IDBahanTutor',$id)->update(['Status'=>'DEL']);
+            return response()->json('Berhasil di hapus');
+        }
     }
 }
 
