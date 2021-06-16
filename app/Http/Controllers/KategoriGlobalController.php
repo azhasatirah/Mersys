@@ -39,8 +39,9 @@ class KategoriGlobalController extends Controller
         return response()->json($KategoriGlobal['KategoriGlobal']);
     }
     public function update(Request $request){
+        //dd($request);
         $Data = array(
-            'KategoriGlobal'=>$request->KategoriGlobal,
+            'KategoriGlobalProgram'=>$request->kategoriglobal,
             'Keterangan'=>$request->keterangan,
             'updated_at'=>Carbon::now(),
             'UserUpd'=>session()->get('Username'),
