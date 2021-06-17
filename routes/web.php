@@ -36,7 +36,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     Route::post('/undeleteakunkaryawan','KaryawanController@unDeleteKaryawan');
     Route::post('password/update','AuthController@changePasswordKaryawan');
     Route::get('/transaksi/getdata','TransaksiController@getData');
-
+ 
     //route owner
     Route::group(['middleware'=>['RoleKaryawan:1'],'prefix'=>'owner'],function(){
 
@@ -82,6 +82,9 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 
     //route admin
     Route::group(['middleware'=>['RoleKaryawan:2'],'prefix'=>'admin'],function(){
+        //admin akses melihat semua kursus
+        Route::get('kursus','KursusSiswaController@adminIndexKursus');
+        Route::get('kursus/show/{id}','KursusSiswaController@adminShowKursus');
 
         //kunai
         Route::get('prodidetail/getprodi/{id}','ProgramStudiController@pdGetProdi');

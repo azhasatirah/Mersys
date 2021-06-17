@@ -96,6 +96,7 @@ class PembayaranController extends Controller
         return response()->json($Status);
     }
     public function createMetodeBank($UUID){
+
         $Pembayaran = Pembayaran::getDetailPembayaran($UUID);
         $Bank = Bank::getAllBank();
         //dd($Pembayaran);

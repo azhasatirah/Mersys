@@ -126,6 +126,7 @@
                   </li>
                   <li><a href="{{url('karyawan/admin/karyawan')}}"><i class="fa fa-square"></i>Daftar Karyawan</a></li>
                   <li><a href="{{url('karyawan/admin/siswa')}}"><i class="fa fa-square"></i>Daftar Siswa</a></li>
+                  <li><a href="{{url('karyawan/admin/kursus')}}"><i class="fa fa-book"></i>Daftar kursus</a></li>
                   @endif
                   <!-- Menu Tutor -->
                   @if(session()->get('Level')==3)
