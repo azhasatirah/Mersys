@@ -504,6 +504,12 @@ class ProgramStudiController extends Controller
             'UserAdd'=>session()->get('Username'),
             'UserUpd'=>session()->get('Username')
         ]);
+        DB::table('program_studi')->where('IDProgram',$request->idprogram)->update([
+            'TotalPertemuan'=> count(DB::table('materi_program')
+            ->where('IDProgram',$request->idprogram)
+            ->where('Status','OPN')->get()
+            )
+        ]);
         return response()->json('Berhasil ditambahkan');
     }
     public function pdUpdatePertemuan(Request $request){
@@ -516,8 +522,17 @@ class ProgramStudiController extends Controller
         return response()->json('Berhasil di edit');
     }
     public function pdDeletePertemuan($id){
-
+        $ProgramStudi = DB::table('program_studi as ps')
+        ->join('materi_program as mp','ps.IDProgram','=','mp.IDProgram')
+        ->where('mp.IDMateriProgram',$id)
+        ->select('ps.*')->get();
         DB::table('materi_program')->where('IDMateriProgram',$id)->update(['Status'=>'DEL']);
+        DB::table('program_studi')->where('IDProgram',$ProgramStudi[0]->IDProgram)->update([
+            'TotalPertemuan'=> count(DB::table('materi_program')
+            ->where('IDProgram',$ProgramStudi[0]->IDProgram)
+            ->where('Status','OPN')->get()
+            )
+        ]);
         return response()->json('Berhasil di hapus');
     }
     public function pdGetTool($id){
