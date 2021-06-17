@@ -40,7 +40,9 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     //route owner
     Route::group(['middleware'=>['RoleKaryawan:1'],'prefix'=>'owner'],function(){
 
-         
+        Route::get('kursus','KursusSiswaController@ownerIndexKursus');
+        Route::get('kursus/show/{id}','KursusSiswaController@ownerShowKursus');
+
         Route::get('/syarat', 'SyaratController@index');
         Route::post('/syarat/store', 'SyaratController@store');
         Route::get('/syarat/edit/{id}', 'SyaratController@edit');

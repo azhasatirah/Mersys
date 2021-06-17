@@ -159,6 +159,13 @@ class KursusSiswaController extends Controller
             ->join('kursus_siswa as ks','j.IDKursusSiswa','=','ks.IDKursusSiswa')
             ->join('kursus_materi as mp','j.IDMateri','=','mp.IDKursusMateri')
             ->where('ks.UUID',$id)->select('j.*','mp.NoRecord','mp.NamaMateri')->orderBy('mp.NoRecord')->get();
+            $DataKelas = DB::table('jadwal as j')
+            ->join('kursus_siswa as ks','j.IDKursusSiswa','=','ks.IDKursusSiswa')
+            ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
+            ->join('siswa as s','ks.IDSiswa','=','s.IDSiswa')
+            ->join('karyawan as k','j.IDTutor','=','k.IDKaryawan')
+            ->where('ks.UUID',$id)
+            ->select('k.KodeKaryawan','ks.KodeKursus','k.NamaKaryawan','s.NamaSiswa','s.KodeSiswa','ps.NamaProdi')->get();
             foreach($Jadwal as $item){
                 $a_siswa = DB::table('absen_siswa')->where('IDJadwal',$item->IDJadwal)->get();
                 $a_tutor = DB::table('absen_tutor')->where('IDJadwal',$item->IDJadwal)->get();
@@ -183,8 +190,98 @@ class KursusSiswaController extends Controller
                     'KehadiranTutor'=>$KehadiranTutor,
                 ));
             }
-            //dd($Data);
-            return view('karyawan.kursus_admin_show',['Absen'=>$Data]);
+            //dd($DataKelas);
+            return view('karyawan.kursus_admin_show',['Absen'=>$Data,'Kelas'=>$DataKelas[0]]);
+
+        }
+        public function ownerIndexKursus(){
+            $Kursus = DB::table('kursus_siswa as ks')
+            ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
+            ->join('siswa as s','ks.IDSiswa','=','s.IDSiswa')
+            ->select('ks.IDKursusSiswa','ks.UUID as UIDKursus','ks.KodeKursus','ks.created_at as TanggalOrder'
+            ,'s.NamaSiswa','s.KodeSiswa','ps.NamaProdi','ks.Status')
+            ->where('ks.IDProgram','!=',1)
+            ->orderBy('ks.created_at','desc')
+            ->get();
+            $Data = [];
+            foreach($Kursus as $ks){
+                $Status = '';
+                $RStatus = '';
+                if($ks->Status == 'OPN'){
+                    $Status = false ;
+                    $RStatus = 'Transaksi belum selesai';
+                }
+                if($ks->Status == 'CLS'){
+                    $Jadwal = DB::table('jadwal')->where('IDKursusSiswa',$ks->IDKursusSiswa)->get();
+                    if(count($Jadwal)==0){
+                        $Status = false;
+                        $RStatus = 'Belum buat jadwal';
+                    }
+                    if(count($Jadwal)>0){
+                        if($Jadwal[0]->Status == 'OPN'){
+                            $Status = false;
+                            $RStatus = 'Jadwal belum ada tutor';
+                        }else if($Jadwal[0]->Status == 'CFM'){
+                            $Status = true;
+                            $RStatus = 'Jadwal ada';
+                        }else{
+                            $Status = true;
+                            $RStatus = 'Jadwal ada';
+                        }
+                    }
+                }
+                array_push($Data,array(
+                    'UIDKursus'=>$ks->UIDKursus,
+                    'KodeKursus'=>$ks->KodeKursus,
+                    'TanggalOrder'=>$ks->TanggalOrder,
+                    'KodeSiswa'=>$ks->KodeSiswa,
+                    'NamaSiswa'=>$ks->NamaSiswa,
+                    'NamaProdi'=>$ks->NamaProdi,
+                    'Status'=>$Status,
+                    'ReadStatus'=>$RStatus,
+                ));
+            }
+            return view('karyawan.kursus_owner_index',['Kursus'=>$Data]);
+        }
+        public function ownerShowKursus($id){
+            $Data = [];
+            $Jadwal = DB::table('jadwal as j')
+            ->join('kursus_siswa as ks','j.IDKursusSiswa','=','ks.IDKursusSiswa')
+            ->join('kursus_materi as mp','j.IDMateri','=','mp.IDKursusMateri')
+            ->where('ks.UUID',$id)->select('j.*','mp.NoRecord','mp.NamaMateri')->orderBy('mp.NoRecord')->get();
+            $DataKelas = DB::table('jadwal as j')
+            ->join('kursus_siswa as ks','j.IDKursusSiswa','=','ks.IDKursusSiswa')
+            ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
+            ->join('siswa as s','ks.IDSiswa','=','s.IDSiswa')
+            ->join('karyawan as k','j.IDTutor','=','k.IDKaryawan')
+            ->where('ks.UUID',$id)
+            ->select('k.KodeKaryawan','ks.KodeKursus','k.NamaKaryawan','s.NamaSiswa','s.KodeSiswa','ps.NamaProdi')->get();
+            foreach($Jadwal as $item){
+                $a_siswa = DB::table('absen_siswa')->where('IDJadwal',$item->IDJadwal)->get();
+                $a_tutor = DB::table('absen_tutor')->where('IDJadwal',$item->IDJadwal)->get();
+                $KehadiranSiswa ='';
+                $KehadiranTutor = '';
+               // dd(date('ymd',strtotime($item->Tanggal)));
+                if(date('ymd',strtotime($item->Tanggal))==date('ymd',strtotime(Carbon::now()))){
+                    $KehadiranSiswa='Hari ini';
+                    $KehadiranTutor='Hari ini';
+                }else if(strtotime($item->Tanggal)<strtotime(Carbon::now())){
+                    $KehadiranSiswa=count($a_siswa)>0?$a_siswa[0]->Start.' sampai '.$a_siswa[0]->End:'Alpha';
+                    $KehadiranTutor=count($a_tutor)>0?$a_tutor[0]->Start.' sampai '.$a_tutor[0]->End:'Alpha';
+                }else{
+                    $KehadiranSiswa='Belum mulai';
+                    $KehadiranTutor='Belum mulai';
+                }
+                array_push($Data,array(
+                    'Pertemuan'=>$item->NoRecord,
+                    'Tanggal'=>$item->Tanggal,
+                    'Materi'=>$item->NamaMateri,
+                    'KehadiranSiswa'=>$KehadiranSiswa,
+                    'KehadiranTutor'=>$KehadiranTutor,
+                ));
+            }
+            //dd($DataKelas);
+            return view('karyawan.kursus_owner_show',['Absen'=>$Data,'Kelas'=>$DataKelas[0]]);
 
         }
         public function storeAbsen($id){

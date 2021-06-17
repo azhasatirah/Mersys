@@ -87,6 +87,7 @@
                       <li><a href="{{url('karyawan/owner/pendaftaran/karyawan')}}">Pendaftaran Karyawan</a></li>
                     </ul>
                   </li>
+                  <li><a href="{{url('karyawan/owner/kursus')}}"><i class="fa fa-book"></i>Daftar kursus</a></li>
                   <li><a href="{{url('karyawan/owner/karyawan')}}"><i class="fa fa-square"></i>Daftar Karyawan</a></li>
                   <li><a href="{{url('karyawan/owner/siswa')}}"><i class="fa fa-square"></i>Daftar Siswa</a></li>
                   <li><a href="{{url('karyawan/owner/syarat')}}"><i class="fa fa-square"></i>Syarat dan Ketentuan</a></li>
