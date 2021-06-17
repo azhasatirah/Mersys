@@ -58,12 +58,18 @@
                     <div class="btn-group" role="group" aria-label="Basic example">
                         <button type="button" onclick="changeActiveContent('pertemuan')" id="btn-pertemuan"
                             class="btn btn-nav ">Jadwal</button>
-                        <button type="button" onclick="changeActiveContent('modul')" id="btn-modul"
-                            class="btn btn-nav ">Modul</button>
-                        <button type="button" id="btn-video" onclick="changeActiveContent('video')"
-                            class="btn btn-nav">Video</button>
+                        @if (count($Modul)>0)               
+                            <button type="button" onclick="changeActiveContent('modul')" id="btn-modul"
+                                class="btn btn-nav ">Modul</button>
+                        @endif
+                        @if (count($Video)>0)               
+                            <button type="button" id="btn-video" onclick="changeActiveContent('video')"
+                                class="btn btn-nav">Video</button>
+                        @endif
+                        @if (count($BahanTutor)>0)               
                         <button type="button" id="btn-bahantutor" onclick="changeActiveContent('bahantutor')"
                             class="btn btn-nav">Bahan Tutor</button>
+                        @endif
                         <button type="button" id="btn-ubahjadwal" onclick="changeActiveContent('ubahjadwal')"
                             class="btn btn-nav">Perubahan Jadwal</button>
                     </div>
@@ -115,7 +121,7 @@
 
                             <tr>
                                 <td scope="row">
-                                    <input readonly type="text" class="form-control" value="{{$modul->Judul}}" name="" id="">
+                                    <h5>{{$modul->Judul}}</h5>
                                 </td>
                                 <td>
                                     <a name="" id="" class="btn btn-primary"
@@ -146,10 +152,10 @@
                             @foreach ($Video as $video)
                             <tr>
                                 <td scope="row">
-                                    <input readonly type="text" class="form-control" value="{{$video->Judul}}" name="" id="">
+                                    <h5>{{$video->Judul}}</h5>
                                 </td>
                                 <td>
-                                    <iframe src="{{$video->Link}}" frameborder="0" allowfullscreen></iframe>
+                                    {!!$video->Link!!}
                                 </td>
             
                             </tr>
@@ -166,7 +172,6 @@
                             <tr>
                                 <th style="width: 35%">Nama</th>
                                 <th>File</th>
-                                <th style="width: 35%">Tipe Bahan</th>
                
                             </tr>
                         </thead>
@@ -174,19 +179,15 @@
                             @foreach ($BahanTutor as $bahantutor)
                             <tr>
                                 <td scope="row">
-                                    <input readonly type="text" class="form-control" value="{{$bahantutor->NamaBahan}}" name=""
-                                        id="">
+                                    <h5>{{$bahantutor->NamaBahan}}</h5>
                                 </td>
                                 <td>
                                     <a name="" id="" class="btn btn-primary"
-                                        href="{{url('program_studi/bahan_tutor')}}/{{$bahantutor->File}}"
+                                        href="{{url('karyawan/tutor/program/stream/modul')}}/{{explode('.',$bahantutor->File)[0]}}"
                                         target="_blank" role="button">{{$bahantutor->File}}</a>
                                     {{-- <input type="file" class="form-control-file" name="" id="" placeholder="" aria-describedby="fileHelpId">   --}}
                                 </td>
-                                <td>
-                                    <input type="text" readonly value="{{$bahantutor->Type}}" class="form-control">
-                                </td>
-            
+               
                             </tr>
                             @endforeach
                         </tbody>
