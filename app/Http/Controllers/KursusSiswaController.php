@@ -86,16 +86,16 @@ class KursusSiswaController extends Controller
             $Modul = DB::table('program_studi_modul')
             ->join('program_studi','program_studi_modul.IDProgram','=','program_studi.IDProgram')
             ->join('kursus_siswa','kursus_siswa.IDProgram','=','program_studi.IDProgram')
-            ->where('kursus_siswa.UUID',$id)->get();
+            ->where('kursus_siswa.UUID',$id)->where('program_studi_modul.Status','OPN')->get();
         
             $Video = DB::table('program_studi_video')
             ->join('program_studi','program_studi_video.IDProgram','=','program_studi.IDProgram')
             ->join('kursus_siswa','kursus_siswa.IDProgram','=','program_studi.IDProgram')
-            ->where('kursus_siswa.UUID',$id)->get();
+            ->where('kursus_siswa.UUID',$id)->where('program_studi_video.Status','OPN')->get();
             $BahanTutor = DB::table('program_studi_bahan_tutor')
             ->join('program_studi','program_studi_bahan_tutor.IDProgram','=','program_studi.IDProgram')
             ->join('kursus_siswa','kursus_siswa.IDProgram','=','program_studi.IDProgram')
-            ->where('kursus_siswa.UUID',$id)->get();
+            ->where('kursus_siswa.UUID',$id)->where('program_studi_bahan_tutor.Status','OPN')->get();
             return view('siswa.show_program',[
                 'Prodi'=>$Prodi,
                 'Modul'=>$Modul,

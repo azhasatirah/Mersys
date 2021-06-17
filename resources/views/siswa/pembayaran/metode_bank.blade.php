@@ -43,7 +43,11 @@
             Batas Waktu:
         </span>
         <p class="item-data">
-            {{$Pembayaran['Pembayaran'][0]->created_at}}
+            {{
+                date('d M Y, h:m',strtotime(
+                    '+1 day',strtotime( $Pembayaran['Pembayaran'][0]->created_at)
+                ))
+            }}
         </p>
     </div>
 
@@ -84,7 +88,7 @@ enctype="multipart/form-data" method="POST">
                 id="inNoHP">
                 <label for="inNoHP">Nomor Rekening</label>
             </div>
-            <select name="bank" class="form-select mt-3 ss-input" 
+            <select name="bank" required class="form-select mt-3 ss-input" 
             id="inJenisKelamin"aria-label="Default select example">
                 <option value="0" selected>Nama Bank</option>
                 @foreach ($Bank as $bank)    

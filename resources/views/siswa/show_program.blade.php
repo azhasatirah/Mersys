@@ -55,10 +55,14 @@
                             class="btn btn-nav ">Jadwal</button>
                         <button type="button" id="btn-selesai" onclick="changeActiveContent('selesai')"
                             class="btn btn-nav">Materi selesai</button>
+                        @if (count($Modul)>0) 
                         <button type="button" onclick="changeActiveContent('modul')" id="btn-modul"
                             class="btn btn-nav ">Modul</button>
+                        @endif
+                        @if (count($Video)>0)            
                         <button type="button" id="btn-video" onclick="changeActiveContent('video')"
                             class="btn btn-nav">Video</button>
+                        @endif
                         <button type="button" id="btn-ubahjadwal" onclick="changeActiveContent('ubahjadwal')"
                             class="btn btn-nav">Ubah jadwal</button>
                     </div>
@@ -103,11 +107,12 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @if (count($Modul)>0)
                             @foreach ($Modul as $modul)
 
                             <tr>
                                 <td scope="row">
-                                    <input readonly type="text" class="form-control" value="{{$modul->Judul}}" name="" id="">
+                                    <h5>{{$modul->Judul}}</h5>
                                 </td>
                                 <td>
                                     <a name="" id="" class="btn btn-primary"
@@ -118,6 +123,7 @@
                
                             </tr>
                             @endforeach
+                            @endif
                         </tbody>
                     </table>
 
@@ -137,51 +143,16 @@
                             @foreach ($Video as $video)
                             <tr>
                                 <td scope="row">
-                                    <input readonly type="text" class="form-control" value="{{$video->Judul}}" name="" id="">
+                                    <h5>{{$video->Judul}}</h5>
                                 </td>
                                 <td>
-                                    <iframe src="{{$video->Link}}" frameborder="0" allowfullscreen></iframe>
+                                   {!!$video->Link!!} 
                                 </td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
 
-                </div>
-                {{-- konten Bahan Tutor --}}
-
-                <div style="display: none" id="content-bahantutor" class="row mt-3">
-                    <table class="table table-borderless">
-                        <thead>
-                            <tr>
-                                <th style="width: 35%">Nama</th>
-                                <th>File</th>
-                                <th style="width: 35%">Tipe Bahan</th>
-               
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($BahanTutor as $bahantutor)
-                            <tr>
-                                <td scope="row">
-                                    <input readonly type="text" class="form-control" value="{{$bahantutor->NamaBahan}}" name=""
-                                        id="">
-                                </td>
-                                <td>
-                                    <a name="" id="" class="btn btn-primary"
-                                        href="{{url('program_studi/bahan_tutor')}}/{{$bahantutor->File}}"
-                                        target="_blank" role="button">{{$bahantutor->File}}</a>
-                                    {{-- <input type="file" class="form-control-file" name="" id="" placeholder="" aria-describedby="fileHelpId">   --}}
-                                </td>
-                                <td>
-                                    <input type="text" readonly value="{{$bahantutor->Type}}" class="form-control">
-                                </td>
-            
-                            </tr>
-                            @endforeach
-                        </tbody>
-
-                    </table>
                 </div>
                 {{-- konten pertemuan dan materi selesai --}}
                 <div style="display: none" id="content-selesai" class="row mt-3">
@@ -390,7 +361,7 @@
         {'Hari':'Kamis','No':4},
         {'Hari':'Jumat','No':5},
         {'Hari':'Sabtu','No':6},
-        {'Hari':'Minggu','No':7},
+        {'Hari':'Minggu','No':0},
     ]
 
     toastr.options = {
@@ -401,23 +372,7 @@
     }
     $(document).ready(function () {
 
-        $('#tabel-jadwal').DataTable({      
-            "bDestroy": true,
-            "bAutoWidth": true,  
-            "bFilter": true,
-            "bSort": true, 
-            "aaSorting": [[0]],         
-            "aoColumns": [
-                { "bSortable": true },
-                { "bSortable": false },
-                { "bSortable": true },
-                { "bSortable": true },
-                { "bSortable": true },
-                { "bSortable": true },
-                { "bSortable": true },
-                { "bSortable": false }
-            ] 
-        });
+        $('#tabel-jadwal').DataTable();
         showContent();
         showJadwal();
         getChanges();
@@ -446,7 +401,7 @@
     function showJadwal(){
         // console.log('get req jadwal siswa/jadwal/getdata'+$('#UUIDKelas').val());
         $.get('/siswa/jadwal/getdata/'+$('#UUIDKelas').val(),(data)=>{
-       
+            console.log(data)
             $('#data-table-jadwal').empty();
             $('#data-table-jadwal-selesai').empty();
             TabelJadwal.clear().draw();
@@ -489,6 +444,7 @@
                     ]).draw();
                 }else{
                     jadwal.push(element)
+                    console.log(new Date(element['Tanggal']).getDay())
                     TabelJadwal.row.add([
                         element['NoRecord'],
                         Hari.filter((ele)=> ele.No == new Date(element['Tanggal']).getDay())[0].Hari,

@@ -86,6 +86,8 @@
                         <label for="time" class="col-form-label">Jam:</label>
                         <input type="time" id="start_time" name="bank" class="form-control">
                     </div>
+                    <hr>
+                    <p>Mau masuk hari apa aja?</p>
                     <div class="row ">
                         <div class="col-md-4">
                             <div class="form-check form-check-inline">
