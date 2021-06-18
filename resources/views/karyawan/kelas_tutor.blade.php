@@ -338,21 +338,22 @@
                 Data.forEach((data) =>{
                     a++;
                     console.log(data);
-                    var b_mulai = "<form id=\"formstart"+data.IDKursusMateri+"\" method=\"POST\">"+
+                    var b_mulai = "<form id=\"formstart"+data.IDKursusMateri+"\">"+
                         "<input type=\"hidden\" name=\"_token\" value=\""+$('#csrf').val()+"\">"+
                     "<input type=\"hidden\" name=\"idkursusmateri\" value=\""+data.IDKursusMateri+"\">"+
                     "<input type=\"hidden\" name=\"karyawan\" value=\""+data.IDTutor+"\">"+
                     "<input type=\"hidden\" name=\"idjadwal\" value=\""+data.IDJadwal+"\">"+
-                    "<a onclick=\"startKelas(\'"+data.IDKursusMateri+"\',\'"+data.KodeKelas+"\')\" class=\"btn text-white btn-small btn-primary\">Mulai</a>"+
-                    "</form>";
-                    var b_akhir ="<a  onclick=\"dialogEndKelas(\'"+data.NamaProdi+"\',\'"+data.IDKursusMateri+"\',\'"+data.NamaMateri+"\',\'"+data.KodeKelas+"\',\'"+data.NoRecord+"\')\"  class=\"btn text-white btn-small btn-primary\">Akhiri kelas</a>"+
-                    "<form id=\"formend"+data.IDKursusMateri+"\" method=\"POST\">"+
+                    "</form>"+
+                    "<button onclick=\"startKelas(\'"+data.IDKursusMateri+"\',\'"+data.KodeKelas+"\')\" id=\"btnstart"+data.IDKursusMateri+"\" class=\"btn text-white btn-small btn-primary\">Mulai</button>"
+                    ;
+                    var b_akhir ="<button id=\"btnend"+data.IDKursusMateri+"\"  onclick=\"dialogEndKelas(\'"+data.NamaProdi+"\',\'"+data.IDKursusMateri+"\',\'"+data.NamaMateri+"\',\'"+data.KodeKelas+"\',\'"+data.NoRecord+"\')\"  class=\"btn text-white btn-small btn-primary\">Akhiri kelas</button>"+
+                    "<form id=\"formend"+data.IDKursusMateri+"\" >"+
                         "<input type=\"hidden\" name=\"_token\" value=\""+$('#csrf').val()+"\">"+
                     "<input type=\"hidden\" name=\"idkursusmateri\" value=\""+data.IDKursusMateri+"\">"+
                     "<input type=\"hidden\" name=\"karyawan\" value=\""+data.IDTutor+"\">"+
                     "<input type=\"hidden\" name=\"idjadwal\" value=\""+data.IDJadwal+"\">"+
-                  
-                    "</form>";
+                    "</form>"
+                    ;
                     var b_batalkan = "<a class=\"text-white btn btn-small btn-primary\">Batalkan</a>";
                     TabelDataJadwal.row.add([
                         
@@ -381,7 +382,7 @@
         })
     }
     function startKelas(id,KodeKelas,NoRecord,NamaMateri){
-
+        $('#btnstart'+id).attr('disabled',true)
         $.post('/karyawan/tutor/kursus/start',$('#formstart'+id).serialize())
         .done(function(param){
             showDataJadwal();
@@ -392,6 +393,7 @@
         })
     }
     function endKelas(id,KodeKelas){
+        $('#btnend'+id).attr('disabled',true);
         $.post('/karyawan/tutor/kursus/end',$('#formend'+id).serialize())
         .done(function(param){
             showDataJadwal();

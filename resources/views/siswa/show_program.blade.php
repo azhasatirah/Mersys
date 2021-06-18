@@ -407,7 +407,7 @@
             TabelJadwal.clear().draw();
             data.forEach((element) => {
                 let tmp_btn = element['Status']=='Berlangsung'&&element['Absen']=='Belum Absen'?
-                    "<a onclick=\"masukKelas("+element['IDJadwal']+")\" class=\"btn btn-sm btn-primary\">Absen</a>"
+                    "<button id=\"btnabsen"+element['IDJadwal']+"\" onclick=\"masukKelas("+element['IDJadwal']+")\" class=\"btn btn-sm btn-primary\">Absen</button>"
                     :element['Status']=='Berlangsung'&&element['Absen']=='masuk'?
                     "<a class=\"btn btn-sm btn-success\">Berlangsung</a>"
                     :element['Status']=='Terlewat'?
@@ -470,6 +470,7 @@
         });
     }
     function masukKelas(id){
+        $('#btnabsen'+id).attr('disabled',true)
         $.post('/siswa/absen',$('#formdata'+id).serialize()).done((data)=>{
             showJadwal();
         }).fail(function(){
