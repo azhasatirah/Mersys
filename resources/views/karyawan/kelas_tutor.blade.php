@@ -385,7 +385,7 @@
         $.post('/karyawan/tutor/kursus/start',$('#formstart'+id).serialize())
         .done(function(param){
             showDataJadwal();
-            $.get('/karyawan/tutor/kursus/event/'+ KodeKelas);
+            //$.get('/karyawan/tutor/kursus/event/'+ KodeKelas);
             console.log(param);
         }).fail(function(param){
             console.log('error');
@@ -395,7 +395,7 @@
         $.post('/karyawan/tutor/kursus/end',$('#formend'+id).serialize())
         .done(function(param){
             showDataJadwal();
-            $.get('/karyawan/tutor/kursus/event/'+ KodeKelas);
+            //$.get('/karyawan/tutor/kursus/event/'+ KodeKelas);
             console.log(param);
         }).fail(function(param){
             console.log('error');

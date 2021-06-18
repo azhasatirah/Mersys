@@ -231,7 +231,7 @@ class JadwalController extends Controller
             'UserAdd'=>session()->get('Username'),
             'UserUpd'=>session()->get('Username'),
         ]);
-        $DataNotif = table('kursus_materi as km')
+        $DataNotif = DB::table('kursus_materi as km')
         ->join('kursus_siswa as ks','km.IDKursus','=','ks.IDKursusSiswa')
         ->join('siswa as s','ks.IDSiswa','=','s.IDSiswa')
         ->join('karyawan as k','km.IDKaryawan','=','k.IDKaryawan')
@@ -246,7 +246,7 @@ class JadwalController extends Controller
         DB::table('notif')->insert([
             'Notif'=> $DataNotif[0]->NamaKaryawan . "memualai kelas (".$DataNotif[0]->NamaProdi.")",
             'NotifFrom'=> session()->get('UID'),
-            'NotifTo'=>$DataTutor[0]->UIDSiswa,
+            'NotifTo'=>$DataNotif[0]->UIDSiswa,
             'IsRead'=>false,
             'Link'=>'/siswa/kursus/show/'.$DataNotif[0]->UIDKursus,
             'created_at'=>Carbon::now(),
@@ -271,7 +271,7 @@ class JadwalController extends Controller
             'updated_at'=>Carbon::now(),
             'UserUpd'=>session()->get('Username'),
         ]);
-        $DataNotif = table('kursus_materi as km')
+        $DataNotif = DB::table('kursus_materi as km')
         ->join('kursus_siswa as ks','km.IDKursus','=','ks.IDKursusSiswa')
         ->join('siswa as s','ks.IDSiswa','=','s.IDSiswa')
         ->join('karyawan as k','km.IDKaryawan','=','k.IDKaryawan')
@@ -286,7 +286,7 @@ class JadwalController extends Controller
         DB::table('notif')->insert([
             'Notif'=> $DataNotif[0]->NamaKaryawan . "mengakhiri kelas (".$DataNotif[0]->NamaProdi.")",
             'NotifFrom'=> session()->get('UID'),
-            'NotifTo'=>$DataTutor[0]->UIDSiswa,
+            'NotifTo'=>$DataNotif[0]->UIDSiswa,
             'IsRead'=>false,
             'Link'=>'/siswa/kursus/show/'.$DataNotif[0]->UIDKursus,
             'created_at'=>Carbon::now(),

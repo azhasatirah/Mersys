@@ -716,9 +716,13 @@
             if(filterSameDate(jadwal,reqJadwal).length != 0){
                 swal('Jadwal penuh')
             }else{
+                // jadwalPrevChanged = jadwal yang akan di ubah
+                // jadwal = semua jadwal yang belum di ubah
+                // reqJadwal = perubahan jadwal
                 let tmp_new_jadwal = filterCheckPrevRecord(jadwal,reqJadwal,jadwalPrevChanged)
                 let ite = 0
-             
+                console.log(tmp_new_jadwal)
+                console.log(tmp_new_jadwal.length,'berapa cm')
                 let newJadwal = tmp_new_jadwal.filter(ele=>ele.NoRecord != InputNoRecord).map((ele)=>{
                     let data = {
                         'UIDProgram':jadwal[jadwalChangedIndex].UUIDProgram,
@@ -737,19 +741,21 @@
                     ite ++;
                     return data
                 })
+                console.log('new jadwal',newJadwal)
+
                 newJadwal.push({
                     'UIDProgram':jadwal[jadwalChangedIndex].UUIDProgram,
                     'IDSiswa':jadwal[jadwalChangedIndex].IDSiswa,
                     'IDTutor':jadwal[jadwalChangedIndex].IDTutor,
                     'IDJadwal':jadwal[jadwalChangedIndex].IDJadwal,
                     'IDMateriFrom':jadwal[jadwalChangedIndex].IDMateri,
-                    'IDMateriTo':tmp_new_jadwal[tmp_new_jadwal.length-1].IDMateri,
+                    'IDMateriTo':tmp_new_jadwal.length == 0?jadwal[jadwalChangedIndex].IDMateri:tmp_new_jadwal[tmp_new_jadwal.length-1].IDMateri,
                     'MateriFrom':jadwal[jadwalChangedIndex].NamaMateri,
-                    'MateriTo':tmp_new_jadwal[tmp_new_jadwal.length-1].NamaMateri,
+                    'MateriTo':tmp_new_jadwal.length == 0?jadwal[jadwalChangedIndex].NamaMateri:tmp_new_jadwal[tmp_new_jadwal.length-1].NamaMateri,
                     'NoRecordFrom': parseInt(InputNoRecord),
-                    'NoRecordTo':tmp_new_jadwal[tmp_new_jadwal.length-1].NoRecord,
+                    'NoRecordTo':tmp_new_jadwal.length == 0?parseInt(InputNoRecord):tmp_new_jadwal[tmp_new_jadwal.length-1].NoRecord,
                     'TanggalFrom': jadwal[jadwalChangedIndex].Tanggal+' '+jadwal[jadwalChangedIndex].Jam,
-                    'TanggalTo':reqJadwal+':00'
+                    'TanggalTo':reqJadwal
                 })
                 let DataChanges={
                     '_token':token,
@@ -776,7 +782,9 @@
                     DataChanges['TanggalFrom[]'].push(ele.TanggalFrom)
                     DataChanges['TanggalTo[]'].push(ele.TanggalTo)
                 })
+                console.log(DataChanges)
                 ReqJadwalChanges = DataChanges
+                console.log(ReqJadwalChanges)
                 setAndShowDataModalChanges(newJadwal)
              
             }

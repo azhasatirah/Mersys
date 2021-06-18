@@ -175,7 +175,8 @@ class KursusSiswaController extends Controller
                 if(date('ymd',strtotime($item->Tanggal))==date('ymd',strtotime(Carbon::now()))){
                     $KehadiranSiswa='Hari ini';
                     $KehadiranTutor='Hari ini';
-                }else if(strtotime($item->Tanggal)<strtotime(Carbon::now())){
+                }
+                if(strtotime($item->Tanggal)<strtotime(Carbon::now())){
                     $KehadiranSiswa=count($a_siswa)>0?$a_siswa[0]->Start.' sampai '.$a_siswa[0]->End:'Alpha';
                     $KehadiranTutor=count($a_tutor)>0?$a_tutor[0]->Start.' sampai '.$a_tutor[0]->End:'Alpha';
                 }else{
@@ -265,7 +266,8 @@ class KursusSiswaController extends Controller
                 if(date('ymd',strtotime($item->Tanggal))==date('ymd',strtotime(Carbon::now()))){
                     $KehadiranSiswa='Hari ini';
                     $KehadiranTutor='Hari ini';
-                }else if(strtotime($item->Tanggal)<strtotime(Carbon::now())){
+                }
+                if(strtotime($item->Tanggal)<strtotime(Carbon::now())){
                     $KehadiranSiswa=count($a_siswa)>0?$a_siswa[0]->Start.' sampai '.$a_siswa[0]->End:'Alpha';
                     $KehadiranTutor=count($a_tutor)>0?$a_tutor[0]->Start.' sampai '.$a_tutor[0]->End:'Alpha';
                 }else{
