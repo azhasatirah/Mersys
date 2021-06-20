@@ -897,10 +897,10 @@ class JadwalController extends Controller
         // dd($LostDataFinal);
         // return view('recoverLostData',['siswa'=>$LostData]);
         //dd($LostData);
-        //DB::table('absen_siswa')->insert($DataAbsenSiswa);
-        //DB::table('absen_tutor')->insert($DataAbsenTutor);
-        //DB::table('jadwal')->insert($DataJadwal);
-       // DB::table('kursus_materi')->insert($DataMateri);
+        DB::table('absen_siswa')->insert($DataAbsenSiswa);
+        DB::table('absen_tutor')->insert($DataAbsenTutor);
+        DB::table('jadwal')->insert($DataJadwal);
+       DB::table('kursus_materi')->insert($DataMateri);
         dd('the data has been recovered');
         //return redirect('siswa/kursus');
     }
@@ -908,7 +908,7 @@ class JadwalController extends Controller
         $materi = DB::connection('mysqls')->table('program_kursus as pk')
         ->select(
             'md.id','m2.id_kat_materi','md.jml_pertemuan',
-            'm2.materi','pk.id as id_program','pk.program'
+            'm2.materi','pk.id as id_program','pk.program','md.att'
         )
         ->join('program_kursus_modul as pkm','pk.id','=','pkm.id_program')
         ->join('modul as m','pkm.id_modul','=','m.id')
@@ -917,13 +917,62 @@ class JadwalController extends Controller
         ->where('pk.status',1)
         //->where('md.id',918)
         //  ->whereNull('m2.status')
-        ->orderBy('pk.id')
+        ->orderBy('md.id')
         ->get()->groupBy('id_program');
-        // dd($materi);
+      //      dd($materi);
         $materi_program = [];
         foreach($materi as $mate){
-            $no_record = 0;
+            
+            $data = [];
             foreach($mate as $m){
+                array_push($data,$m);
+            }
+            $changes = [];
+            $newdata = [];
+            $chunk = $data;
+            foreach($data as $item ){
+                if($item->att!= null){
+                    array_push($changes,$item->att);
+                }
+            }
+            $i=0;
+            $status= true;
+            
+            do{
+                if($i < count($changes)){
+                    $urut = $changes[$i];
+                    $tmp_data = count($newdata)!=0?
+                    array_merge($newdata,$chunk)
+                    :$chunk;
+                    array_splice(
+                        $tmp_data,
+                        $changes[$i]-1,
+                        count($data),
+                        array_filter($data,function($ele) use ($urut){
+                            return $ele->att==$urut;
+                        })
+                    );
+                    $newdata = [];
+                    foreach($tmp_data as $item){
+                        array_push($newdata,$item);
+                    }
+                    $chunk = array_slice(
+                        array_filter($data,function($ele) use ($urut){
+                            return $ele->att!=$urut;
+                        }),$changes[$i]-1
+                    );
+                }else{
+                    foreach($chunk as $ele){
+                        array_push($newdata,$ele);
+                    }
+                    $status = false;
+                }
+                $i++;
+            }while($status);
+
+//            dd($mate,$newdata);
+            $no_record = 0;
+            foreach($newdata as $m){
                 for($i=0;$i< $m->jml_pertemuan;$i++){
                     $no_record ++;
                     array_push($materi_program,array(
@@ -940,27 +989,28 @@ class JadwalController extends Controller
                 }
             }
         }
-        //dd($materi_program);
-        //DB::table('materi_program')->insert($materi_program);
+       // dd($materi_program);
+        DB::table('materi_program')->insert($materi_program);
         dd('the jjjdata has been recovered');
     }
 
     public function updateTotalPertemuan(){
         $ProgramStudi = DB::table('program_studi')->get();
         $tm =[];
-        // foreach($ProgramStudi as $ps){
-        //     $Materi = DB::table('materi_program')->where('IDProgram',$ps->IDProgram)->get();
-        //     array_push($tm,$Materi->count());
-        //     DB::table('program_studi')->where('IDProgram',$ps->IDProgram)->update([
-        //         'TotalPertemuan'=>$Materi->count(),
-        //     ]);
+        foreach($ProgramStudi as $ps){
+            $Materi = DB::table('materi_program')->where('IDProgram',$ps->IDProgram)->get();
+            array_push($tm,$Materi->count());
+            DB::table('program_studi')->where('IDProgram',$ps->IDProgram)->update([
+                'TotalPertemuan'=>$Materi->count(),
+            ]);
             
-        // }
+        }
         //dd($tm);
-        //dd('done boss :(');
+        dd('done boss :(');
     }
     public function updateIDTutor(){
         $IDK = 313;
+        $IDT =1016;
         $ProgramTutor = DB::table('kursus_siswa as ks')
         ->select('j.IDJadwal')
         ->join('jadwal as j','ks.IDKursusSiswa','=','j.IDKursusSiswa')
@@ -969,14 +1019,14 @@ class JadwalController extends Controller
         //dd($ProgramTutor);
         foreach($ProgramTutor as $pt){
             DB::table('jadwal')->where('IDKursusSiswa',$IDK)->update([
-                'IDTutor'=>1016
+                'IDTutor'=>$IDT
             ]);
             DB::table('absen_tutor')->where('IDJadwal',$pt->IDJadwal)->update([
-                'IDTutor'=>1016
+                'IDTutor'=>$IDT
             ]);
         }
         DB::table('kursus_materi')->where('IDKursus',$IDK)->update([
-            'IDKaryawan'=>1016
+            'IDKaryawan'=>$IDT
         ]);
         dd('done');
     }
