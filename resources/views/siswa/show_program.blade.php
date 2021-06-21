@@ -178,20 +178,20 @@
                 <div style="display: none" id="content-ubahjadwal" class="row mt-3">
                     <div class="ml-2 col-md-12">
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-5">
                                 <div class="row" id="select-ubah-jadwal">
-                                    <div class="col-md-5">
+                                    <div class="col-md-3">
 
-                                        <label >Pertemuan ke</label>
+                                        <label >Ubah jadwal</label>
                                     </div>
-                                    <div class="col-md-7">
+                                    <div class="col-md-9">
 
                                         <select onchange="setDataChangeJadwal()"  class="custom-select" id="input-ubah-jadwal-select">
                                         </select>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-9"></div>
+                            <div class="col-md-7"></div>
                         </div>
                         
                         <div style="display:none" id="input-ubah-jadwal">
@@ -222,6 +222,23 @@
                             </div>
                             
                             <a id="button-ubah-jadwal" onclick="traceJadwalChange()" class="btn btn-primary" href="javascript:void(0)" role="button">Ubah</a>
+                        </div>
+                        <div style="display: none" id="input-ubah-semua-jadwal">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Libur berapa lama</label>
+                                        <select class="custom-select" id="input-freeze-jadwal">
+                                            <option value="7">1 minggu</option>
+                                            <option value="14">2 minggu</option>
+                                            <option value="21">3 minggu</option>
+                                            <option value="30">1 bulan</option>
+                                        </select>
+                                    </div>        
+                                </div>
+                                <div class="col-md-8"></div>
+                            </div>
+                            <a id="button-ubah-jadwal" onclick="freezeJadwal()" class="btn btn-primary" href="javascript:void(0)" role="button">Ubah</a>
                         </div>
 
                     </div>
@@ -327,6 +344,7 @@
 </div>
 
 @push('scripts')
+<script src="{{asset('assets/js/moment.js')}}"></script>
 {{-- <script type="application/javascript" src="{{ asset('js/app.js') }}"></script> --}}
 <script>
     const token = $('#token').val();
@@ -383,19 +401,102 @@
     //     showJadwal();
 
     // });
+    function freezeJadwal(){
+        let freeze = $('#input-freeze-jadwal').val();
+        let newJadwal = []
+        let DataChanges={
+                '_token':token,
+                'UIDProgram[]':[],
+                'IDSiswa[]':[],
+                'IDTutor[]':[],
+                'IDJadwal[]':[],
+                'IDMateriFrom[]':[],
+                'IDMateriTo[]':[],
+                'NoRecordFrom[]': [],
+                'NoRecordTo[]':[],
+                'TanggalFrom[]': [],
+                'TanggalTo[]':[]
+        };
+        jadwal.forEach((data)=>{
+            let tmpDate = moment(data.Tanggal+' '+data.Jam).format('yyyy-MM-DD HH:mm:ss')
+            console.log('firs',tmpDate)
+            let dateTo = moment(tmpDate).add(freeze,'days').format('yyyy-MM-DD HH:mm:ss')
+            console.log(dateTo)
+            //console.log(tmpDate.getDate(),new Date(tmpDate.setDate(tmpDate.getDate() + freeze)).toString())
+            // let date = new Date( tmpDate.setDate(tmpDate.getDate() + freeze))
+            newJadwal.push({
+                'UIDProgram':data.UUIDProgram,
+                'IDSiswa':data.IDSiswa,
+                'IDTutor':data.IDTutor,
+                'IDJadwal':data.IDJadwal,
+                'IDMateriFrom':data.IDMateri,
+                'IDMateriTo':data.IDMateri,
+                'MateriFrom':data.NamaMateri,
+                'MateriTo':data.NamaMateri,
+                'NoRecordFrom': parseInt(data.NoRecord),
+                'NoRecordTo':parseInt(data.NoRecord),
+                'TanggalFrom': data.Tanggal+' '+data.Jam,
+                'TanggalTo': dateTo
+            })
 
-    
-    function setDataChangeJadwal(){
-        $('#input-ubah-jadwal').show();
-        let pertemuan;
-        jadwal.forEach((ele) => {
-            if(ele.NoRecord == $('#input-ubah-jadwal-select').val()){
-                pertemuan = ele
-            }
         })
-        $('#input-ubah-jadwal-materi').val(pertemuan.NamaMateri);
-        $('#input-ubah-jadwal-tanggal').val(pertemuan.Tanggal);
-        $('#input-ubah-jadwal-jam').val(pertemuan.Jam);
+        newJadwal.forEach((ele)=>{
+            DataChanges['UIDProgram[]'].push(ele.UIDProgram)
+            DataChanges['IDSiswa[]'].push(ele.IDSiswa)
+            DataChanges['IDTutor[]'].push(ele.IDTutor)
+            DataChanges['IDJadwal[]'].push(ele.IDJadwal)
+            DataChanges['IDMateriFrom[]'].push(ele.IDMateriFrom)
+            DataChanges['IDMateriTo[]'].push(ele.IDMateriTo)
+            DataChanges['NoRecordFrom[]'].push(ele.NoRecordFrom)
+            DataChanges['NoRecordTo[]'].push(ele.NoRecordTo)
+            DataChanges['TanggalFrom[]'].push(ele.TanggalFrom)
+            DataChanges['TanggalTo[]'].push(ele.TanggalTo)
+        })
+        console.log(DataChanges)
+        ReqJadwalChanges = DataChanges
+        console.log(ReqJadwalChanges)
+        setAndShowDataModalChanges(newJadwal)
+    }
+    function sumDate(amount,date){
+        var tmpDate = new Date(date);
+        tmpDate.setDate(tmpDate.getDate() + amount)
+        return tmpDate;
+    }
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear(),
+            hours = d.getHours(),
+            min = d.getMinutes();
+
+        if (month.length < 2) 
+            month = '0' + month;
+        if (day.length < 2) 
+            day = '0' + day;
+        if (hours.length < 2) 
+            hours = '0' + hours; 
+        if (min.length < 2) 
+            min = '0' + min; 
+        return [year, month, day].join('-')+" "+hours+":"+min;
+    }
+    function setDataChangeJadwal(){
+        if($('#input-ubah-jadwal-select').val()=='all'){
+            $('#input-ubah-semua-jadwal').show();
+            $('#input-ubah-jadwal').hide();
+        }else{
+            $('#input-ubah-jadwal').show();
+            $('#input-ubah-semua-jadwal').hide();
+            let pertemuan;
+            jadwal.forEach((ele) => {
+                if(ele.NoRecord == $('#input-ubah-jadwal-select').val()){
+                    pertemuan = ele
+                }
+            })
+            $('#input-ubah-jadwal-materi').val(pertemuan.NamaMateri);
+            $('#input-ubah-jadwal-tanggal').val(pertemuan.Tanggal);
+            $('#input-ubah-jadwal-jam').val(pertemuan.Jam);
+        }
     }
     
     function showJadwal(){
@@ -461,9 +562,10 @@
             });
             $('#input-ubah-jadwal-select').empty();
             $('#input-ubah-jadwal-select').append('<option>pilih</option>');
+            $('#input-ubah-jadwal-select').append('<option value="all">Izin Cuti</option>');
             jadwal.forEach((ele)=>{
                 $('#input-ubah-jadwal-select').append(
-                    "<option value=\""+ele.NoRecord+"\">"+ele.NoRecord+"</option>"
+                    "<option value=\""+ele.NoRecord+"\">Ubah pertemuan ke "+ele.NoRecord+"</option>"
                 )
             })
 

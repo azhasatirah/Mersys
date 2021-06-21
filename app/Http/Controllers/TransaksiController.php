@@ -89,7 +89,46 @@ class TransaksiController extends Controller
         return view('karyawan.transaksi.transaksi',
         ['KasBank'=>$KasBank,'TransaksiSelesai'=>count($TransaksiSelesai)]);
     }
-
+    public function adminTransaksiRefund(){
+        return view('karyawan.transaksi.admin.refund');
+    }
+    public function adminGetTransaksiRefund(){
+        $TransaksiSelesai = DB::table('transaksi as t')
+        ->join('siswa as s','t.IDSiswa','=','s.IDSiswa')
+        ->join('kursus_siswa as ks','t.IDKursusSiswa','=','ks.IDKursusSiswa')
+        ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
+        ->select(
+            't.IDTransaksi','t.IDSiswa','t.IDCicilan','t.KodeTransaksi','t.created_at',
+            't.Hutang','t.Total','s.NamaSiswa','s.KodeSiswa','ks.KodeKursus','ps.NamaProdi','ks.IDKursusSiswa'
+        )
+        ->where('t.Status','CLS')
+        ->where('t.KodeTransaksi','like','TRX-%')
+        ->get();
+        dd($TransaksiSelesai);
+        $DataSelesai = [];
+        foreach($TransaksiSelesai as $dat){
+            array_push($DataSelesai,array(
+                'IDTransaksi'=>$dat->IDTransaksi,
+                'IDSiswa'=>$dat->IDSiswa,
+                'IDCicilan'=>$dat->IDCicilan,
+                'KodeTransaksi'=>$dat->KodeTransaksi,
+                'created_at'=>$dat->created_at,
+                'Hutang'=>$dat->Hutang,
+                'Total'=>$dat->Total,
+                'NamaSiswa',$dat->NamaSiswa,
+                'KodeSiswa'=>$dat->KodeSiswa,
+                'KodeKursus'=>$dat->KodeKursus,
+                'NamaProdi'=>$dat->NamaProdi,
+                'IDKursusSiswa'=>$dat->IDKursusSiswa
+            ));
+        }
+        $TransaksiRefund = DB::table('transaksi')->where('Status','CLS')
+        ->where('KodeTransaksi','like','TRXR-%')->get();
+        return response()->json([
+            'TransaksiSelesai'=>$TransaksiSelesai,
+            'TransaksiRefund'=>$TransaksiRefund
+        ]);
+    }
     public function adminGetTransaksi(){
         $Transaksi = DB::table('transaksi')
         ->join('siswa','transaksi.IDSiswa','=','siswa.IDSiswa')
