@@ -61,7 +61,9 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::post('transaksi/konfirmasi','PembayaranController@ownerKonfirmasi');
         Route::get('/transaksi/getdata','TransaksiController@ownerGetTransaksi');
         Route::get('/transaksi/selesai','TransaksiController@ownerGetTransaksiSelesai');
-        Route::get('/transaksi/refund','TransaksiController@adminTransaksiRefund');
+        Route::get('/transaksi/exchange','TransaksiController@ownerTransaksiExchange');
+        Route::get('/transaksi/exchange/getdata','TransaksiController@ownerGetTransaksiExchange');
+        Route::get('/transaksi/exchange/confirm/{id}','TransaksiController@ownerConfirmTransaksiExchange');
 
         //pendaftaran siswa
         Route::get('pendaftaran/siswa','PendaftaranController@ownerPendaftaranSiswa');
@@ -131,10 +133,12 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::get('/transaksi','TransaksiController@adminTransaksi');
         Route::get('/transaksi/detail/{id}','PembayaranController@adminDetailPembayaran');
         Route::get('/transaksi/getdata','TransaksiController@adminGetTransaksi');
+        Route::get('/transaksi/delete/{id}','TransaksiController@adminDeleteTransaksi');
         Route::post('transaksi/konfirmasi','PembayaranController@adminKonfirmasi');
         Route::get('/transaksi/selesai','TransaksiController@adminTransaksiSelesai');
-        Route::get('/transaksi/refund','TransaksiController@adminTransaksiRefund');
-        Route::get('/transaksi/refund/getdata','TransaksiController@adminGetTransaksiRefund');
+        Route::get('/transaksi/exchange','TransaksiController@adminTransaksiExchange');
+        Route::get('/transaksi/exchange/getdata','TransaksiController@adminGetTransaksiExchange');
+        Route::post('/transaksi/exchange/store','TransaksiController@adminStoreTransaksiExchange');
 
         //level program
         Route::get('/master/levelprogram', 'LevelProgramController@index');

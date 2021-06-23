@@ -90,7 +90,7 @@ enctype="multipart/form-data" method="POST">
             </div>
             <select name="bank" required class="form-select mt-3 ss-input" 
             id="inJenisKelamin"aria-label="Default select example">
-                <option value="0" selected>Nama Bank</option>
+                <option value="11" selected>Nama Bank</option>
                 @foreach ($Bank as $bank)    
                 <option value="{{$bank->IDBank}}">{{$bank->NamaBank}}</option>
                 @endforeach

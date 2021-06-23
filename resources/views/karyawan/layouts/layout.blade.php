@@ -78,7 +78,7 @@
                   <li><a><i class="fa fa-cog"></i> Transaksi <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{url('karyawan/owner/transaksi')}}">Transaksi Proses</a></li>
-                      <li><a href="{{url('karyawan/owner/transaksi/refund')}}">Transaksi Refund</a></li>
+                      <li><a href="{{url('karyawan/owner/transaksi/exchange')}}">Transaksi Exchange</a></li>
                       <li><a href="{{url('karyawan/owner/transaksi/selesai')}}">Transaksi Selesai</a></li>
                     </ul>
                   </li>
@@ -98,7 +98,7 @@
                   <li><a><i class="fa fa-cog"></i> Transaksi <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{url('karyawan/admin/transaksi')}}">Transaksi Proses</a></li>
-                      <li><a href="{{url('karyawan/admin/transaksi/refund')}}">Transaksi Refund</a></li>
+                      <li><a href="{{url('karyawan/admin/transaksi/exchange')}}">Transaksi Exchange</a></li>
                       <li><a href="{{url('karyawan/admin/transaksi/selesai')}}">Transaksi Selesai</a></li>
                     </ul>
                   </li>

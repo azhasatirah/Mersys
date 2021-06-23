@@ -26,8 +26,17 @@ class PembayaranController extends Controller
         $CekPembayaran = Pembayaran::showPembayaranByKodeTransaksi($Kode);
         $Bank = Bank::getAllBank();
         $BuktiPembayaran = BuktiPembayaran::showBuktiPembayaranByKodeTransaksi($Kode);
-
+        $PembayaranCLSWithnoBukti = DB::table('pembayaran as p')
+        ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
+        ->where('t.UUID',$Kode)->get();
         //mengalihkan ke halaman rincian pembayaran
+        if(count($PembayaranCLSWithnoBukti)>0){
+            return view('siswa.pembayaran.rincian',[
+                'Pembayaran'=>$Transaksi['Transaksi'],
+                'Bank'=>$Bank['Bank'],
+                'BuktiPembayaran'=>$BuktiPembayaran,
+            ]);
+        }
         if(count($BuktiPembayaran)>0){
            //dd($BuktiPembayaran,$Transaksi);
             return view('siswa.pembayaran.rincian',[

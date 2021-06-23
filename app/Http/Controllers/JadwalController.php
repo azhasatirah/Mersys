@@ -1030,6 +1030,9 @@ class JadwalController extends Controller
         ]);
         dd('done');
     }
+    public function updateMateriKursus(){
+        // DB::table('')
+    }
 
 
     

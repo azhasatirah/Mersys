@@ -58,6 +58,9 @@
                         var TombolVerif = 
                         "<a class=\"btn btn-success btn-sm text-white\"href=\"/karyawan/admin/transaksi/detail/"+data.UUIDTransaksi+"\">"+
                         "<i class=\"fa fa-check\"></i></a>";
+                        var TombolDelete = 
+                        "<a class=\"btn btn-danger btn-sm text-white\" onclick=\"deleteTransaksi("+data.IDTransaksi+")\">"+
+                        "<i class=\"fa fa-trash\"></i></a>";
                         TabelData.row.add([
                             a,
                             data.KodeTransaksi,
@@ -68,7 +71,9 @@
                             'Rp '+formatNumber(data.Total),
                             data.Cicilan=='y'?'Ya':'Tidak',
                             data.created_at,
-                            data.KodeStatus=='waitForAdmin'?TombolVerif:data.Status
+                            data.KodeStatus=='waitForAdmin'?TombolVerif:
+                            data.KodeStatus == 'waitForPayment'?TombolDelete:
+                            data.Status
                         ]).draw();
                     })
                 
@@ -76,6 +81,24 @@
         }
         function formatNumber(num) {
             return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-        }   
+        }  
+        function deleteTransaksi(id) {
+            swal({
+              title: "Apakah anda yakin menghapus transaksi ini?",
+              text: "Transaksi ini belum ada bukti pembayaran, bisa saja siswa sudah mengirim pembayaran tapi belum mengupload bukti!",
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+          }).then((willDelete) => {
+              if (willDelete) {
+                $.get('/karyawan/admin/transaksi/delete/'+id).done((res)=>{
+                    swal(res) 
+                    showData()
+                })
+              } else {
+                  swal("Dibatalkan!");
+              }
+          })
+        }
     </script>
 @endpush
