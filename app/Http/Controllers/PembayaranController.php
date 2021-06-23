@@ -459,6 +459,21 @@ class PembayaranController extends Controller
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);
+        $KursusSiswa = DB::table('kursus_siswa')
+        ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
+        ->join('transaksi','kursus_siswa.IDKursusSiswa','=','transaksi.IDKursusSiswa')
+        ->join('pembayaran','transaksi.IDTransaksi','=','pembayaran.IDTransaksi')
+        ->where('pembayaran.KodePembayaran',$request->pembayaran)
+        ->select('program_studi.NamaProdi')->get();
+        DB::table('notif')->insert([
+            'Notif'=> "Kursus ".$KursusSiswa[0]->NamaProdi." sudah aktif, segera buat jadwal",
+            'NotifFrom'=> session()->get('UID'),
+            'NotifTo'=>$Pembayaran2[0]->UIDSiswa,
+            'IsRead'=>false,
+            'Link'=>'/siswa/kursus',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
         //broadcast(new \App\Events\NotifEvent($Pembayaran2[0]->UIDSiswa));
         return redirect('karyawan/owner/transaksi');
 

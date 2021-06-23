@@ -91,6 +91,7 @@
         </div>
     </div>
     <div class="card  item mt-2 mb-2 shadow-sm">
+
     <form action="{{url('karyawan/admin/pendaftaran/siswa/konfirmasi')}}" 
     method="post">
     @csrf
@@ -99,6 +100,9 @@
             Konfirmasi
         </button>
     </form>
+
+
     </div>
+
 
 @endsection

@@ -80,6 +80,7 @@ class Pembayaran extends Model
             ->join('siswa','kursus_siswa.IDSiswa','=','siswa.IDSiswa')
             ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
             ->select(
+                'pembayaran.Status as StatusPembayaran',
                 'bukti_pembayaran.JumlahDitransfer','bukti_pembayaran.NoRekening as NoRekeningPengirim',
                 'bukti_pembayaran.NamaRekening as NamaRekeningPengirim','bukti_pembayaran.BuktiFoto',
                 'pembayaran.Total','pembayaran.IDPembayaran','pembayaran.KodePembayaran',

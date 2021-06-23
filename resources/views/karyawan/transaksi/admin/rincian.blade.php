@@ -91,14 +91,23 @@
         </div>
     </div>
     <div class="card  item mt-2 mb-2 shadow-sm">
-    <form action="{{url('karyawan/admin/transaksi/konfirmasi')}}" 
-    method="post">
-    @csrf
-    <input type="hidden" name="pembayaran" value="{{$Pembayaran['Pembayaran'][0]->KodePembayaran}}">
-        <button type="submit" style="" class="btn btn-sm btn-block  btn-primary ">
+        @if ($Pembayaran['Pembayaran'][0]->StatusPembayaran == 'OPN')  
+        <a onclick="confirmTransaksi()"  class="btn btn-sm btn-block mt-3 mb-1  btn-success ">
             Konfirmasi
-        </button>
-    </form>
+        </a>
+        <form id="form-konfirmasi" action="{{url('karyawan/admin/transaksi/konfirmasi')}}" 
+        method="post">
+        @csrf
+            <input type="hidden" name="pembayaran" value="{{$Pembayaran['Pembayaran'][0]->KodePembayaran}}">
+        </form>
+        @endif
+        <a type="submit" href="{{url('karyawan/admin/transaksi')}}" class="btn mb-3 btn-sm   btn-primary ">
+            Kembali
+        </a>
     </div>
-
+    <script>
+        function confirmTransaksi(){
+            document.getElementById('form-konfirmasi').submit()
+        }
+    </script>
 @endsection

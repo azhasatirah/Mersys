@@ -276,7 +276,7 @@ class TransaksiController extends Controller
             'UserUpd'=>session()->get('Username'),
             'updated_at'=>Carbon::now()
         ]);
-        return response()->json('Transaksi berhasil dihapus');
+        return response()->json('Transaksi berhasil dihapus');  
     }
     public function adminGetTransaksi(){
         $Transaksi = DB::table('transaksi')
@@ -453,6 +453,24 @@ class TransaksiController extends Controller
             'Status'=>'OPN'
         );
         $StatusTransaksi = Transaksi::storeTransaksi($DataTransaksi);
+        DB::table('notif')->insert([
+            'Notif'=> session()->get('NamaUser'). " membuat transaksi ".$KodeTransaksi,
+            'NotifFrom'=> session()->get('UID'),
+            'NotifTo'=> 'owner',
+            'IsRead'=>false,
+            'Link'=>'/karyawan/owner/transaksi',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
+        DB::table('notif')->insert([
+            'Notif'=> session()->get('NamaUser'). " membuat transaksi ".$KodeTransaksi,
+            'NotifFrom'=> session()->get('UID'),
+            'NotifTo'=> 'admin',
+            'IsRead'=>false,
+            'Link'=>'/karyawan/admin/transaksi',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
         if($StatusTransaksi['Status']=='success'){
             return redirect('/siswa/pembayaran/info/'.$UUIDTransaksi);
         }
