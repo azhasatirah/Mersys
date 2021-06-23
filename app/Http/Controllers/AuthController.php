@@ -102,7 +102,7 @@ class AuthController extends Controller
                     'NotifFrom'=> $Siswa[0]->UUID,
                     'NotifTo'=>'admin',
                     'IsRead'=>false,
-                    'Link'=>'/karyawan/admin/pendaftaran/siswa/',
+                    'Link'=>'/karyawan/admin/siswa#siswa#'.$Siswa[0]->KodeSiswa,
                     'created_at'=>Carbon::now(),
                     'updated_at'=>Carbon::now(),
                 ]);
@@ -111,7 +111,7 @@ class AuthController extends Controller
                     'NotifFrom'=> $Siswa[0]->UUID,
                     'NotifTo'=>'owner',
                     'IsRead'=>false,
-                    'Link'=>'/karyawan/owner/pendaftaran/siswa/',
+                    'Link'=>'/karyawan/owner/siswa#siswa#'.$Siswa[0]->KodeSiswa,
                     'created_at'=>Carbon::now(),
                     'updated_at'=>Carbon::now(),
                 ]);

@@ -399,7 +399,7 @@
         $(document).on('click','#btnLogout',function(){
           swal({
               title: "Yakin ingin keluar?",
-              text: "Kamu harus login untuk magakses halaman ini lagi!",
+              text: "Kamu harus login untuk mengakses halaman ini lagi!",
               icon: "warning",
               buttons: true,
               dangerMode: true,

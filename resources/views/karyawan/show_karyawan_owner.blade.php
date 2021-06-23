@@ -173,6 +173,7 @@
                                                 <p>
                                                     Kode Karyawan : {{$item->KodeKaryawan}} <br> 
                                                     Nama : {{$item->NamaKaryawan}} <br>
+                                                    Username : {{$item->Username}} <br>
                                                     Email : {{$item->Email}} <br>
                                                     Jenis Kelamin : {{$item->JenisKelamin}} <br>
                                                     Tempat lahir : {{$item->TempatLahir}} <br> 
@@ -201,6 +202,6 @@
     $(document).ready(function () {
         $('#tabeldata').DataTable();
     });
-    function heh(){ console.log('wtf');document.getElementById('msg-hapus').style.display = 'none'}
+    function heh(){ document.getElementById('msg-hapus').style.display = 'none'}
 </script>
 @endpush

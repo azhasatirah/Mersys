@@ -31,7 +31,10 @@ class SiswaController extends Controller
                 'Psikologi'=>count($Psikologi)>0?$Psikologi[0]->HasilTestPsikologi:false,
                 'KodeSiswa'=>$siswa->KodeSiswa,
                 'PhotoProfile'=>$siswa->PhotoProfile,
-                'Status'=>$siswa->Status
+                'Status'=>$siswa->Status,
+                'TempatLahir'=>$siswa->TempatLahir,
+                'TanggalLahir'=>$siswa->TanggalLahir,
+                'NoHP'=>$siswa->NoHP
             ));
         }
       //  dd($DataSiswa);
@@ -64,6 +67,22 @@ class SiswaController extends Controller
     public function showSiswa($id){
         $Siswa = DB::table('siswa')->where('IDSiswa',$id)->get();
         return response()->json($Siswa);
+    }
+    public function deleteSiswa(Request $request){
+        DB::table('siswa')->where('IDSiswa',$request->idsiswa)->update([
+            'Status'=>'DEL'
+        ]);
+        $msg ='Berhasil menonaktifkan siswa';
+
+        return redirect()->back()->with('msg',$msg);
+    }
+    public function unDeleteSiswa(Request $request){
+        DB::table('siswa')->where('IDSiswa',$request->idsiswa)->update([
+            'Status'=>'CLS'
+        ]);
+        $msg ='Berhasil mengaktifkan siswa';
+        
+        return redirect()->back()->with('msg',$msg);
     }
 
 }

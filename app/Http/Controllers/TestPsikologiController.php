@@ -22,7 +22,7 @@ class TestPsikologiController extends Controller
         return response()->json($Data);
     }
     public function store(Request $request){
-
+        $Siswa = DB::table('siswa')->where('IDSiswa',$request->idsiswa)->get();
         $File = $request->file('file');
         $FormatFile = $File->getClientOriginalExtension();
         $FileName = 'HTP'.date('dmyhis').'.'.$FormatFile;
@@ -39,9 +39,18 @@ class TestPsikologiController extends Controller
         DB::table('notif')->insert([
             'Notif'=> session()->get('NamaUser').' mengupload hasil test psikologi',
             'NotifFrom'=> session()->get('UID'),
+            'NotifTo'=>'admin',
+            'IsRead'=>false,
+            'Link'=>'/karyawan/admin/siswa#psik#'.$Siswa[0]->KodeSiswa,
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
+        DB::table('notif')->insert([
+            'Notif'=> session()->get('NamaUser').' mengupload hasil test psikologi',
+            'NotifFrom'=> session()->get('UID'),
             'NotifTo'=>'owner',
             'IsRead'=>false,
-            'Link'=>'/karyawan/owner/siswa/',
+            'Link'=>'/karyawan/owner/siswa#psik#'.$Siswa[0]->KodeSiswa,
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);

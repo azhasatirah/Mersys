@@ -34,6 +34,8 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 
     Route::post('/deleteakunkaryawan','KaryawanController@deleteKaryawan');
     Route::post('/undeleteakunkaryawan','KaryawanController@unDeleteKaryawan');
+    Route::post('/deleteakunsiswa','SiswaController@deleteSiswa');
+    Route::post('/undeleteakunsiswa','SiswaController@unDeleteSiswa');
     Route::post('password/update','AuthController@changePasswordKaryawan');
     Route::get('/transaksi/getdata','TransaksiController@getData');
  
