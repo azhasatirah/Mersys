@@ -27,7 +27,6 @@
     }
 
 </style>
-<a onclick="countHarga()" id="" class="btn btn-primary" href="#" role="button">hitung harga</a>
 <div class="row bg-white">
     <div class="col-md-12 col-sm-12  ">
         <div class="x_panel" style="border:0px;">
@@ -824,19 +823,60 @@
 
         showContent();
         showCicilan();
-        //fungsi input map program studi
-        setProgramStudi();
-        showTool();
-        showModul()
+        getCoreData()
         showPertemuan();
         showVideo()
         showBahan()
-        // do {
-        //     console.log(i)
-        //     i++
-        // } while (program_studi.length == 0);
-    });
 
+    });
+    //kunai
+    function getCoreData(){
+        let prodi = new Promise(
+            (resolve,reject)=>{
+                $.get('/karyawan/admin/prodidetail/getprodi/'+id_prodi).done((ele)=>{
+                    program_studi = ele['Prodi']
+                    cicilan_ss = ele['Cicilan']
+                    resolve(cicilan_ss)
+                })
+            }
+        )
+        let tool = new Promise(
+            (resolve,reject)=>{
+                $.get('/karyawan/admin/prodidetail/gettool/'+id_prodi).done((ele)=>{
+                    tool_ss = ele
+                    resolve(tool_ss)
+                })
+            }
+        )
+        let modul = new Promise(
+            (resolve, reject )=>{
+                $.get('/karyawan/admin/prodidetail/getmodul/'+ id_prodi).done((ele)=>{
+                    modul_ss = ele
+                    resolve(modul_ss)
+                });
+            }
+        )
+        Promise.all([prodi,tool,modul]).then((ele)=>{
+            setProgramStudi()
+            showModul()
+            showTool()
+            countHarga()
+        })
+    }
+    function countHarga(){
+       
+        let HargaProgram = program_studi[0].Harga
+        let HargaTool = 0
+        let HargaModul = 0
+        let HaragaTotal = 0
+        tool_ss.forEach(ele=>HargaTool += ele.Harga)
+        modul_ss.forEach(ele=>HargaModul += ele.Harga)
+        HargaTotal = HargaProgram + HargaTool + HargaModul
+        $('#input-harga-total').val('Rp '+HargaTotal.toLocaleString('id-ID'));
+        $('#input-harga-total-tool').val('Rp '+HargaTool.toLocaleString('id-ID'));
+        $('#input-harga-total-modul').val('Rp '+HargaModul.toLocaleString('id-ID'));
+
+    }
     content_prodi.on('keyup', function () {
         showProdiChangesControl();
     });
@@ -966,19 +1006,14 @@
     function setProgramStudi() {
         $('#cicilanidprogram').val(id_prodi)
         $('.idprogram').val(id_prodi)
-        $.get('/karyawan/admin/prodidetail/getprodi/'+id_prodi).done((ele)=>{
-            program_studi = ele['Prodi']
-            cicilan_ss = ele['Cicilan']
-            $('#input-harga-program').val(program_studi[0].Harga);
-            $('#input-nama-prodi').val(program_studi[0].NamaProdi);
-            $('#input-cicilan-prodi').val(program_studi[0].Cicilan);
-            $('#input-level-prodi').val(program_studi[0].IDLevel);
-            $('#input-kategori-prodi').val(program_studi[0].IDKategoriProgram);
-            $('#input-kategori-global-prodi').val(program_studi[0].IDKategoriGlobalProgram);
-            showCicilan()
-            showCicilanSS();
-            console.log('program studi')
-        })
+        $('#input-harga-program').val(program_studi[0].Harga);
+        $('#input-nama-prodi').val(program_studi[0].NamaProdi);
+        $('#input-cicilan-prodi').val(program_studi[0].Cicilan);
+        $('#input-level-prodi').val(program_studi[0].IDLevel);
+        $('#input-kategori-prodi').val(program_studi[0].IDKategoriProgram);
+        $('#input-kategori-global-prodi').val(program_studi[0].IDKategoriGlobalProgram);
+        showCicilan()
+        showCicilanSS();
     }
     function prodiIsChange() {
         let ps = program_studi;
@@ -996,7 +1031,7 @@
         $.post('/karyawan/admin/master/program/update', $('#form-prodi').serialize())
             .done(function (pesan) {
                 $('#prodi-changes-control').hide();
-                setProgramStudi();
+                getCoreData();
                 swal(pesan.Pesan);
             }).fail(function (pesan) {
                 console.log(pesan.Message);
@@ -1023,7 +1058,7 @@
                             "<input type=\"number\" readonly class=\"form-control\" value=\""+ele.Cicilan+"\">"+
                         "</td>"+
                         "<td>"+
-                            "<input type=\"text\" readonly class=\"form-control\" value=\""+ele.Harga+"\">"+
+                            "<input type=\"text\" readonly class=\"form-control\" value=\"Rp "+ele.Harga.toLocaleString('id-ID')+"\">"+
                         "</td>"+
                         "<td>"+
                             "<a onclick=\"deleteCicilanSS("+ele.IDCicilan+")\" class=\"btn btn-danger btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
@@ -1050,7 +1085,7 @@
                 $('#modal-add-cicilan-content').show();
                 $('#modal-add-cicilan-loading').hide()
                 swal(response)
-                setProgramStudi()
+                getCoreData()
             }
         });
     }
@@ -1063,14 +1098,14 @@
             success: function (response) {
                 $('#cicilan-modal-edit').modal('hide')
                 swal(response)
-                setProgramStudi()
+                getCoreData()
             }
         });
     }
 
     function deleteCicilanSS(id){
         $.get('/karyawan/admin/master/cicilan/delete/'+id, (ele)=>{
-            setProgramStudi()
+            getCoreData()
             swal(ele['Pesan'])
         });
     }
@@ -1081,7 +1116,6 @@
         $.get('/karyawan/admin/prodidetail/getpertemuan/'+id_prodi).done((ele)=>{
             kategori_materi = ele['KategoriMateri']
             pertemuan_ss = ele['PertemuanMateri']
-            console.log(kategori_materi,pertemuan_ss)
         }).done((ele)=>{
             let option_kategori = ""
             kategori_materi.forEach(ele => option_kategori += "<option value=\""+ele.IDKategoriMateri+"\">"+ele.NamaKategoriMateri+"</option>")
@@ -1174,30 +1208,26 @@
     }
     function showTool(){
         $('#list-tool').empty();
-        $.get('/karyawan/admin/prodidetail/gettool/'+id_prodi).done((ele)=>{
-            tool_ss = ele
-            console.log('tool')
-            tool_ss.forEach((ele)=> hargaTotalTool += ele.Harga)
-            tool_ss.forEach((ele)=>{
-                $('#list-tool').append(
-                    "<tr>"+
-                        "<td scope=\"row\">"+
-                            "<input type=\"text\" value=\""+ele.NamaTool+"\" readonly class=\"form-control\" >"+
-                            "</td>"+
-                        "<td>"+
-                            "<input type=\"text\" value=\""+ele.Harga+"\" readonly class=\"form-control\" >"+
+        tool_ss.forEach((ele)=> hargaTotalTool += ele.Harga)
+        tool_ss.forEach((ele)=>{
+            $('#list-tool').append(
+                "<tr>"+
+                    "<td scope=\"row\">"+
+                        "<p>"+ele.NamaTool+"</p >"+
                         "</td>"+
-                        "<td>"+
-                            "<a onclick=\"deleteTool("+ele.IDTool+")\" class=\"btn btn-danger btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
-                                "<i class=\"fa fa-trash\" aria-hidden=\"true\"></i>"+
-                            "</a>"+
-                            "<a onclick=\"editTool("+ele.IDTool+")\" data-toggle=\"modal\" data-target=\"#modal-edit-tool\" class=\"btn btn-primary btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
-                                "<i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>"+
-                            "</a>"+
-                        "</td>"+
-                    "</tr>"
-                );
-            })
+                    "<td>"+
+                        "<p>Rp "+ele.Harga.toLocaleString('id-ID')+"</p>"+
+                    "</td>"+
+                    "<td>"+
+                        "<a onclick=\"deleteTool("+ele.IDTool+")\" class=\"btn btn-danger btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
+                            "<i class=\"fa fa-trash\" aria-hidden=\"true\"></i>"+
+                        "</a>"+
+                        "<a onclick=\"editTool("+ele.IDTool+")\" data-toggle=\"modal\" data-target=\"#modal-edit-tool\" class=\"btn btn-primary btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
+                            "<i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>"+
+                        "</a>"+
+                    "</td>"+
+                "</tr>"
+            );
         })
     }
     function storeTool(){
@@ -1213,7 +1243,7 @@
                 $('#modal-add-tool').modal('hide')
                 $('#modal-add-tool-content').show();
                 $('#modal-add-tool-loading').hide()
-                showTool()
+                getCoreData()
             }
         });
 
@@ -1233,7 +1263,7 @@
             success: function (response) {
                 swal(response)
                 $('#modal-edit-tool').modal('hide')
-                showTool()
+                getCoreData()
             }
         });
     }
@@ -1248,14 +1278,13 @@
             if (willDelete) {
               $.get('/karyawan/admin/prodidetail/deletetool/'+id).done((ele)=>{
                   swal(ele)
-                  showTool()
+                  getCoreData()
               })
             } else {
                 swal("Dibatalkan!");
             }
         });
     }
-    //kunai
     function showVideo(){
         $('#list-video').empty();
         $.get('/karyawan/admin/prodidetail/getvideo/'+id_prodi).done((ele)=>{
@@ -1337,36 +1366,32 @@
     }
     function showModul(){
         $('#list-modul').empty()
-        $.get('/karyawan/admin/prodidetail/getmodul/'+ id_prodi).done((ele)=>{
-            modul_ss = ele
-            console.log('modul')
-            modul_ss.forEach((ele)=> hargaTotalModul += ele.Harga)
-            modul_ss.forEach((ele)=>{
-                $('#list-modul').append(
-                    "<tr>"+
-                        "<td scope=\"row\">"+
-                            "<p>"+ele.Judul+"</p>"+
-                        "</td>"+
-                        "<td>"+
-                            "<a class=\"btn btn-sm btn-primary\""+
-                            "href=\"/karyawan/admin/program/stream/modul/"+ele.Modul.split('.')[0]+"\""+
-                            "target=\"_blank\" role=\"button\">"+ele.Modul+"</a>"+
-                        "</td>"+
-                        "<td>"+
-                            "<p>"+ele.Harga+"</p>"+
-                        "</td>"+
-                        "<td>"+
-                            "<a onclick=\"deleteModul("+ele.IDModul+")\" class=\"btn btn-danger btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
-                                "<i class=\"fa fa-trash\" aria-hidden=\"true\"></i>"+
-                            "</a>"+
-                            "<a data-toggle=\"modal\" data-target=\"#modal-edit-modul\" onclick=\"editModul("+ele.IDModul+")\" class=\"btn btn-primary btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
-                                "<i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>"+
-                            "</a>"+
-                        "</td>"+
-                    "</tr>"
-                );
-            })
-        });
+        modul_ss.forEach((ele)=> hargaTotalModul += ele.Harga)
+        modul_ss.forEach((ele)=>{
+            $('#list-modul').append(
+                "<tr>"+
+                    "<td scope=\"row\">"+
+                        "<p>"+ele.Judul+"</p>"+
+                    "</td>"+
+                    "<td>"+
+                        "<a class=\"btn btn-sm btn-primary\""+
+                        "href=\"/karyawan/admin/program/stream/modul/"+ele.Modul.split('.')[0]+"\""+
+                        "target=\"_blank\" role=\"button\">"+ele.Modul+"</a>"+
+                    "</td>"+
+                    "<td>"+
+                        "<p>Rp "+ele.Harga.toLocaleString('id-ID')+"</p>"+
+                    "</td>"+
+                    "<td>"+
+                        "<a onclick=\"deleteModul("+ele.IDModul+")\" class=\"btn btn-danger btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
+                            "<i class=\"fa fa-trash\" aria-hidden=\"true\"></i>"+
+                        "</a>"+
+                        "<a data-toggle=\"modal\" data-target=\"#modal-edit-modul\" onclick=\"editModul("+ele.IDModul+")\" class=\"btn btn-primary btn-sm\" href=\"javascript:void(0)\" role=\"button\">"+
+                            "<i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>"+
+                        "</a>"+
+                    "</td>"+
+                "</tr>"
+            );
+        })
     }
 
     function storeModul(){
@@ -1386,7 +1411,7 @@
                 $('#modal-add-modul-content').show();
                 $('#modal-add-modul-loading').hide()
                 swal(response)
-                showModul()
+                getCoreData()
                 $('#btn-store-modul').attr('disbled',false);
             }
         }).done()
@@ -1411,7 +1436,7 @@
             success: function (response) {
                 swal(response)
                 $('#modal-edit-modul').modal('hide')
-                showModul()
+                getCoreData()
             }
         })
     }
@@ -1426,7 +1451,7 @@
             if (willDelete) {
               $.get('/karyawan/admin/prodidetail/deletemodul/'+id).done((ele)=>{
                   swal(ele)
-                  showModul()
+                  getCoreData()
               })
             } else {
                 swal("Dibatalkan!");
@@ -1526,20 +1551,7 @@
             }
         });
     }
-    function countHarga(){
-        console.log('hitung')
-        let HargaProgram = program_studi[0].Harga
-        let HargaTool = 0
-        let HargaModul = 0
-        let HaragaTotal = 0
-        tool_ss.forEach(ele=>HargaTool += ele.Harga)
-        modul_ss.forEach(ele=>HargaModul += ele.Harga)
-        HargaTotal = HargaProgram + HargaTool + HargaModul
-        $('#input-harga-total').val(HargaTotal);
-        $('#input-harga-total-tool').val(HargaTool);
-        $('#input-harga-total-modul').val(HargaModul);
 
-    }
 </script>
 @endpush
 @endsection
