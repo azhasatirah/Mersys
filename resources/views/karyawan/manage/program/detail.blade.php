@@ -25,6 +25,7 @@
         max-width: 40rem;
         background-image: none !important;
     }
+
 </style>
 <a onclick="countHarga()" id="" class="btn btn-primary" href="#" role="button">hitung harga</a>
 <div class="row bg-white">
@@ -357,37 +358,49 @@
 <div class="modal fade" id="modal-add-modul" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form id="form-modul-add" enctype="multipart/form-data">
-                @csrf
-                <input  type="hidden" value="{{$Prodi[0]->IDProgram}}" name="idprogram">
-                <div class="modal-header">
-                    <h5 class="modal-title">Tambah modul</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+        <div class="modal-content" style="height: 400px">
+            <div class="row mt-5" id="modal-add-modul-loading" style="display:none ">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    
+                    <img class="img-fluid" 
+                    src="https://cdn.dribbble.com/users/597558/screenshots/1998465/comp-2.gif" alt="" srcset="">
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="">Nama</label>
-                        <input type="text" class="form-control" name="nama" id="modul-nama-add"
-                            aria-describedby="helpId" placeholder="">
+                <div class="col-md-2"></div>
+            </div>
+            <section id="modal-add-modul-content">
+
+                <form id="form-modul-add" enctype="multipart/form-data">
+                    @csrf
+                    <input  type="hidden" value="{{$Prodi[0]->IDProgram}}" name="idprogram">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Tambah modul</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <div class="form-group">
-                      <label for="">Modul</label>
-                      <input type="file" class="form-control" name="modul" id="modul-modul-add" >
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">Nama</label>
+                            <input type="text" class="form-control" name="nama" id="modul-nama-add"
+                                aria-describedby="helpId" placeholder="">
+                        </div>
+                        <div class="form-group">
+                          <label for="">Modul</label>
+                          <input type="file" class="form-control" name="modul" id="modul-modul-add" >
+                        </div>
+                        <div class="form-group">
+                            <label for="">Harga</label>
+                            <input type="text" class="form-control" name="harga" id="modul-harga-add"
+                                aria-describedby="helpId" placeholder="">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="">Harga</label>
-                        <input type="text" class="form-control" name="harga" id="modul-harga-add"
-                            aria-describedby="helpId" placeholder="">
-                    </div>
-                </div>
+                </form>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <a onclick="storeModul()" id="btn-store-modul" class=" text-white btn btn-primary">Save</a>
+                    <button onclick="storeModul()" id="btn-store-modul" class=" text-white btn btn-primary">Save</button>
                 </div>
-            </form>
+            </section>
         </div>
     </div>
 </div>
@@ -748,6 +761,7 @@
     let hargaTotalTool = 0;
 
     $(document).ready(function () {
+
         showContent();
         showCicilan();
         //fungsi input map program studi
@@ -1286,6 +1300,8 @@
     function storeModul(){
         console.log('hae')
         $('#btn-store-modul').attr('disbled',true);
+        $('#modal-add-modul-content').hide();
+        $('#modal-add-modul-loading').show()
         let form = $('#form-modul-add')
         $.ajax({
             type: "post",
@@ -1296,8 +1312,10 @@
             processData:false,
             async: false,
             success: function (response) {
-                swal(response)
                 $('#modal-add-modul').modal('hide')
+                $('#modal-add-modul-content').show();
+                $('#modal-add-modul-loading').hide()
+                swal(response)
                 showModul()
                 $('#btn-store-modul').attr('disbled',false);
             }
