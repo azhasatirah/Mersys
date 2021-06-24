@@ -1310,7 +1310,6 @@
             contentType: false,       
             cache: false,             
             processData:false,
-            async: false,
             success: function (response) {
                 $('#modal-add-modul').modal('hide')
                 $('#modal-add-modul-content').show();
@@ -1319,7 +1318,7 @@
                 showModul()
                 $('#btn-store-modul').attr('disbled',false);
             }
-        })
+        }).done()
     }
     function editModul(id){
         let modul = modul_ss.filter(ele=> ele.IDModul == id)
