@@ -82,14 +82,15 @@ class Pembayaran extends Model
             ->join('siswa','kursus_siswa.IDSiswa','=','siswa.IDSiswa')
             ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
             ->select(
-                'pembayaran.Status as StatusPembayaran',
+                'pembayaran.Status as StatusPembayaran','transaksi.Hutang','pembayaran.NoUrut','transaksi.Total as TotalTransaksi','transaksi.KodeTransaksi',
                 'bukti_pembayaran.JumlahDitransfer','bukti_pembayaran.NoRekening as NoRekeningPengirim',
                 'bukti_pembayaran.NamaRekening as NamaRekeningPengirim','bukti_pembayaran.BuktiFoto',
                 'pembayaran.Total','pembayaran.IDPembayaran','pembayaran.KodePembayaran',
             'pembayaran.created_at','metode_pembayaran.MetodePembayaran','rekening.NoRekening','rekening.NamaRekening',
             'bank.NamaBank','transaksi.KodeTransaksi','banksend.NamaBank as BankPengirim',
             'siswa.NamaSiswa','program_studi.NamaProdi')
-            ->where('transaksi.UUID',$Kode)->get();
+            ->where('pembayaran.Status','!=','CLS')
+            ->where('transaksi.UUID',$Kode)->orderBy('pembayaran.NoUrut','asc')->get();
             return array('Status'=>'success','Pembayaran'=>$Data);
         }catch(QueryException $e){
             return array('Status'=>'error','message'=>$e);

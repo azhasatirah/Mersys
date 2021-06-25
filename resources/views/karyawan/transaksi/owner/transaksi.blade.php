@@ -46,7 +46,7 @@
         });
         function showData(){
             $.get('/karyawan/owner/transaksi/getdata',function(Data){
-
+                console.log(Data)
                 $('#datatabel').empty();
                 var a=0;
                 TabelData.clear().draw();

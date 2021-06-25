@@ -30,12 +30,20 @@ class PembayaranController extends Controller
         ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
         ->where('p.status','CLS')
         ->where('t.UUID',$Kode)->get();
-        $PembayaranOPN = DB::table('pembayaran as p')
+        $TMPPembayaranOPN = DB::table('pembayaran as p')
         ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
-        ->select('p.UUID as UIDPembayaran','p.NoUrut')
+        ->select('p.UUID as UIDPembayaran','p.NoUrut','p.IDPembayaran')
         ->where('p.status','OPN')
         ->where('t.UUID',$Kode)
         ->orderBy('p.NoUrut','asc')->get();
+        $PembayaranOPN =[];
+        //dd($Transaksi);
+        foreach($TMPPembayaranOPN as $dat){
+            $bukti = DB::table('bukti_pembayaran')->where('IDPembayaran',$dat->IDPembayaran)->get();
+            if(count($bukti)==0){
+                array_push($PembayaranOPN,$dat);
+            }
+        }
         //mengalihkan ke halaman rincian pembayaran
         if(count($PembayaranCLSWithnoBukti)>0){
             //dd($Transaksi['Transaksi'],$BuktiPembayaran,$PembayaranCLSWithnoBukti);
@@ -68,10 +76,19 @@ class PembayaranController extends Controller
         $Transaksi=Transaksi::showTransaksi($Kode);
         $CekPembayaran = Pembayaran::showPembayaranByKodeTransaksi($Kode);
         $Bank = Bank::getAllBank();
-        return view('siswa.pembayaran.info',[
+        $Data = [
             'Pembayaran'=>$Transaksi['Transaksi'],
             'Bank'=>$Bank['Bank']
-        ]);
+        ];
+        if($Transaksi['Transaksi'][0]->Hutang=='y'){
+            $Cicilan = DB::table('cicilan')->where('IDCicilan',$Transaksi['Transaksi'][0]->IDCicilan)->get();
+            $Data = [
+                'Pembayaran'=>$Transaksi['Transaksi'],
+                'Bank'=>$Bank['Bank'],
+                'Cicilan'=>$Cicilan
+            ];
+        }
+        return view('siswa.pembayaran.info',$Data);
     }
 
     //Halaman metode pembayaran
@@ -407,6 +424,7 @@ class PembayaranController extends Controller
         ->where('pembayaran.KodePembayaran',$request->pembayaran)->get();
         $Pembayaran = DB::table('pembayaran')
         ->where('IDTransaksi',$Transaksi[0]->IDTransaksi)->get();
+        //dd($Pembayaran);
         if(count($Pembayaran)==1){
             $DataPembayaran = array(
                 'Status'=>'CLS',
@@ -418,16 +436,28 @@ class PembayaranController extends Controller
                 'transaksi.UserUpd'=>session()->get('Username'),
                 'transaksi.updated_at'=>Carbon::now(),
             );
-            Pembayaran::changeStatusByKodePembayaran($request->pembayaran,$DataPembayaran);
             Transaksi::changeStatusByKodePembayaran($request->pembayaran,$Transaksi);
+            Pembayaran::changeStatusByKodePembayaran($request->pembayaran,$DataPembayaran);
         }else{
-
+            $PembayaranSelesai =[];
+            //dd($Pembayaran);
+            $PembayaranSelesai = array_filter($Pembayaran->toArray(),function($data){
+                return $data->Status == 'CLS';
+            });
             $DataPembayaran = array(
                 'Status'=>'CLS',
                 'UserUpd'=>session()->get('Username'),
                 'updated_at'=>Carbon::now(),
             );
             Pembayaran::changeStatusByKodePembayaran($request->pembayaran,$DataPembayaran);
+            if((count($Pembayaran)-count($PembayaranSelesai))==1){
+                $Transaksi = array(
+                    'transaksi.Status'=>'CLS',
+                    'transaksi.UserUpd'=>session()->get('Username'),
+                    'transaksi.updated_at'=>Carbon::now(),
+                );
+                Transaksi::changeStatusByKodePembayaran($request->pembayaran,$Transaksi);
+            }
         }
         $KursusSiswa = array(
             'kursus_siswa.Status'=>'CLS',

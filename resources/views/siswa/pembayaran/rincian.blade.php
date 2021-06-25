@@ -118,9 +118,9 @@
             </span>
             <p class="item-data">
                 @php 
-                    if($Pembayaran[0]->Status=='OPN' && count($BuktiPembayaran)==0){echo 'Lakukan pembayaran dan upload bukti pembayaran';}
-                    elseif($Pembayaran[0]->Status=='OPN' && count($BuktiPembayaran)>0){echo 'Sedang di cek Admin';}
-                    elseif($Pembayaran[0]->Status=='CMF' && count($BuktiPembayaran)>0){echo 'Sedang di cek Owner';}
+                    if($pembayaran->Status=='OPN' && count($BuktiPembayaran)==0){echo 'Lakukan pembayaran dan upload bukti pembayaran';}
+                    elseif($pembayaran->Status=='OPN' && count($BuktiPembayaran)>0){echo 'Sedang di cek Admin';}
+                    elseif($pembayaran->Status=='CMF' && count($BuktiPembayaran)>0){echo 'Sedang di cek Owner';}
                     elseif($pembayaran->Status=='CLS'){echo 'Di konfirmasi';}
                     else{echo 'Dibatalkan';}
                 @endphp
@@ -136,10 +136,18 @@
         </div>
     </div>
 @endforeach
+@php
+    $BayarCicilan = true;
+    foreach($BuktiPembayaran as $var){
+        if($var->Status=='OPN'){
+            $BayarCicilan = false;
+        }
+    }
+@endphp
 <div class="card item mt-4 shadow-sm">
     @if (session()->get('StatusUser')=='CFM')
     @endif
-    @if (count($PembayaranOPN)>0)
+    @if (count($PembayaranOPN)>0&&$BayarCicilan)
         
     <a href="{{url('siswa/pembayaran/metode/bank')}}/{{$PembayaranOPN[0]->UIDPembayaran}}" class="btn btn-success mt-3">
         Bayar cicilan ke {{$PembayaranOPN[0]->NoUrut}}

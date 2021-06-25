@@ -2,7 +2,40 @@
 @section('title','Info pembayaran')
 @section('step','info')
 @section('content')
+<div class="title-item mt-2">
+    <i class="fa fa-shopping-cart"></i>
+    Info Transaksi
+</div>
+<div class="card mt-2 item shadow-sm">
+    <div class="item-info">
+        <span class="item-title">
+            Kode Transaksi:
+        </span>
+        <p class="item-data">
+            {{$Pembayaran['Pembayaran'][0]->KodeTransaksi}}
+        </p>
+    </div>
+    <div class="item-info">
+        <span class="item-title">
+            Total Transaksi:
+        </span>
+        <p class="item-data">
+            Rp {{number_format($Pembayaran['Pembayaran'][0]->TotalTransaksi)}}
+        </p>
+    </div>
+    @if ($Pembayaran['Pembayaran'][0]->Hutang=='y')
+        
+    <div class="item-info">
+        <span class="item-title">
+            Cicilan Ke :
+        </span>
+        <h3 class="item-data">
+            {{$Pembayaran['Pembayaran'][0]->NoUrut}}
+        </h3>
+    </div>
+    @endif
 
+</div>
 <div class="title-item mt-2">
     <i class="fa fa-shopping-cart"></i>
     Transfer pembayaran

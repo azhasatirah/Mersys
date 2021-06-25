@@ -65,7 +65,7 @@ class Transaksi extends Model
             ->join('kategori_program','program_studi.IDKategoriProgram','=','kategori_program.IDKategoriProgram')
             ->select('transaksi.Total','transaksi.Keterangan','transaksi.Tanggal','transaksi.UUID','transaksi.Hutang',
             'siswa.NamaSiswa','program_studi.NamaProdi','program_studi.TotalPertemuan','transaksi.Status',
-            'kategori_program.KategoriProgram','transaksi.IDTransaksi','transaksi.KodeTransaksi'
+            'kategori_program.KategoriProgram','transaksi.IDTransaksi','transaksi.KodeTransaksi','transaksi.IDCicilan'
             )
             ->where('transaksi.UUID',$Kode)
             ->get();

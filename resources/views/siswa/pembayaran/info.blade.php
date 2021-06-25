@@ -99,14 +99,26 @@
             {{$Pembayaran[0]->NamaProdi}}
         </p>
     </div>
+    @if (isset($Cicilan))
     <div class="item-harga">
         <span class="item-title">
-            Total Pembayaran:
+            Pembayaran ke 1
         </span>
         <p class="item-data">
-           Rp. {{number_format($Pembayaran[0]->Total)}}
+        Rp. {{number_format($Pembayaran[0]->Total/$Cicilan[0]->Cicilan)}}
         </p>
     </div>
+    @else
+        <div class="item-harga">
+            <span class="item-title">
+                Total Pembayaran:
+            </span>
+            <p class="item-data">
+            Rp. {{number_format($Pembayaran[0]->Total)}}
+            </p>
+        </div>
+    @endif
+
 </div>
 <div class="card item mt-4 shadow-sm">
 

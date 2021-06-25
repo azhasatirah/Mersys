@@ -25,12 +25,19 @@ class TransaksiController extends Controller
         ->select('transaksi.KodeTransaksi','transaksi.Total','transaksi.SubTotal','transaksi.IDTransaksi',
             'transaksi.Status','transaksi.UUID as UUIDTransaksi',
             'transaksi.Hutang','transaksi.created_at','siswa.NamaSiswa','program_studi.NamaProdi')
-        ->where('transaksi.Status','OPN')
-        ->where('program_studi.IDProgram','!=',1)->get();
+        ->where('transaksi.Status','!=','DEL')
+        ->where('transaksi.Status','!=','CLS')
+        ->where('program_studi.IDProgram','!=',1)
+        ->get();
         
         $DataTransaksi=[];
         //dd($Transaksi);
         for($i=0;$i<count($Transaksi);$i++){
+            $AllPembayaran = DB::table('pembayaran')
+            ->join('bukti_pembayaran','pembayaran.IDPembayaran','=','bukti_pembayaran.IDPembayaran')
+            ->select('pembayaran.*')
+            ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
+            ->get();
             $Pembayaran = DB::table('pembayaran')
             ->join('bukti_pembayaran','pembayaran.IDPembayaran','=','bukti_pembayaran.IDPembayaran')
             ->select('pembayaran.*')
@@ -43,8 +50,23 @@ class TransaksiController extends Controller
             ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
             ->where('pembayaran.Status','CFM')
             ->get();
-            $Cicilan = DB::table('pembayaran')->where('pembayaran.Status','OPN')
+            $PembayaranCLS = DB::table('pembayaran')
+            ->join('bukti_pembayaran','pembayaran.IDPembayaran','=','bukti_pembayaran.IDPembayaran')
+            ->select('pembayaran.*')
             ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
+            ->where('pembayaran.Status','CLS')
+            ->get();
+            $PembayaranCLSWithnoBukti = DB::table('pembayaran')
+            ->select('pembayaran.*')
+            ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
+            ->where('pembayaran.Status','CLS')
+            ->get();
+            $Cicilan = DB::table('pembayaran')
+            ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
+            ->get();
+            $CicilanCLS = DB::table('pembayaran')
+            ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
+            ->where('pembayaran.Status','CLS')
             ->get();
             $CicilanOPN = DB::table('pembayaran')->where('pembayaran.Status','OPN')
             ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
@@ -54,7 +76,14 @@ class TransaksiController extends Controller
             $Status = count($Pembayaran)>0?'Sedang dicek admin':'Menunggu pembayaran';
             $FinalCicilan = (count($Cicilan) - count($CicilanOPN))==0?1:count($Cicilan) - count($CicilanOPN);
             $FinalStatus = count($PembayaranCFM)>0?'Menunggu dicek owner':$Status;
+            $EndStatus = count($PembayaranCLS)>0||count($PembayaranCLSWithnoBukti)>0?'Selesai':$FinalStatus;
             $FinalKodeStatus = count($PembayaranCFM)>0?'waitForOwner':$KodeStatus;
+            $FinalStatusCicilan = 
+           ( (count($CicilanOPN) == 0)&&
+           ( count($AllPembayaran))>0&&
+            (count($Cicilan) == count($CicilanCLS)))?
+             'Selesai' :$EndStatus . ' (Cicilan ke '. $FinalCicilan.' dari '.count($Cicilan).')';
+             //kunai
             array_push($DataTransaksi,
                 array(
                     'KodeTransaksi'=> $Transaksi[$i]->KodeTransaksi,
@@ -67,10 +96,11 @@ class TransaksiController extends Controller
                     'NamaSiswa'=> $Transaksi[$i]->NamaSiswa,
                     'NamaProdi'=>$Transaksi[$i]->NamaProdi,
                     'KodeStatus'=>$FinalKodeStatus,
-                    'Status'=> $Transaksi[$i]->Hutang=='y'? $FinalStatus . '(Cicilan ke '. $FinalCicilan.')':$FinalStatus,
+                    'Status'=> $Transaksi[$i]->Hutang=='y'?$FinalStatusCicilan :$EndStatus,
                 )
             );
         }
+        //dd($DataTransaksi);
         return response()->json($DataTransaksi);
 
     }
@@ -286,12 +316,19 @@ class TransaksiController extends Controller
         ->select('transaksi.KodeTransaksi','transaksi.Total','transaksi.SubTotal','transaksi.IDTransaksi',
             'transaksi.Status','transaksi.UUID as UUIDTransaksi',
             'transaksi.Hutang','transaksi.created_at','siswa.NamaSiswa','program_studi.NamaProdi')
-        ->where('transaksi.Status','OPN')
-        ->where('program_studi.IDProgram','!=',1)->get();
+        ->where('transaksi.Status','!=','DEL')
+        ->where('transaksi.Status','!=','CLS')
+        ->where('program_studi.IDProgram','!=',1)
+        ->get();
         
         $DataTransaksi=[];
         //dd($Transaksi);
         for($i=0;$i<count($Transaksi);$i++){
+            $AllPembayaran = DB::table('pembayaran')
+            ->join('bukti_pembayaran','pembayaran.IDPembayaran','=','bukti_pembayaran.IDPembayaran')
+            ->select('pembayaran.*')
+            ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
+            ->get();
             $Pembayaran = DB::table('pembayaran')
             ->join('bukti_pembayaran','pembayaran.IDPembayaran','=','bukti_pembayaran.IDPembayaran')
             ->select('pembayaran.*')
@@ -304,18 +341,40 @@ class TransaksiController extends Controller
             ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
             ->where('pembayaran.Status','CFM')
             ->get();
-            $Cicilan = DB::table('pembayaran')->where('pembayaran.Status','OPN')
+            $PembayaranCLS = DB::table('pembayaran')
+            ->join('bukti_pembayaran','pembayaran.IDPembayaran','=','bukti_pembayaran.IDPembayaran')
+            ->select('pembayaran.*')
             ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
+            ->where('pembayaran.Status','CLS')
+            ->get();
+            $PembayaranCLSWithnoBukti = DB::table('pembayaran')
+            ->select('pembayaran.*')
+            ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
+            ->where('pembayaran.Status','CLS')
+            ->get();
+            $Cicilan = DB::table('pembayaran')
+            ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
+            ->get();
+            $CicilanCLS = DB::table('pembayaran')
+            ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
+            ->where('pembayaran.Status','CLS')
             ->get();
             $CicilanOPN = DB::table('pembayaran')->where('pembayaran.Status','OPN')
             ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
             ->where('pembayaran.Status','OPN')
             ->get();
             $KodeStatus = count($Pembayaran)>0?'waitForAdmin':'waitForPayment';
-            $Status = count($Pembayaran)>0?'Menunggu dikonfirmasi admin':'Menunggu pembayaran';
+            $Status = count($Pembayaran)>0?'Sedang dicek admin':'Menunggu pembayaran';
             $FinalCicilan = (count($Cicilan) - count($CicilanOPN))==0?1:count($Cicilan) - count($CicilanOPN);
-            $FinalStatus = count($PembayaranCFM)>0?'Sedang dicek Owner':$Status;
+            $FinalStatus = count($PembayaranCFM)>0?'Menunggu dicek owner':$Status;
+            $EndStatus = count($PembayaranCLS)>0||count($PembayaranCLSWithnoBukti)>0?'Selesai':$FinalStatus;
             $FinalKodeStatus = count($PembayaranCFM)>0?'waitForOwner':$KodeStatus;
+            $FinalStatusCicilan = 
+           ( (count($CicilanOPN) == 0)&&
+           ( count($AllPembayaran))>0&&
+            (count($Cicilan) == count($CicilanCLS)))?
+             'Selesai' :$EndStatus . ' (Cicilan ke '. $FinalCicilan.' dari '.count($Cicilan).')';
+             //kunai
             array_push($DataTransaksi,
                 array(
                     'KodeTransaksi'=> $Transaksi[$i]->KodeTransaksi,
@@ -328,10 +387,11 @@ class TransaksiController extends Controller
                     'NamaSiswa'=> $Transaksi[$i]->NamaSiswa,
                     'NamaProdi'=>$Transaksi[$i]->NamaProdi,
                     'KodeStatus'=>$FinalKodeStatus,
-                    'Status'=> $Transaksi[$i]->Hutang=='y'? $FinalStatus . '(Cicilan ke '. $FinalCicilan.')':$FinalStatus,
+                    'Status'=> $Transaksi[$i]->Hutang=='y'?$FinalStatusCicilan :$EndStatus,
                 )
             );
         }
+        //dd($DataTransaksi);
         return response()->json($DataTransaksi);
 
     }
@@ -492,6 +552,11 @@ class TransaksiController extends Controller
         $DataTransaksi=[];
         //dd($Transaksi);
         for($i=0;$i<count($Transaksi);$i++){
+            $AllPembayaran = DB::table('pembayaran')
+            ->join('bukti_pembayaran','pembayaran.IDPembayaran','=','bukti_pembayaran.IDPembayaran')
+            ->select('pembayaran.*')
+            ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
+            ->get();
             $Pembayaran = DB::table('pembayaran')
             ->join('bukti_pembayaran','pembayaran.IDPembayaran','=','bukti_pembayaran.IDPembayaran')
             ->select('pembayaran.*')
@@ -515,8 +580,12 @@ class TransaksiController extends Controller
             ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
             ->where('pembayaran.Status','CLS')
             ->get();
-            $Cicilan = DB::table('pembayaran')->where('pembayaran.Status','OPN')
+            $Cicilan = DB::table('pembayaran')
             ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
+            ->get();
+            $CicilanCLS = DB::table('pembayaran')
+            ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
+            ->where('pembayaran.Status','CLS')
             ->get();
             $CicilanOPN = DB::table('pembayaran')->where('pembayaran.Status','OPN')
             ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
@@ -528,6 +597,12 @@ class TransaksiController extends Controller
             $FinalStatus = count($PembayaranCFM)>0?'Menunggu dicek owner':$Status;
             $EndStatus = count($PembayaranCLS)>0||count($PembayaranCLSWithnoBukti)>0?'Selesai':$FinalStatus;
             $FinalKodeStatus = count($PembayaranCFM)>0?'waitForOwner':$KodeStatus;
+            $FinalStatusCicilan = 
+           ( (count($CicilanOPN) == 0)&&
+           ( count($AllPembayaran))>0&&
+            (count($Cicilan) == count($CicilanCLS)))?
+             'Selesai' :$EndStatus . ' (Cicilan ke '. $FinalCicilan.')';
+             //kunai
             array_push($DataTransaksi,
                 array(
                     'KodeTransaksi'=> $Transaksi[$i]->KodeTransaksi,
@@ -540,7 +615,7 @@ class TransaksiController extends Controller
                     'NamaSiswa'=> $Transaksi[$i]->NamaSiswa,
                     'NamaProdi'=>$Transaksi[$i]->NamaProdi,
                     'KodeStatus'=>$FinalKodeStatus,
-                    'Status'=> $Transaksi[$i]->Hutang=='y'? $EndStatus . '(Cicilan ke '. $FinalCicilan.')':$EndStatus,
+                    'Status'=> $Transaksi[$i]->Hutang=='y'?$FinalStatusCicilan :$EndStatus,
                 )
             );
         }
