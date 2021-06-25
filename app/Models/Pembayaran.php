@@ -60,8 +60,10 @@ class Pembayaran extends Model
             ->join('bank','rekening.IDBank','=','bank.IDBank')
             ->select('pembayaran.Total','pembayaran.IDPembayaran','pembayaran.KodePembayaran','pembayaran.UUID',
             'pembayaran.created_at','metode_pembayaran.MetodePembayaran','rekening.NoRekening','rekening.NamaRekening',
-            'bank.NamaBank')
-            ->where('pembayaran.UUID',$Kode)->get();
+            'bank.NamaBank','pembayaran.NoUrut','transaksi.Hutang')
+            ->where('pembayaran.Status','OPN')
+            ->where('pembayaran.UUID',$Kode)
+            ->orderBy('pembayaran.NoUrut','asc')->get();
             return array('Status'=>'success','Pembayaran'=>$Data);
         }catch(QueryException $e){
             return array('Status'=>'error','message'=>$e);

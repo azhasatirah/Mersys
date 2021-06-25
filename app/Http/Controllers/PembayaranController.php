@@ -28,13 +28,22 @@ class PembayaranController extends Controller
         $BuktiPembayaran = BuktiPembayaran::showBuktiPembayaranByKodeTransaksi($Kode);
         $PembayaranCLSWithnoBukti = DB::table('pembayaran as p')
         ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
+        ->where('p.status','CLS')
         ->where('t.UUID',$Kode)->get();
+        $PembayaranOPN = DB::table('pembayaran as p')
+        ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
+        ->select('p.UUID as UIDPembayaran','p.NoUrut')
+        ->where('p.status','OPN')
+        ->where('t.UUID',$Kode)
+        ->orderBy('p.NoUrut','asc')->get();
         //mengalihkan ke halaman rincian pembayaran
         if(count($PembayaranCLSWithnoBukti)>0){
+            //dd($Transaksi['Transaksi'],$BuktiPembayaran,$PembayaranCLSWithnoBukti);
             return view('siswa.pembayaran.rincian',[
                 'Pembayaran'=>$Transaksi['Transaksi'],
                 'Bank'=>$Bank['Bank'],
                 'BuktiPembayaran'=>$BuktiPembayaran,
+                'PembayaranOPN'=>$PembayaranOPN
             ]);
         }
         if(count($BuktiPembayaran)>0){
@@ -43,23 +52,26 @@ class PembayaranController extends Controller
                 'Pembayaran'=>$Transaksi['Transaksi'],
                 'Bank'=>$Bank['Bank'],
                 'BuktiPembayaran'=>$BuktiPembayaran,
+                'PembayaranOPN'=>$PembayaranOPN
             ]);
         //mengalihkan ke halaman upload bukti pembayaran
         }elseif(count($CekPembayaran)>0){
-            $Pembayaran = Pembayaran::getDetailPembayaran($CekPembayaran[0]->UUIDPembayaran);
-            $Bank = Bank::getAllBank();
-            return view('siswa.pembayaran.metode_bank',[
-                'Pembayaran'=>$Pembayaran,
-                'Bank'=>$Bank['Bank'],
-            ]);
+            //by id pembayaran
+            return redirect('siswa/pembayaran/metode/bank/'.$PembayaranOPN[0]->UIDPembayaran);
         // halaman pembayaran selesai
         }else{
-         //  dd($Transaksi);
-            return view('siswa.pembayaran.info',[
-                'Pembayaran'=>$Transaksi['Transaksi'],
-                'Bank'=>$Bank['Bank']
-            ]);
+         //dd($Transaksi['Transaksi']);
+            return  redirect('siswa/pembayaran/detail/'.$Kode);
         }
+    }
+    public function detail($Kode){
+        $Transaksi=Transaksi::showTransaksi($Kode);
+        $CekPembayaran = Pembayaran::showPembayaranByKodeTransaksi($Kode);
+        $Bank = Bank::getAllBank();
+        return view('siswa.pembayaran.info',[
+            'Pembayaran'=>$Transaksi['Transaksi'],
+            'Bank'=>$Bank['Bank']
+        ]);
     }
 
     //Halaman metode pembayaran
@@ -160,6 +172,7 @@ class PembayaranController extends Controller
         return redirect('/siswa/pembayaran/metode/bank/'.$UUIDPembayaran);
     }
     public function storeBuktiPembayaran(Request $request){
+        //kunai
         $IsPendaftaran = DB::table('pembayaran as p')
         ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
         ->join('kursus_siswa as ks','t.IDKursusSiswa','ks.IDKursusSiswa')

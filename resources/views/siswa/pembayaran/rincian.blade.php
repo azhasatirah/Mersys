@@ -61,6 +61,14 @@
     @endif
     <div class="item-info">
         <span class="item-title">
+            Total transaksi:
+        </span>
+        <p class="item-data">
+            Rp {{number_format($Pembayaran[0]->Total)}}
+        </p>
+    </div>
+    <div class="item-info">
+        <span class="item-title">
             Tanggal Pembelian:
         </span>
         <p class="item-data">
@@ -75,9 +83,11 @@
 </div>
 @foreach ($BuktiPembayaran as $pembayaran)
     <div class="card mt-2 item shadow-sm">
+        @if ($Pembayaran[0]->Hutang == 'y')
         <div class="p-4">
             <h4>Pembayaran ke {{$pembayaran->NoUrut}}</h4>
         </div>
+        @endif
         <div class="item-info">
             <span class="item-title">
                 Nama Rekening:
@@ -129,8 +139,13 @@
 <div class="card item mt-4 shadow-sm">
     @if (session()->get('StatusUser')=='CFM')
     @endif
+    @if (count($PembayaranOPN)>0)
         
-    <a href="{{url('siswa/transaksi')}}" class="btn btn-primary my-3">
+    <a href="{{url('siswa/pembayaran/metode/bank')}}/{{$PembayaranOPN[0]->UIDPembayaran}}" class="btn btn-success mt-3">
+        Bayar cicilan ke {{$PembayaranOPN[0]->NoUrut}}
+    </a>
+    @endif
+    <a href="{{url('siswa/transaksi')}}" class="btn btn-primary mt-2 mb-3">
         Lihat Riwayat Transaksi
     </a>
 </div>

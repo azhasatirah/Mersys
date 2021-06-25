@@ -363,9 +363,12 @@ Route::group(['middleware'=>['Role:siswa'],'prefix'=>'siswa'],function(){
     Route::get('sertifikat/depan/cetak/{id}','SertifikatController@printDepan');
     //pembayaran
     Route::get('pembayaran/','PembayaranController@index');
+
     Route::get('pembayaran/info/{id}','PembayaranController@info');
+    Route::get('pembayaran/detail/{id}','PembayaranController@detail');
     Route::get('pembayaran/metode/{id}','PembayaranController@metode');
     Route::get('pembayaran/metode/bank/{id}','PembayaranController@createMetodeBank');
+
     Route::post('pembayaran/metode/bank','PembayaranController@storePembayaranBank');
     Route::post('pembayaran/bukti','PembayaranController@storeBuktiPembayaran');
     Route::get('pembayaran/rincian/{id}','PembayaranController@rincian');

@@ -18,7 +18,7 @@ class BuktiPembayaran extends Model
             'bukti_pembayaran.NoRekening','bukti_pembayaran.JumlahDitransfer',
             'bukti_pembayaran.BuktiFoto','bukti_pembayaran.IDBuktiPembayaran',
             'pembayaran.Status','bukti_pembayaran.created_at',
-            'pembayaran.NoUrut'
+            'pembayaran.NoUrut','pembayaran.Status as  Status'
             )
             ->where('transaksi.UUID',$Kode)
 
