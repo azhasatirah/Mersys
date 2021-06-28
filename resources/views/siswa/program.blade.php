@@ -64,7 +64,7 @@
                             @endif
                             >Rp. {{number_format($item['HargaLunas'])}}</span> <br>
                             @if (count($item['Diskon'])>0)       
-                              <span  class="bg-success" >Rp. {{number_format($item['HargaLunas']*$item['Diskon'][0]->Nilai/100)}}</span> 
+                              <span  class="bg-success" >Rp. {{number_format($item['HargaLunas'] - ($item['HargaLunas'] * $item['Diskon'][0]->Nilai/100))}}</span> 
                             @endif
                           </div>
                           @if (count($item['Diskon'])>0) 
@@ -231,19 +231,18 @@ function showDiskon(){
 }
 function getDetail(id){
   let diskon_value = $('#diskon-value').val()
-  console.log(diskon_value)
   $.get('/siswa/jprogram/getDetail/'+id,(data)=>{
     $('#display-modul').empty();
     $('#display-tool').empty();
     $('#display-cicilan').empty();
     $('#display-nama-prodi').html(data[0].NamaProdi);
     $('#display-harga-lunas').html(IDR(data[0].HargaLunas));
-    $('#display-harga-diskon').html(IDR(data[0].HargaLunas*diskon_value/100));
+    $('#display-harga-diskon').html(IDR(data[0].HargaLunas-(data[0].HargaLunas*diskon_value/100)));
     $('#display-pertemuan').html(data[0].TotalPertemuan + ' Pertemuan');
     //show harga lunas
     $('#pembayaran-lunas').html('('+IDR(data[0].HargaLunas)+')');
     //input harga lunas
-    $('#hargalunas').val(diskon_value == 0 ?data[0].HargaLunas:data[0].HargaLunas*diskon_value/100);
+    $('#hargalunas').val(diskon_value == 0 ?data[0].HargaLunas:data[0].HargaLunas-(data[0].HargaLunas*diskon_value/100));
     $('.program').val(data[0].IDProgram);
     if(data[0].Tool!=false){
       $('#display-tool').append(
@@ -263,14 +262,14 @@ function getDetail(id){
               '<div>'+
                 '<strong> Cicilan '+cicil.Cicilan+'x </strong> '+
                 '<span class=\"text-success\" style=\"font-size:18px\" >'+
-                  '(' + IDR(cicil.Harga)+')'+  
+                  '(' + IDR(diskon_value == 0 ?cicil.Harga:cicil.Harga-(cicil.Harga*diskon_value/100))+')'+  
                 '</span>'+
               '</div>'+
               '<form method=\"POST\" action=\"/siswa/transaksi/program\" >'+
               '<input type=\"hidden\"  name=\"_token\" value=\"'+$("#csrf").val()+'\">'+
               '<input type=\"hidden\" name=\"idcicilan\" value=\"'+cicil.IDCicilan+'"\>'+
               '<input type=\"hidden\" name=\"cicilan\" value=\"y"\>'+
-              '<input type=\"hidden\" id=\"hargalunas\" name=\"harga\" value=\"'+cicil.Harga+'\">'+
+              '<input type=\"hidden\" id=\"hargalunas\" name=\"harga\" value=\"'+diskon_value == 0 ?cicil.Harga:cicil.Harga-(cicil.Harga*diskon_value/100)+'\">'+
               '<input type=\"hidden\" value=\"'+cicil.IDProgram+'\" class=\"program\" name=\"program\">'+
               '<button type=\"submit\" class=\"btn btn-sm btn-primary\">Pilih</button>'+
               '</form>'+
