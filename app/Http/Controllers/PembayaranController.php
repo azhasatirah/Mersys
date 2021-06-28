@@ -149,7 +149,10 @@ class PembayaranController extends Controller
         $KodePembayaran = "PAY-" . date("myHis");
         $UUIDPembayaran = str_replace('-','',str::uuid());
         if($Transaksi['Transaksi'][0]->Hutang=='y'){
-            $Cicilan = Cicilan::getCicilanByIDTransaksi($Transaksi['Transaksi'][0]->IDTransaksi);
+            $Cicilan = DB::table('cicilan')
+            ->select('cicilan.Cicilan','cicilan.Harga')
+            ->where('cicilan.IDCicilan',$Transaksi['Transaksi'][0]->IDCicilan)
+            ->get();
             $UUIDPembayaranPertama=str_replace('-','',str::uuid());
             //dd($Cicilan,$UUIDPembayaranPertama,$Transaksi['Transaksi'][0]->IDTransaksi);
             for($i =0;$i < $Cicilan['Cicilan'][0]->Cicilan;$i++){
