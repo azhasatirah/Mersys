@@ -85,6 +85,7 @@ class JadwalController extends Controller
         ->select('kursus_materi.Hari','jadwal.Tanggal','jadwal.IDKursusSiswa',
         'kursus_materi.NamaMateri','kursus_siswa.KodeKursus',
         'siswa.NamaSiswa','jadwal.IDJadwal','jadwal.IDTutor')
+        ->where('kursus_siswa.Status','OPN')
         ->where('jadwal.Status','OPN')->get()->groupBy('IDKursusSiswa');
         $Data = [];
         foreach($DataTMP as $d){
