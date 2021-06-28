@@ -264,14 +264,14 @@ function getDetail(id){
               '<div>'+
                 '<strong> Cicilan '+cicil.Cicilan+'x </strong> '+
                 '<span class=\"text-success\" style=\"font-size:18px\" >'+
-                  '(' + IDR(cicil.Harga)+')'+  
+                  '(' + IDR(harga)+')'+  
                 '</span>'+
               '</div>'+
               '<form method=\"POST\" action=\"/siswa/transaksi/program\" >'+
               '<input type=\"hidden\"  name=\"_token\" value=\"'+$("#csrf").val()+'\">'+
               '<input type=\"hidden\" name=\"idcicilan\" value=\"'+cicil.IDCicilan+'"\>'+
               '<input type=\"hidden\" name=\"cicilan\" value=\"y"\>'+
-              '<input type=\"hidden\" id=\"hargalunas\" name=\"harga\" value=\"'+cicil.Harga+'\">'+
+              '<input type=\"hidden\" id=\"hargalunas\" name=\"harga\" value=\"'+harga+'\">'+
               '<input type=\"hidden\" value=\"'+cicil.IDProgram+'\" class=\"program\" name=\"program\">'+
               '<button type=\"submit\" class=\"btn btn-sm btn-primary\">Pilih</button>'+
               '</form>'+
