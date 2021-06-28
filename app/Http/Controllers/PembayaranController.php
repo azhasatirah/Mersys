@@ -153,16 +153,16 @@ class PembayaranController extends Controller
             ->select('cicilan.Cicilan','cicilan.Harga')
             ->where('cicilan.IDCicilan',$Transaksi['Transaksi'][0]->IDCicilan)
             ->get();
-            dd($Transaksi,$Cicilan);
+           // dd($Transaksi,$Cicilan);
             $UUIDPembayaranPertama=str_replace('-','',str::uuid());
             //dd($Cicilan,$UUIDPembayaranPertama,$Transaksi['Transaksi'][0]->IDTransaksi);
-            for($i =0;$i < $Cicilan['Cicilan'][0]->Cicilan;$i++){
+            for($i =0;$i < $Cicilan[0]->Cicilan;$i++){
                 $Data = array(
                     'UUID'=>$i==0?$UUIDPembayaranPertama:str_replace('-','',str::uuid()),
                     'KodePembayaran'=>"PAY-" . date("mHis").$i,
                     'IDTransaksi'=>$Transaksi['Transaksi'][0]->IDTransaksi,
                     'IDMetodePembayaran'=>$request->metode,
-                    'Total'=>$Cicilan['Cicilan'][0]->Harga / $Cicilan['Cicilan'][0]->Cicilan,
+                    'Total'=>$Cicilan[0]->Harga / $Cicilan[0]->Cicilan,
                     'NoUrut'=>$i+1,
                     'created_at'=>Carbon::now(),
                     'updated_at'=>Carbon::now(),
