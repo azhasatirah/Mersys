@@ -91,10 +91,16 @@ class ProgramStudiController extends Controller
     }
 
     public function programSiswa($ID,$ID2){
-    
+        
+        $type_tmp = $ID == '3023364374c24e03afdd50430940db3c'?'semua program reguler':'semua program';
+        $type = $type_tmp == 'semua program'&&$ID=='d667956724b54f72b57aef27166a92ed'?'semua program bulanan':$type_tmp;
         $ProgramStudi = ProgramStudi::getProgramStudiByKategori($ID2,$ID);
+        $Diskon = DB::table('diskon')->where('Status','OPN')->where('IDSiswa',session()->get('IDUser'))
+        ->where('Type',$type)
+        ->get();    
        // dd($ProgramStudi);
         $Data = [];
+        //dd($Diskon,$type);
         foreach($ProgramStudi['ProgramStudi']as $Prodi){
             $Tools = DB::table('program_studi_tool')
             ->where('IDProgram',$Prodi->IDProgram)
@@ -110,6 +116,7 @@ class ProgramStudiController extends Controller
                 'NamaProdi'=>$Prodi->NamaProdi,
                 'TotalPertemuan'=>$Prodi->TotalPertemuan,
                 'HargaLunas'=>$Prodi->Harga + $Tools->sum('Harga')+$Moduls->sum('Harga'),
+                'Diskon'=>$Diskon,
                 'Tool'=>count($Tools)>0?$Tools:false,
                 'Modul'=>count($Moduls)>0?$Moduls:false,
                 'Cicilan'=>count($Cicilan)>0?$Cicilan:false

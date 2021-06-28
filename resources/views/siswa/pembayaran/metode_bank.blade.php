@@ -84,7 +84,7 @@ enctype="multipart/form-data" method="POST">
                 </label>
             </div>
             <div class="form-floating">
-                <input type="text" class="form-control form-control-sm ss-input" name="norekening" placeholder="username" 
+                <input type="number" class="form-control form-control-sm ss-input" name="norekening" placeholder="username" 
                 id="inNoHP">
                 <label for="inNoHP">Nomor Rekening</label>
             </div>

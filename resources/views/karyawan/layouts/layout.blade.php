@@ -94,7 +94,9 @@
                   <li><a href="{{url('karyawan/owner/syarat')}}"><i class="fa fa-square"></i>Syarat dan Ketentuan</a></li>
                   @endif
                   <!-- Menu Admin -->
-                  @if(session()->get('Level')==2)               
+                  @if(session()->get('Level')==2)   
+                  <li><a href="{{url('karyawan/admin/kursus')}}"><i class="fa fa-book"></i>Daftar kursus</a></li>
+                  <li><a href="{{url('karyawan/admin/diskon')}}"><i class="fa fa-dollar-sign"></i>Diskon</a></li>       
                   <li><a><i class="fa fa-cog"></i> Transaksi <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{url('karyawan/admin/transaksi')}}">Transaksi Proses</a></li>
@@ -129,7 +131,6 @@
                   </li>
                   <li><a href="{{url('karyawan/admin/karyawan')}}"><i class="fa fa-square"></i>Daftar Karyawan</a></li>
                   <li><a href="{{url('karyawan/admin/siswa')}}"><i class="fa fa-square"></i>Daftar Siswa</a></li>
-                  <li><a href="{{url('karyawan/admin/kursus')}}"><i class="fa fa-book"></i>Daftar kursus</a></li>
                   @endif
                   <!-- Menu Tutor -->
                   @if(session()->get('Level')==3)

@@ -47,7 +47,36 @@
                     <input type="hidden" id="IDProgram{{$item['IDProgram']}}" value="{{$item['Tool']}}">
                     <td>
                       <h4 style="font-size:18px;" class=" text-white">
-                       <span class="bg-success">Rp. {{number_format($item['HargaLunas'])}}</span> 
+                        <div class="row">
+                          <div class="col-md-9">
+                            <span 
+                            class="
+                            @if (count($item['Diskon'])>0)       
+                            bg-dark
+                            @else
+                            bg-success
+                            @endif
+                            
+                            " 
+                            @if (count($item['Diskon'])>0) 
+                                
+                            style="text-decoration: line-through"
+                            @endif
+                            >Rp. {{number_format($item['HargaLunas'])}}</span> <br>
+                            @if (count($item['Diskon'])>0)       
+                              <span  class="bg-success" >Rp. {{number_format($item['HargaLunas']*$item['Diskon'][0]->Nilai/100)}}</span> 
+                            @endif
+                          </div>
+                          @if (count($item['Diskon'])>0) 
+                              
+                          <div id="display-diskon-val" class="col-md-3">
+                            <div style="height: 60px;width:60px;text-align:center;border-radius:38px" class="bg-success">
+                             <h5 style="padding-top: 7px" id="diskon-val">{{$item['Diskon'][0]->Nilai}}% OFF</h5>
+                           </div>
+
+                          </div>
+                          @endif
+                        </div>
                       </p>
                     </td>
                     <td>
@@ -65,7 +94,7 @@
       </div>
     </div>
   </div>
-
+<input type="hidden" id="diskon-value" value="@if(count($Program[0]['Diskon'])>0){{$Program[0]['Diskon'][0]->Nilai}}@else 0 @endif">
   <div class="modal fade" id="modaldetail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -96,7 +125,13 @@
                                               <ul class="list-group " style="margin-top:-20px">
                                                 <li><i class="fa fa-dollar text-success"></i> <strong>Harga</strong></li>
                                                 <li class="list-group-item d-flex justify-content-between">
-                                                    <div><strong> Lunas</strong> <span class="text-success" style="font-size:18px" id="pembayaran-lunas" ></span></div>
+                                                    <div><strong> Lunas</strong> 
+                                                      <span class="text-gray" style="font-size:18px;
+                                                      @if (count($Program[0]['Diskon'])>0)text-decoration:line-through @endif" id="pembayaran-lunas" ></span>
+                                                      @if (count($Program[0]['Diskon'])>0)
+                                                      <span class="text-success" style="font-size:18px" id="display-harga-diskon"></span>
+                                                      @endif
+                                                    </div>
                                                     <form method="POST" action="{{url('siswa/transaksi/program')}}" >
                                                     <input type="hidden" id="csrf" name="_token" value="{{ csrf_token() }}">
                                                     <input type="hidden" name="idcicilan" value="0">
@@ -127,6 +162,7 @@
         </div>
     </div>
   </div>
+  <input type="hidden" id="idsiswa" value="{{session()->get('IDUser')}}">
 
 
   
@@ -172,22 +208,42 @@ list-group-item-action">
 @endsection
 @push('scripts')
 <script >
+let DiskonAktif = [] , Siswa = $('#idsiswa').val()
 $(document).ready(function(){
 
     $('#tabeldata').DataTable();
+    getDiskon() 
 });
+function getDiskon(){
+  Promise.resolve( $.get("/siswa/diskon/getdata/"+Siswa)).then((ele)=>{
+    DiskonAktif = ele
+    showDiskon()
+  })
+
+}
+function showDiskon(){
+  let kat_program = window.location.href.split('/')[5] =='3023364374c24e03afdd50430940db3c'?'semua program reguler':'semua program bulanan'
+  if(DiskonAktif.length>0){
+    if(DiskonAktif[0].Type==kat_program){
+      
+    }
+  }
+}
 function getDetail(id){
+  let diskon_value = $('#diskon-value').val()
+  console.log(diskon_value)
   $.get('/siswa/jprogram/getDetail/'+id,(data)=>{
     $('#display-modul').empty();
     $('#display-tool').empty();
     $('#display-cicilan').empty();
     $('#display-nama-prodi').html(data[0].NamaProdi);
     $('#display-harga-lunas').html(IDR(data[0].HargaLunas));
+    $('#display-harga-diskon').html(IDR(data[0].HargaLunas*diskon_value/100));
     $('#display-pertemuan').html(data[0].TotalPertemuan + ' Pertemuan');
     //show harga lunas
     $('#pembayaran-lunas').html('('+IDR(data[0].HargaLunas)+')');
     //input harga lunas
-    $('#hargalunas').val(data[0].HargaLunas);
+    $('#hargalunas').val(diskon_value == 0 ?data[0].HargaLunas:data[0].HargaLunas*diskon_value/100);
     $('.program').val(data[0].IDProgram);
     if(data[0].Tool!=false){
       $('#display-tool').append(

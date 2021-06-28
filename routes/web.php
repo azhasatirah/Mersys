@@ -89,6 +89,14 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 
     //route admin
     Route::group(['middleware'=>['RoleKaryawan:2'],'prefix'=>'admin'],function(){
+
+        Route::get('diskon','DiskonController@adminIndex');
+        Route::get('diskon/getdata','DiskonController@getData');
+        Route::get('diskon/delete/{id}','DiskonController@delete');
+        Route::post('diskon/store','DiskonController@store');
+        Route::post('diskon/update','DiskonController@update');
+
+
         //admin akses melihat semua kursus
         Route::get('kursus','KursusSiswaController@adminIndexKursus');
         Route::get('kursus/show/{id}','KursusSiswaController@adminShowKursus');
@@ -345,7 +353,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 
 Route::group(['middleware'=>['Role:siswa'],'prefix'=>'siswa'],function(){
 
-   
+   Route::get('diskon/getdata/{id}','DiskonController@siswaData');  
 
     Route::post('jadwalchanges/store','JadwalChangesController@storeChanges');
     Route::get('jadwalchanges/get/{id}','JadwalChangesController@getChanges');
@@ -445,7 +453,7 @@ Route::prefix('auth')->group(function(){
 Route::get('/','AuthController@index');
 Route::get('/karyawan','AuthController@gerbangKaryawan');
 
-// Route::get('/updatetutor','JadwalController@updateIDTutor');
+Route::get('/updatetutor','JadwalController@updateIDTutor');
 // Route::get('/updatetotalpertemuan','JadwalController@updateTotalPertemuan');
 // Route::get('/recover','JadwalController@recoverJadwal');
 // Route::get('/recovermateri','JadwalController@recoverMateri');
