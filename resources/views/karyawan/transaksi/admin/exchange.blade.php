@@ -182,11 +182,12 @@
     }
     function showDataTransaksiSelesai(){
         let pilih_transaksi = $('#input-pilih-transaksi')
+        console.log(TransaskiSelesai)
         pilih_transaksi.empty()
         pilih_transaksi.append( "<option value=\"0\">Pilih</option>")
         TransaksiSelesai.forEach((ele)=>{
             pilih_transaksi.append(
-                "<option value=\""+ele.IDTransaksi+"\">"+ele.KodeTransaksi+"</option>"
+                "<option value=\""+ele.IDTransaksi+"\">"+ele.NamaSiswa+" ("+ele.KodeTransaksi+")</option>"
             );
         })
     }
