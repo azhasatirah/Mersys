@@ -231,6 +231,7 @@ function showDiskon(){
 }
 function getDetail(id){
   let diskon_value = $('#diskon-value').val()
+
   $.get('/siswa/jprogram/getDetail/'+id,(data)=>{
     $('#display-modul').empty();
     $('#display-tool').empty();
@@ -257,19 +258,20 @@ function getDetail(id){
     if(data[0].Cicil=='y'){
 
       data[0].Cicilan.forEach((cicil)=>{
+        let harga = diskon_value == 0 ?cicil.Harga:cicil.Harga-(cicil.Harga*diskon_value/100)
         $('#display-cicilan').append(
           '<li style=\"margin-top:0px\" class="list-group-item d-flex justify-content-between">'+
               '<div>'+
                 '<strong> Cicilan '+cicil.Cicilan+'x </strong> '+
                 '<span class=\"text-success\" style=\"font-size:18px\" >'+
-                  '(' + IDR(diskon_value == 0 ?cicil.Harga:cicil.Harga-(cicil.Harga*diskon_value/100))+')'+  
+                  '(' + IDR(cicil.Harga)+')'+  
                 '</span>'+
               '</div>'+
               '<form method=\"POST\" action=\"/siswa/transaksi/program\" >'+
               '<input type=\"hidden\"  name=\"_token\" value=\"'+$("#csrf").val()+'\">'+
               '<input type=\"hidden\" name=\"idcicilan\" value=\"'+cicil.IDCicilan+'"\>'+
               '<input type=\"hidden\" name=\"cicilan\" value=\"y"\>'+
-              '<input type=\"hidden\" id=\"hargalunas\" name=\"harga\" value=\"'+diskon_value == 0 ?cicil.Harga:cicil.Harga-(cicil.Harga*diskon_value/100)+'\">'+
+              '<input type=\"hidden\" id=\"hargalunas\" name=\"harga\" value=\"'+cicil.Harga+'\">'+
               '<input type=\"hidden\" value=\"'+cicil.IDProgram+'\" class=\"program\" name=\"program\">'+
               '<button type=\"submit\" class=\"btn btn-sm btn-primary\">Pilih</button>'+
               '</form>'+
