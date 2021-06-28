@@ -153,6 +153,7 @@ class PembayaranController extends Controller
             ->select('cicilan.Cicilan','cicilan.Harga')
             ->where('cicilan.IDCicilan',$Transaksi['Transaksi'][0]->IDCicilan)
             ->get();
+            dd($Transaksi,$Cicilan);
             $UUIDPembayaranPertama=str_replace('-','',str::uuid());
             //dd($Cicilan,$UUIDPembayaranPertama,$Transaksi['Transaksi'][0]->IDTransaksi);
             for($i =0;$i < $Cicilan['Cicilan'][0]->Cicilan;$i++){
