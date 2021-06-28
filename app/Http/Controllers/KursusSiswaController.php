@@ -111,6 +111,7 @@ class KursusSiswaController extends Controller
             ->select('ks.IDKursusSiswa','ks.UUID as UIDKursus','ks.KodeKursus','ks.created_at as TanggalOrder'
             ,'s.NamaSiswa','s.KodeSiswa','ps.NamaProdi','ks.Status')
             ->where('ks.IDProgram','!=',1)
+            ->where('ks.Status','!=','DEL')
             ->orderBy('ks.created_at','desc')
             ->get();
             $Data = [];
