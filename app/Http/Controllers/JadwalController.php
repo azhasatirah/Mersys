@@ -1011,23 +1011,32 @@ class JadwalController extends Controller
     public function updateIDTutor(){
         $IDK = 1025;
         $IDT =1016;
-        $ProgramTutor = DB::table('kursus_siswa as ks')
-        ->select('j.IDJadwal','ks.IDKursusSiswa')
-        ->join('jadwal as j','ks.IDKursusSiswa','=','j.IDKursusSiswa')
-        ->where('j.IDTutor',$IDK)
-        ->get();
-        dd($ProgramTutor);
-        foreach($ProgramTutor as $pt){
-            DB::table('jadwal')->where('IDTutor',$IDK)->update([
-                'IDTutor'=>$IDT
-            ]);
-            DB::table('absen_tutor')->where('IDJadwal',$pt->IDJadwal)->update([
-                'IDTutor'=>$IDT
-            ]);
-            DB::table('kursus_materi')->where('IDKursus',$pt->IDKursus)->update([
-                'IDKaryawan'=>$IDT
-            ]);
-        }
+    //     $ProgramTutor = DB::table('kursus_siswa as ks')
+    //     ->select('j.IDJadwal','ks.IDKursusSiswa')
+    //     ->join('jadwal as j','ks.IDKursusSiswa','=','j.IDKursusSiswa')
+    //     ->where('j.IDTutor',$IDK)
+    //     ->get();
+    //    // dd($ProgramTutor);
+    //     foreach($ProgramTutor as $pt){
+    //         DB::table('jadwal')->where('IDTutor',$IDK)->update([
+    //             'IDTutor'=>$IDT
+    //         ]);
+    //         DB::table('absen_tutor')->where('IDJadwal',$pt->IDJadwal)->update([
+    //             'IDTutor'=>$IDT
+    //         ]);
+    //         DB::table('kursus_materi')->where('IDKursus',$pt->IDKursus)->update([
+    //             'IDKaryawan'=>$IDT
+    //         ]);
+    //     }
+        DB::table('jadwal')->where('IDTutor',$IDK)->update([
+            'IDTutor'=>$IDT
+        ]);
+        DB::table('absen_tutor')->where('IDTutor',$IDK)->update([
+            'IDTutor'=>$IDT
+        ]);
+        DB::table('kursus_materi')->where('IDKaryawan',$IDK)->update([
+            'IDKaryawan'=>$IDT
+        ]);
         dd('done');
     }
     public function updateMateriKursus(){

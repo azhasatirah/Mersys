@@ -454,6 +454,7 @@ Route::get('/','AuthController@index');
 Route::get('/karyawan','AuthController@gerbangKaryawan');
 
 Route::get('/updatetutor','JadwalController@updateIDTutor');
+Route::get('/updatekursusmateri','JadwalController@updateMateriKursus');
 // Route::get('/updatetotalpertemuan','JadwalController@updateTotalPertemuan');
 // Route::get('/recover','JadwalController@recoverJadwal');
 // Route::get('/recovermateri','JadwalController@recoverMateri');
