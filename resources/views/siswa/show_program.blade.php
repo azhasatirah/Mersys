@@ -568,7 +568,7 @@
                     "<option value=\""+ele.NoRecord+"\">Ubah pertemuan ke "+ele.NoRecord+"</option>"
                 )
             })
-
+            statusUbahJadwal()
         });
     }
     function masukKelas(id){
@@ -961,7 +961,7 @@
         $.get("/siswa/jadwalchanges/get/"+$('#UUIDKelas').val(), (ele)=>{
     
             JadwalChanges = ele
-            statusUbahJadwal()
+
             JadwalChanges.sort((a,b)=> b.IDJadwalChange - a.IDJadwalChange).forEach((ele)=>{
                 //console.log(ele)
               //  console.log(ele.JadwalChanges[0].TanggalFrom)
