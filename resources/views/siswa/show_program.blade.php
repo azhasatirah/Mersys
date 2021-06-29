@@ -568,6 +568,7 @@
                     "<option value=\""+ele.NoRecord+"\">Ubah pertemuan ke "+ele.NoRecord+"</option>"
                 )
             })
+            statusUbahJadwal()
 
         });
     }
