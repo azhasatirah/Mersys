@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\support\Carbon;
 class SiswaController extends Controller
 {
     public function infoPendaftaran(){
@@ -63,7 +65,15 @@ class SiswaController extends Controller
       //  dd($DataSiswa);
         return view('karyawan.show_siswa_admin',['Siswa'=>$DataSiswa]);
     }
-
+    public function resetPassword(Request $request){
+        //dd($request);
+        DB::table('siswa')->where('IDSiswa',$request->resetidsiswa)->update([
+            'Password'=> Hash::make($request->resetpassword),
+            'UserUpd'=>session()->get('Username'),
+            'updated_at'=>Carbon::now()
+        ]);
+        return response()->json('Berhasil diganti');
+    }
     public function showSiswa($id){
         $Siswa = DB::table('siswa')->where('IDSiswa',$id)->get();
         return response()->json($Siswa);

@@ -50,6 +50,9 @@
                                 <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modelId{{$item['KodeSiswa']}}">
                                     Detail
                                 </button>
+                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalresetpassword{{$item['KodeSiswa']}}">
+                                    Reset password
+                                </button>
                                 @if ($item['Status']=='CLS')
                                 <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalnona{{$item['IDSiswa']}}">
                                     Non aktifkan
@@ -141,6 +144,41 @@
                                 </div>
                             </div>
                         </div>
+                    
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="modalresetpassword{{$item['KodeSiswa']}}" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Reset password</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="reset-form{{$item['KodeSiswa']}}">
+                                        @csrf
+                                        <input type="hidden" value="{{$item['IDSiswa']}}" name="resetidsiswa">
+                                        <div class="form-group">
+                                          <label for="">Masukan password baru</label>
+                                          <input type="password" class="form-control" name="resetpassword" id="reset-newpassword{{$item['KodeSiswa']}}" aria-describedby="helpId" placeholder="">
+                                        </div>
+                                        <div class="form-group">
+                                            <label >Masukan ulang password baru</label>
+                                            <input type="password" onkeyup="cekResetPassword('{{$item['KodeSiswa']}}')" class="form-control" name="resetrepassword" id="reset-renewpassword{{$item['KodeSiswa']}}" >
+                                            <span style="display: none" id="reset-help-repassword{{$item['KodeSiswa']}}" class="form-text text-danger">* Password tidak sama</span>
+                                        </div>
+                                    </form>
+                        
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button onclick="resetPassword('{{$item['KodeSiswa']}}')" id="reset-btn-reset{{$item['KodeSiswa']}}" class="btn btn-primary text-white">Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                         <div class="modal fade" id="modalaktif{{$item['IDSiswa']}}" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -238,6 +276,30 @@
             $('#'+modal+IDdata).modal('show')
         }
 
+    }
+    function cekResetPassword(id){
+        let password = $('#reset-newpassword'+id).val();
+        let re_password = $('#reset-renewpassword'+id).val()
+        console.log(password)
+        if(password != re_password){
+            $('#reset-help-repassword'+id).show()
+            $('#reset-btn-reset'+id).attr('disabled',true)
+        }
+        else{
+            $('#reset-help-repassword'+id).hide()
+            $('#reset-btn-reset'+id).attr('disabled',false)
+        }
+    }
+    function resetPassword(id){
+        $.ajax({
+            type: "post",
+            url: "/karyawan/admin/siswa/resetpassword",
+            data: $('#reset-form'+id).serialize(),
+            success: function (response) {
+                swal(response)
+                $('#modalresetpassword'+id).modal('hide')
+            }
+        });
     }
 </script>
 @endpush

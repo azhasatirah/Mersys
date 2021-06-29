@@ -294,6 +294,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::get('getJadwalSiswa/{id}','JadwalController@getJadwalSiswa');
         Route::get('siswa/show/{id}','SiswaController@showSiswa');
         Route::get('siswa','SiswaController@indexSiswa');
+        Route::post('siswa/resetpassword','SiswaController@resetPassword');
         Route::get('karyawan/show/{id}','KaryawanController@showKaryawan');
         Route::get('karyawan','KaryawanController@indexKaryawan');
 
