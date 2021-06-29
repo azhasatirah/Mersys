@@ -18,6 +18,8 @@
                             <th>No</th>
                             <th>Kode Kursus</th>
                             <th>Nama Siswa</th>
+                            <th>Prodi</th>
+                            <th>Tanggal Mulai</th>
                             <th>Tambah Tutor</th>
                             <th>Status</th>
                         </tr>
@@ -128,6 +130,8 @@
                         a,
                         data.KodeKursus,
                         data.NamaSiswa,
+                        data.NamaProdi,
+                        data.Tanggal,
                         AddTutor,
                         data.IDTutor==null?'Belum memilih tutor':data.IDTutor
                     ]).draw();
@@ -142,7 +146,7 @@
         showFreeTutor(id_kursus);
     }
     function showFreeTutor(id_kursus){
-    
+        $('#list-tutor-set-tutor').empty()
         let tmp_jadwal_siswa;
         let tea;
         let start_date;

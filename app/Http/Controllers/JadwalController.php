@@ -82,11 +82,13 @@ class JadwalController extends Controller
         ->join('kursus_materi','jadwal.IDMateri','=','kursus_materi.IDKursusMateri')
         ->join('kursus_siswa','kursus_materi.IDKursus','=','kursus_siswa.IDKursusSiswa')
         ->join('siswa','kursus_siswa.IDSiswa','=','siswa.IDSiswa')
+        ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
         ->select('kursus_materi.Hari','jadwal.Tanggal','jadwal.IDKursusSiswa',
-        'kursus_materi.NamaMateri','kursus_siswa.KodeKursus',
+        'kursus_materi.NamaMateri','kursus_siswa.KodeKursus','program_studi.NamaProdi',
         'siswa.NamaSiswa','jadwal.IDJadwal','jadwal.IDTutor')
         ->where('kursus_siswa.Status','!=','DEL')
-        ->where('jadwal.Status','OPN')->get()->groupBy('IDKursusSiswa');
+        ->where('jadwal.Status','OPN')
+        ->orderBy('jadwal.Tanggal','asc')->get()->groupBy('IDKursusSiswa');
         $Data = [];
         foreach($DataTMP as $d){
             array_push($Data,array(
@@ -95,6 +97,8 @@ class JadwalController extends Controller
                 'IDKursusSiswa'=>$d[0]->IDKursusSiswa,
                 'IDJadwal'=>$d[0]->IDJadwal,
                 'IDTutor'=>$d[0]->IDTutor,
+                'NamaProdi'=>$d[0]->NamaProdi,
+                'Tanggal'=>$d[0]->Tanggal
             ));
         }
         $Jadwal = Jadwal::getAllJadwal();
