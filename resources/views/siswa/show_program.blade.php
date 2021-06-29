@@ -225,16 +225,15 @@
                         </div>
                         <div style="display: none" id="input-ubah-semua-jadwal">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-4 mt-2">
                                     <div class="form-group">
-                                        <label for="">Libur berapa lama</label>
-                                        <select class="custom-select" id="input-freeze-jadwal">
-                                            <option value="7">1 minggu</option>
-                                            <option value="14">2 minggu</option>
-                                            <option value="21">3 minggu</option>
-                                            <option value="30">1 bulan</option>
-                                        </select>
-                                    </div>        
+                                      <label for="">Libur mulai tanggal</label>
+                                      <input type="date" class="form-control" id="input-libur-mulai" aria-describedby="helpId" placeholder="">     
+                                    </div>  
+                                    <div class="form-group">
+                                        <label for="">sampai tanggal</label>
+                                        <input type="date" class="form-control"  id="input-libur-sampai" aria-describedby="helpId" placeholder="">
+                                      </div>       
                                 </div>
                                 <div class="col-md-8"></div>
                             </div>
@@ -401,8 +400,21 @@
     //     showJadwal();
 
     // });
+    Date.prototype.getWeek = function() {
+        var onejan = new Date(this.getFullYear(),0,1);
+        var today = new Date(this.getFullYear(),this.getMonth(),this.getDate());
+        var dayOfYear = ((today - onejan + 86400000)/86400000);
+        return Math.ceil(dayOfYear/7)
+    }
     function freezeJadwal(){
-        let freeze = $('#input-freeze-jadwal').val();
+        let input_freeze_from = $('#input-libur-mulai').val()
+        let input_freeze_to = $('#input-libur-sampai').val()
+        let freeze_from = new Date(input_freeze_from).getWeek()
+        let freeze_to = new Date(input_freeze_to).getWeek()
+        let freeze = ((freeze_to - freeze_from) + 1)*7
+        let copyJadwal = jadwal.filter((ele)=>{
+            return new Date(ele.Tanggal).getTime() >= new Date(input_freeze_from).getTime()
+        })
         let newJadwal = []
         let DataChanges={
                 '_token':token,
@@ -417,11 +429,11 @@
                 'TanggalFrom[]': [],
                 'TanggalTo[]':[]
         };
-        jadwal.forEach((data)=>{
+        copyJadwal.forEach((data)=>{
             let tmpDate = moment(data.Tanggal+' '+data.Jam).format('yyyy-MM-DD HH:mm:ss')
-            console.log('firs',tmpDate)
+         
             let dateTo = moment(tmpDate).add(freeze,'days').format('yyyy-MM-DD HH:mm:ss')
-            console.log(dateTo)
+ 
             //console.log(tmpDate.getDate(),new Date(tmpDate.setDate(tmpDate.getDate() + freeze)).toString())
             // let date = new Date( tmpDate.setDate(tmpDate.getDate() + freeze))
             newJadwal.push({
@@ -925,7 +937,13 @@
     }
     function storeChanges(){
         $('#modal-jadwal-changes').modal('hide')
-        $.post("/siswa/jadwalchanges/store", ReqJadwalChanges, ele => swal('Permintaan terkirim'))
+        $.post("/siswa/jadwalchanges/store", ReqJadwalChanges, (ele) =>{
+             swal('Permintaan terkirim')
+             $('#select-ubah-jadwal').hide();
+             $('#input-ubah-jadwal').hide();
+             $('#input-ubah-semua-jadwal').hide();
+             getChanges()
+        })
     }
     function filterCheckPrevRecord(jadwal, reqJadwal,jadwalPrevChanged){
         const dataFilter = (ele)=>{
@@ -958,6 +976,7 @@
         return check;
     }
     function getChanges(){
+        $('#list-history-changes').empty()
         $.get("/siswa/jadwalchanges/get/"+$('#UUIDKelas').val(), (ele)=>{
     
             JadwalChanges = ele
@@ -1009,6 +1028,7 @@
                        " </div>"+
                     "</a>"
                 );
+                statusUbahJadwal()
             })
         });
     }
