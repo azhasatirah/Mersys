@@ -198,6 +198,7 @@
                             <tr>
                                 <th style="width: 3%">Pertemuan</th>
                                 <th>Materi</th>
+                                <th>Tugas / PR</th>
                                 <th style="width: 15%">Kategori</th>
                                 <th style="width: 7%"></th>
                             </tr>
@@ -367,6 +368,11 @@
                             <label for="">Kategori Materi</label>
                             <select class="custom-select" name="pertemuankategori" id="pertemuan-kategori-add">
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Tugas / PR</label>
+                            <input type="text" class="form-control" name="pertemuanhomework" id="pertemuan-homework-add"
+                                aria-describedby="helpId" placeholder="">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -628,6 +634,11 @@
                         <label for="">Kategori Materi</label>
                         <select class="custom-select" name="pertemuankategori" id="pertemuan-kategori-edit">
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Tugas / PR</label>
+                        <input type="text" class="form-control" name="pertemuanhomework" id="pertemuan-homework-edit"
+                            aria-describedby="helpId" placeholder="">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1141,6 +1152,9 @@
                             "<p>"+ele.NamaMateri+"</p>"+
                         "</td>"+
                         "<td>"+
+                            "<p>"+(ele.Homework==null?'':ele.Homework)+"</p>"+
+                        "</td>"+
+                        "<td>"+
                             kategori_materi.filter(km=>km.IDKategoriMateri == ele.IDKategoriMateri)[0].NamaKategoriMateri+
                         "</td>"+
                         "<td>"+
@@ -1156,6 +1170,7 @@
         $('#pertemuan-idmateriprogram-edit').val(pertemuan[0].IDMateriProgram);
         $('#pertemuan-pertemuan-edit').val(pertemuan[0].NoRecord);
         $('#pertemuan-materi-edit').val(pertemuan[0].NamaMateri);
+        $('#pertemuan-homework-edit').val(pertemuan[0].Homework);
         $('#pertemuan-kategori-edit').val(pertemuan[0].IDKategoriMateri);
 
     }

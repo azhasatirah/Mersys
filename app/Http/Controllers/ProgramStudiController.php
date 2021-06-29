@@ -211,6 +211,7 @@ class ProgramStudiController extends Controller
                 'IDKategoriMateri'=>$request->kategorimateri[$i],
                 'IDProgram'=>$Program[0]->IDProgram,
                 'NamaMateri'=>$request->materi[$i],
+                'Homework'=>$request->homework[$i],
                 'NoRecord'=>$i+1,
                 'created_at'=>Carbon::now(),
                 'updated_at'=>Carbon::now(),
@@ -255,7 +256,6 @@ class ProgramStudiController extends Controller
                     'UUID'=>str_replace('-','',str::uuid()),
                     'NamaBahan'=>$request->nama_bahantutor[$i],
                     'File'=>$NamaBahan,
-                    'Type'=>$request->tipe_bahantutor[$i],
                     'created_at'=>Carbon::now(),
                     'updated_at'=>Carbon::now(),
                     'UserAdd'=>session()->get('Username'),
@@ -504,6 +504,7 @@ class ProgramStudiController extends Controller
             'IDProgram'=>$request->idprogram,
             'NamaMateri'=>$request->pertemuanmateri,
             'IDKategoriMateri'=>$request->pertemuankategori,
+            'Homework'=>$request->pertemuanhomework,
             'NoRecord'=>$Materi[count($Materi) -1]->NoRecord +1,
             'Status'=>'OPN',
             'created_at'=>Carbon::now(),
@@ -523,6 +524,7 @@ class ProgramStudiController extends Controller
         DB::table('materi_program')->where('IDMateriProgram',$request->idmateriprogram)->update([
             'NamaMateri'=>$request->pertemuanmateri,
             'IDKategoriMateri'=>$request->pertemuankategori,
+            'Homework'=>$request->pertemuanhomework,
             'updated_at'=>Carbon::now(),
             'UserUpd'=>session()->get('Username')
         ]);

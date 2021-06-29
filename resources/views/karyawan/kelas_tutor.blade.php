@@ -92,6 +92,7 @@
                                     <th>Jam</th>
                                     <th>Kelas</th>
                                     <th>Nama Materi</th>
+                                    <th>Tugas / PR</th>
                                     <th>Kode Kursus</th>
                                     <th>Nama Siswa</th>
                                     <th>Status</th>
@@ -361,6 +362,7 @@
                         data.Tanggal.split(' ')[1],
                         data.NamaProdi , 
                         data.NamaMateri,
+                        data.Homework == null ? '':data.Homework,
                         data.KodeKursus,
                         data.NamaSiswa,
                         data.Status == 'CLS'?'Kelas Selesai':

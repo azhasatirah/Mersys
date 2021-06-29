@@ -198,7 +198,7 @@
                                         <tr>
                                             <th>Nama</th>
                                             <th>File</th>
-                                            <th>Tipe</th>
+                                      
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -411,13 +411,6 @@
                     "<td>"+
                         "<input type=\"file\" name=\"file_bahantutor[]\" style=\"width: auto\""+
                         " required=\"required\"class=\"form-control\">"+ 
-                    "</td>"+
-                    "<td>"+
-                        "<select name=\"tipe_bahantutor[]\" class=\"select2_group form-control\">"+
-                            "<option value=\"presentasi\">Presentasi (PPT)</option>"+
-                            "<option value=\"kurikulum\">Kurikulum</option>"+
-                            "<option value=\"pegangantutor\">Pegangan tutor</option>"+
-                        "</select>"+
                     "</td>"+
                     "<td scope=\"row\">"+
                         "<a onclick=\"hapusBahanTutor("+bahantutor+")\" class=\"btn btn-danger text-white\"><i class=\"fa fa-trash\"></i></a>"+
@@ -700,6 +693,9 @@
                                 "<option value=\"0\">Kategori materi</option>"+
                                 KategoriMateri+
                             "</select>"+
+                        "</div>"+
+                        "<div class=\"col-md-3 col-sm-3\">"+
+                            "<input type=\"text\" placeholder=\"Tugas / PR\" name=\"homework[]\"  class=\"form-control\">"+
                         "</div>"+
                     "</div>"
                 );
