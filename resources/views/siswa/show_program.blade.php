@@ -1015,6 +1015,7 @@
     }
     //jika aada request jadwal pending tidak boleh membuat request jadwal
     function statusUbahJadwal(){
+        console.log('trace paket',jadwal.length,jadwal,JadwalChanges)
         if(jadwal.length ==0){
             $('#select-ubah-jadwal').hide()
         }
