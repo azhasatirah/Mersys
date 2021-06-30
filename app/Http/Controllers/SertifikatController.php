@@ -24,13 +24,13 @@ class SertifikatController extends Controller
         if(count($DataNilaiTMP)>0){
             $DataNilai = [];
             foreach($DataNilaiTMP as $Nilai){
-                if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+                if(floor($Nilai->sum('Nilai')/count($Nilai))>=95 && floor($Nilai->sum('Nilai')/count($Nilai))<=100){
                     $Grade = 'A';
                     $Desc = 'Excelent';
-                }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+                }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=90 && floor($Nilai->sum('Nilai')/count($Nilai))<=94){
                     $Grade = 'B+';
                     $Desc = 'Exceeds Standard';
-                }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+                }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=80 && floor($Nilai->sum('Nilai')/count($Nilai))<=89){
                     $Grade = 'B';
                     $Desc = 'Good';
                 }else{
@@ -68,13 +68,13 @@ class SertifikatController extends Controller
         
         $DataNilai = [];
         foreach($DataNilaiTMP as $Nilai){
-            if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            if(floor($Nilai->sum('Nilai')/count($Nilai))>=95 && floor($Nilai->sum('Nilai')/count($Nilai))<=100){
                 $Grade = 'A';
                 $Desc = 'Excelent';
-            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=90 && floor($Nilai->sum('Nilai')/count($Nilai))<=94){
                 $Grade = 'B+';
                 $Desc = 'Exceeds Standard';
-            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=80 && floor($Nilai->sum('Nilai')/count($Nilai))<=89){
                 $Grade = 'B';
                 $Desc = 'Good';
             }else{
@@ -106,13 +106,13 @@ class SertifikatController extends Controller
         if(count($DataNilaiTMP)>0){
             $DataNilai = [];
             foreach($DataNilaiTMP as $Nilai){
-                if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+                if(floor($Nilai->sum('Nilai')/count($Nilai))>=95 && floor($Nilai->sum('Nilai')/count($Nilai))<=100){
                     $Grade = 'A';
                     $Desc = 'Excelent';
-                }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+                }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=90 && floor($Nilai->sum('Nilai')/count($Nilai))<=94){
                     $Grade = 'B+';
                     $Desc = 'Exceeds Standard';
-                }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+                }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=80 && floor($Nilai->sum('Nilai')/count($Nilai))<=89){
                     $Grade = 'B';
                     $Desc = 'Good';
                 }else{
@@ -144,13 +144,13 @@ class SertifikatController extends Controller
         
         $DataNilai = [];
         foreach($DataNilaiTMP as $Nilai){
-            if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            if(floor($Nilai->sum('Nilai')/count($Nilai))>=95 && floor($Nilai->sum('Nilai')/count($Nilai))<=100){
                 $Grade = 'A';
                 $Desc = 'Excelent';
-            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=90 && floor($Nilai->sum('Nilai')/count($Nilai))<=94){
                 $Grade = 'B+';
                 $Desc = 'Exceeds Standard';
-            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=80 && floor($Nilai->sum('Nilai')/count($Nilai))<=89){
                 $Grade = 'B';
                 $Desc = 'Good';
             }else{
@@ -181,13 +181,13 @@ class SertifikatController extends Controller
         
         $DataNilai = [];
         foreach($DataNilaiTMP as $Nilai){
-            if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            if(floor($Nilai->sum('Nilai')/count($Nilai))>=95 && floor($Nilai->sum('Nilai')/count($Nilai))<=100){
                 $Grade = 'A';
                 $Desc = 'Excelent';
-            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=90 && floor($Nilai->sum('Nilai')/count($Nilai))<=94){
                 $Grade = 'B+';
                 $Desc = 'Exceeds Standard';
-            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=80 && floor($Nilai->sum('Nilai')/count($Nilai))<=89){
                 $Grade = 'B';
                 $Desc = 'Good';
             }else{
@@ -216,13 +216,13 @@ class SertifikatController extends Controller
         
         $DataNilai = [];
         foreach($DataNilaiTMP as $Nilai){
-            if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            if(floor($Nilai->sum('Nilai')/count($Nilai))>=95 && floor($Nilai->sum('Nilai')/count($Nilai))<=100){
                 $Grade = 'A';
                 $Desc = 'Excelent';
-            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=90 && floor($Nilai->sum('Nilai')/count($Nilai))<=94){
                 $Grade = 'B+';
                 $Desc = 'Exceeds Standard';
-            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=80 && floor($Nilai->sum('Nilai')/count($Nilai))<=89){
                 $Grade = 'B';
                 $Desc = 'Good';
             }else{
@@ -252,13 +252,13 @@ class SertifikatController extends Controller
         
         $DataNilai = [];
         foreach($DataNilaiTMP as $Nilai){
-            if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            if(floor($Nilai->sum('Nilai')/count($Nilai))>=95 && floor($Nilai->sum('Nilai')/count($Nilai))<=100){
                 $Grade = 'A';
                 $Desc = 'Excelent';
-            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=90 && floor($Nilai->sum('Nilai')/count($Nilai))<=94){
                 $Grade = 'B+';
                 $Desc = 'Exceeds Standard';
-            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=80 && floor($Nilai->sum('Nilai')/count($Nilai))<=89){
                 $Grade = 'B';
                 $Desc = 'Good';
             }else{
@@ -287,13 +287,13 @@ class SertifikatController extends Controller
         
         $DataNilai = [];
         foreach($DataNilaiTMP as $Nilai){
-            if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            if(floor($Nilai->sum('Nilai')/count($Nilai))>=95 && floor($Nilai->sum('Nilai')/count($Nilai))<=100){
                 $Grade = 'A';
                 $Desc = 'Excelent';
-            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=90 && floor($Nilai->sum('Nilai')/count($Nilai))<=94){
                 $Grade = 'B+';
                 $Desc = 'Exceeds Standard';
-            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=95){
+            }else if(floor($Nilai->sum('Nilai')/count($Nilai))>=80 && floor($Nilai->sum('Nilai')/count($Nilai))<=89){
                 $Grade = 'B';
                 $Desc = 'Good';
             }else{

@@ -53,7 +53,7 @@
             <div id="content" style="padding-top: 280px;padding-left:225px">
                 <h4 id="nama" >{{$Nilai[0]['NamaSiswa']}}</h4>
                 <p id="des" style="color: red;font-size:14px">
-                    has sucesfully completed the Merachel Program: 
+                    has successfully completed the Merachel Program: 
                     <span style="text-decoration: underline">{{$Nilai[0]['NamaProdi']}}</span> <br>
                     demonstrating the required skills and knowledge. The Final Evaluation was passed <br>
                     with a score <span style="text-decoration: underline">{{$Nilai[0]['Grade']}}</span> 
