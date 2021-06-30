@@ -83,12 +83,12 @@
                                             <form action="{{url('karyawan/tutor/nilaieval/store')}}" method="POST">
                                                 <input type="hidden"  name="_token" value="{{ csrf_token() }}">
                                                 <input type="hidden" name="idkursussiswa" value="{{$item['IDKursusSiswa']}}">
-                                                <input type="hidden" name="idkursusmateri" value="{{$item['IDKursusSiswa']}}">
+                                                <input type="hidden" name="idkursusmateri" value="{{$item['IDKursusMateri']}}">
                                             <div class="modal-body">
                                                 <div class="form-group">
                                                     <label for="pertemuan-eva">Pertemuan ke</label>
                                                     <input type="text" value="{{$item['NoRecord']}}"
-                                                    readonly name="idkursusmateri" id="idkursusmateri-eva" class="form-control" require placeholder="" aria-describedby="helpId">
+                                                    readonly name="norecord" id="idkursusmateri-eva" class="form-control" require placeholder="" aria-describedby="helpId">
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="materi-eva">Materi</label>

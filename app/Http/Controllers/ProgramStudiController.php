@@ -545,8 +545,20 @@ class ProgramStudiController extends Controller
         return response()->json('Berhasil di hapus');
     }
     public function pdGetTool($id){
-        $Tool = DB::table('program_studi_tool')->where('Status','!=','DEL')
-        ->where('IDProgram',$id)->get();
+        $Prodi = DB::table('program_studi as ps')
+        ->join('kategori_global_program as kgp','ps.IDKategoriGlobalProgram','=','kgp.IDKategoriGlobalProgram')
+        ->select('ps.NamaProdi','kgp.UUID as KategoriGlobal')
+        ->where('ps.IDProgram',$id)->get();
+        $Tool = [];
+        if($Prodi[0]->KategoriGlobal == 'd667956724b54f72b57aef27166a92ed'){
+            $NamaProdi = explode('-',$Prodi[0]->NamaProdi)[0];
+            $MainProdi = DB::table('program_studi')->where('NamaProdi','like',$NamaProdi.'-1%')->get();
+            $Tool = DB::table('program_studi_tool')->where('Status','!=','DEL')
+            ->where('IDProgram',$MainProdi[0]->IDProgram)->get();
+        }else{
+            $Tool = DB::table('program_studi_tool')->where('Status','!=','DEL')
+            ->where('IDProgram',$id)->get();
+        }
         return response()->json($Tool);
     }
     public function pdStoreTool(Request $request){
@@ -577,7 +589,20 @@ class ProgramStudiController extends Controller
         return response()->json('Berhasil di hapus');
     }
     public function pdGetVideo($id){
-        $Video = DB::table('program_studi_video')->where('Status','OPN')->where('IDProgram',$id)->get();
+        $Prodi = DB::table('program_studi as ps')
+        ->join('kategori_global_program as kgp','ps.IDKategoriGlobalProgram','=','kgp.IDKategoriGlobalProgram')
+        ->select('ps.NamaProdi','kgp.UUID as KategoriGlobal')
+        ->where('ps.IDProgram',$id)->get();
+        $Video = [];
+        if($Prodi[0]->KategoriGlobal == 'd667956724b54f72b57aef27166a92ed'){
+            $NamaProdi = explode('-',$Prodi[0]->NamaProdi)[0];
+            $MainProdi = DB::table('program_studi')->where('NamaProdi','like',$NamaProdi.'-1%')->get();
+            $Video = DB::table('program_studi_video')->where('Status','OPN')
+            ->where('IDProgram',$MainProdi[0]->IDProgram)->get();
+        }else{
+            $Video = DB::table('program_studi_video')->where('Status','OPN')
+            ->where('IDProgram',$id)->get();
+        }
         return response()->json($Video);
     }
     public function pdStoreVideo(Request $request){
@@ -607,10 +632,22 @@ class ProgramStudiController extends Controller
         DB::table('program_studi_video')->where('IDVideo',$id)->update(['Status'=>'DEL']);
         return response()->json('Berhasil di hapus');
     }
-
+    //uuid bulanan d667956724b54f72b57aef27166a92ed
     public function pdGetModul($id){
-        $Modul = DB::table('program_studi_modul')->where('Status','OPN')
-        ->where('IDProgram',$id)->get();
+        $Prodi = DB::table('program_studi as ps')
+        ->join('kategori_global_program as kgp','ps.IDKategoriGlobalProgram','=','kgp.IDKategoriGlobalProgram')
+        ->select('ps.NamaProdi','kgp.UUID as KategoriGlobal')
+        ->where('ps.IDProgram',$id)->get();
+        $Modul = [];
+        if($Prodi[0]->KategoriGlobal == 'd667956724b54f72b57aef27166a92ed'){
+            $NamaProdi = explode('-',$Prodi[0]->NamaProdi)[0];
+            $MainProdi = DB::table('program_studi')->where('NamaProdi','like',$NamaProdi.'-1%')->get();
+            $Modul = DB::table('program_studi_modul')->where('Status','OPN')
+            ->where('IDProgram',$MainProdi[0]->IDProgram)->get();
+        }else{
+            $Modul = DB::table('program_studi_modul')->where('Status','OPN')
+            ->where('IDProgram',$id)->get();
+        }
         return response()->json($Modul);
     }
     public function pdStoreModul(Request $request){
@@ -680,8 +717,20 @@ class ProgramStudiController extends Controller
         }
     }
     public function pdGetBahan($id){
-        $Modul = DB::table('program_studi_bahan_tutor')->where('Status','OPN')
-        ->where('IDProgram',$id)->get();
+        $Prodi = DB::table('program_studi as ps')
+        ->join('kategori_global_program as kgp','ps.IDKategoriGlobalProgram','=','kgp.IDKategoriGlobalProgram')
+        ->select('ps.NamaProdi','kgp.UUID as KategoriGlobal')
+        ->where('ps.IDProgram',$id)->get();
+        $Modul = [];
+        if($Prodi[0]->KategoriGlobal == 'd667956724b54f72b57aef27166a92ed'){
+            $NamaProdi = explode('-',$Prodi[0]->NamaProdi)[0];
+            $MainProdi = DB::table('program_studi')->where('NamaProdi','like',$NamaProdi.'-1%')->get();
+            $Modul = DB::table('program_studi_bahan_tutor')->where('Status','OPN')
+            ->where('IDProgram',$MainProdi[0]->IDProgram)->get();
+        }else{
+            $Modul = DB::table('program_studi_bahan_tutor')->where('Status','OPN')
+            ->where('IDProgram',$id)->get();
+        }
         return response()->json($Modul);
     }
     public function pdStoreBahan(Request $request){

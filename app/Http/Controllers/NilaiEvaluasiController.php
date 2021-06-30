@@ -22,6 +22,7 @@ class NilaiEvaluasiController extends Controller
         ->where('kursus_siswa.UUID',$id)->orderBy('NoRecord')->get();
         $NilaiEvaluasi = [];
         foreach($DataKursusMateri as $KursusMateri){
+            //dump($KursusMateri);
             $DataNilaiEvaluasi = DB::table('nilai_evaluasi')
             ->where('IDKursusMateri',$KursusMateri->IDKursusMateri)
             ->where('Status','OPN')->get();
@@ -36,7 +37,7 @@ class NilaiEvaluasiController extends Controller
                 'Saran'=>count($DataNilaiEvaluasi)>0?$DataNilaiEvaluasi[0]->Saran:'Belum ada saran',
             ));
         }
-        //dd($DataKursusMateri);
+       // dd($NilaiEvaluasi);
         return view('karyawan/nilai_evaluasi_tutor_detail',[
             'NilaiEvaluasi'=>$NilaiEvaluasi,
             'Kursus'=>$DataKursus,
@@ -77,7 +78,6 @@ class NilaiEvaluasiController extends Controller
     }
 
     public function store(Request $request){
-
         $Data = array(
             'IDKursus'=>$request->idkursussiswa,
             'IDKursusMateri'=>$request->idkursusmateri,
