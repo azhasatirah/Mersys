@@ -60,7 +60,7 @@
                     <span style="text-decoration: underline">{{$Nilai[0]['NamaProdi']}}</span> <br>
                     demonstrating the required skills and knowledge. The Final Evaluation was passed <br>
                     with a score <span style="text-decoration: underline">{{$Nilai[0]['Grade']}}</span> 
-                    out of minimum 100% on <span style="text-decoration: underline">{{date('H M Y')}}</span>
+                    out of minimum 100% on <span style="text-decoration: underline">{{date('d M Y')}}</span>
                 </p>
             </div>
             <div></div>
