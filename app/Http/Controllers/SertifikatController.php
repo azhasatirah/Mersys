@@ -47,7 +47,15 @@ class SertifikatController extends Controller
                     'Desc'=>$Desc
                 ));
             };
-  
+            $DataNilai = array(
+                'NamaSiswa'=>$Nilai[0]->NamaSiswa,
+                'NamaProdi'=>$Nilai[0]->NamaProdi,
+                'UUIDKursus'=>$Nilai[0]->UUID,
+                'Jenis'=>$Nilai[0]->Jenis,
+                'Nilai'=>floor($Nilai->sum('Nilai')/count($Nilai)),
+                'Grade'=>$Grade,
+                'Desc'=>$Desc
+            );
             return view('karyawan/sertifikat/depan',['Nilai'=>$DataNilai]);
         }else{
             return redirect()->back()->withErrors(['msg'=>'Belum ada nilai'])->withInput();

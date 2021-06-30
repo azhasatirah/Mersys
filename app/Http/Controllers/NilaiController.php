@@ -143,14 +143,36 @@ class NilaiController extends Controller
         ->update(['Status'=>'DEL']);
        return redirect()->back()->withInput();;
     }
-
+    public function grade($Nilai){
+        if($Nilai>=95 && $Nilai<=100){
+            $Grade = 'A';
+            $Desc = 'Excelent';
+        }else if($Nilai>=90 && $Nilai<=94){
+            $Grade = 'B+';
+            $Desc = 'Exceeds Standard';
+        }else if($Nilai>=80 && $Nilai<=89){
+            $Grade = 'B';
+            $Desc = 'Good';
+        }else{
+            $Grade = 'C';
+            $Desc = 'Standard';
+        }
+        return $Grade;
+    }
+    public function sumNilai($Nilai){
+        $TotalNilai = 0;
+        foreach($Nilai as $nilai){
+            $TotalNilai += $nilai->Nilai;
+        }
+        return intVal(explode('.',round($TotalNilai/count($Nilai)))[0]);
+    }
     public function showRapor($id){
         $Rapor = DB::table('kursus_siswa as ks')
         ->join('siswa as s','ks.IDSiswa','=','s.IDSiswa')
         ->join('nilai as n','ks.IDKursusSiswa','=','n.IDKursus')
         ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
         ->where('ks.UUID',$id)
-        ->select('s.NamaSiswa','ps.NamaProdi','n.NamaNilai','n.Nilai','n.IDJenis as JenisNilai')
+        ->select('s.NamaSiswa','ps.IDKategoriGlobalProgram','ps.NamaProdi','n.NamaNilai','n.Nilai','n.IDJenis as JenisNilai')
         ->get();
 
         $Tutor = DB::table('kursus_siswa as ks')
@@ -162,60 +184,40 @@ class NilaiController extends Controller
         ->get();
         //dd($Rapor);
         if(count($Rapor)>0){
-
-            $DataRapor = [];
-            $NilaiRapor=0;
-            $NilaiRaporHuruf=0;
-            $NilaiRaporTotalLook=0;
-            $NilaiRaporHurufTotalLook=0;
-            foreach($Rapor as $item){
-               // dd($item);
-               if($item->JenisNilai == 11){
-                $NilaiRaporTotalLook += intval($item->Nilai);
-               }else{
-                $NilaiRapor += intval($item->Nilai);
-               }
-            }
-            foreach($Rapor as $rapor){
-             //   dd($rapor->NamaSiswa);
-                if($NilaiRapor >= 95 && $NilaiRapor <= 100){
-                    $NilaiRaporHuruf = "A";
-                }else if($NilaiRapor >= 90 && $NilaiRapor <= 94){
-                    $NilaiRaporHuruf = "B+";
-                }else if($NilaiRapor >= 80 && $NilaiRapor <= 89){
-                    $NilaiRaporHuruf = "B";
-                }else if($NilaiRapor >= 75 && $NilaiRapor <= 79){
-                    $NilaiRaporHuruf = "C+";
-                }else{
-                    $NilaiRaporHuruf ="C";
-                }
-                // nilai rata huruf total look
-                if($NilaiRaporTotalLook >= 95 && $NilaiRaporTotalLook <= 100){
-                    $NilaiRaporHurufTotalLook = "A";
-                }else if($NilaiRaporTotalLook >= 90 && $NilaiRaporTotalLook <= 94){
-                    $NilaiRaporHurufTotalLook = "B+";
-                }else if($NilaiRaporTotalLook >= 80 && $NilaiRaporTotalLook <= 89){
-                    $NilaiRaporHurufTotalLook = "B";
-                }else if($NilaiRaporTotalLook >= 75 && $NilaiRaporTotalLook <= 79){
-                    $NilaiRaporHurufTotalLook = "C+";
-                }else{
-                    $NilaiRaporHurufTotalLook ="C";
-                }
-                array_push($DataRapor,array(
+            $RaporNormal = [];
+            $RaporLook = [];
+            $rapor_normal = array_filter($Rapor->toArray(), function($var){
+                return $var->JenisNilai != 11;
+            });
+            $rapor_totallook =array_filter($Rapor->toArray(), function($var){
+                return $var->JenisNilai == 11;
+            });
+            foreach($rapor_normal as $rapor){
+                array_push($RaporNormal,array(
                     'NamaSiswa'=>$rapor->NamaSiswa,
                     'NamaTutor'=>$Tutor[0]->NamaKaryawan,
-                    'NamaProdi'=>$rapor->NamaProdi,
+                    'NamaProdi'=>$rapor->IDKategoriGlobalProgram == 2?explode('(Bulanan',$rapor->NamaProdi)[0]:$rapor->NamaProdi,
                     'NamaNilai'=>$rapor->NamaNilai,
                     'Nilai'=>$rapor->Nilai,
-                    'NilaiRapor'=>$NilaiRapor,
-                    'NilaiRaporHuruf'=>$NilaiRaporHuruf,
-                    'NilaiRaporTotalLook'=>$NilaiRaporTotalLook,
-                    'NilaiRaporHurufTotalLook'=>$NilaiRaporHurufTotalLook,
-                    'JenisNilai'=>$rapor->JenisNilai
+                    'NilaiRapor'=>$this->sumNilai($rapor_normal),
+                    'NilaiRaporHuruf'=>$this->grade($this->sumNilai($rapor_normal)),
                 ));
             }
-           // dd($DataRapor);
-            return view('siswa/nilai/nilai_rapor',['Rapor'=>$DataRapor]);
+            foreach($rapor_totallook as $rapor){
+                //   dd($rapor->NamaSiswa);
+
+                array_push($RaporLook,array(
+                    'NamaSiswa'=>$rapor->NamaSiswa,
+                    'NamaTutor'=>$Tutor[0]->NamaKaryawan,
+                    'NamaProdi'=>$rapor->IDKategoriGlobalProgram == 2?explode('(Bulanan',$rapor->NamaProdi)[0]:$rapor->NamaProdi,
+                    'NamaNilai'=>$rapor->NamaNilai,
+                    'Nilai'=>$rapor->Nilai,
+                    'NilaiRapor'=>$this->sumNilai($rapor_totallook),
+                    'NilaiRaporHuruf'=>$this->grade($this->sumNilai($rapor_totallook)),
+                ));
+               }
+           //dd($DataRapor);
+            return view('siswa/nilai/nilai_rapor',['Normal'=>$RaporNormal,'Look'=>$RaporLook]);
         }else{
             return redirect()->back()->withErrors(['msg'=>'Belum ada nilai'])->withInput();
         }

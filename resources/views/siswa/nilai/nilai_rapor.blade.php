@@ -52,21 +52,17 @@
 
                 </table>
             </div>
-            @php
-                $Ite=0;
-                $Ite2=0;
-            @endphp
             <table>
                 <tr class="table-title">
-                    <td colspan="2">Nama Murid : {{$Rapor[0]['NamaSiswa']}}</td>
-                    <td colspan="3">Program : {{$Rapor[0]['NamaProdi']}}</td>
+                    <td colspan="2">Nama Murid : {{$Normal[0]['NamaSiswa']}}</td>
+                    <td colspan="3">Program : {{$Normal[0]['NamaProdi']}}</td>
                 </tr>
                 <tr class="table-title">
-                    <td colspan="2">Nama Tutor : {{$Rapor[0]['NamaTutor']}}</td>
+                    <td colspan="2">Nama Tutor : {{$Normal[0]['NamaTutor']}}</td>
                     <td colspan="3"></td>
                 </tr>
                 <tr class="table-title">
-                    <td colspan="2">Bulan : April 2021</td>
+                    <td colspan="2">Bulan : {{date('M Y')}}</td>
                     <td colspan="3"></td>
                 </tr>
                 <tr style="text-align: center">
@@ -76,32 +72,24 @@
                     <td>Nilai Murid</td>
                     <td>Nilai Dalam Huruf</td>
                 </tr>
-                @foreach($Rapor as $rapor)     
-                @if ($rapor['JenisNilai'] != 11)  
-                @php
-                    $Ite++;
-                @endphp            
+                @foreach($Normal as $rapor)     
+                       
                 <tr style="text-align: center">
-                    <td style="width:6%">{{$Ite}}</td>
+                    <td style="width:6%">{{$loop->iteration}}</td>
                     <td style="width:50%">{{$rapor['NamaNilai']}}</td>
                     <td style="width:10%">75</td>
                     <td style="width:10%">{{$rapor['Nilai']}}</td>
-                    @if ($Ite == 1)    
+                    @if ($loop->iteration == 1)    
                         <td rowspan="4" style="width: 20%">{{$rapor['NilaiRaporHuruf']}}</td>
                     @endif
-                </tr>
-                @endif             
+                </tr>            
                 @endforeach
                 <tr style="text-align: center">
                     <td colspan="3">TOTAL NILAI</td>
-                    <td>{{$Rapor[0]['NilaiRapor']}}</td>
+                    <td>{{$Normal[0]['NilaiRapor']}}</td>
                 </tr>
             </table>
-            @foreach ($Rapor as $rapor)
-            @if ($rapor['JenisNilai'] == 11)
-            @php
-                $Ite2++;
-            @endphp
+            @foreach ($Look as $rapor)
             <p style="margin-bottom: 0px" class="title text-center mt-3">TOTAL LOOK</p>
             <table>
                 <tr style="text-align: center">
@@ -112,20 +100,19 @@
                     <td>Nilai Dalam Huruf</td>
                 </tr>
                 <tr style="text-align: center">
-                    <td style="width:6%">{{$Ite}}</td>
+                    <td style="width:6%">{{$loop->iteration}}</td>
                     <td style="width:50%">{{$rapor['NamaNilai']}}</td>
                     <td style="width:10%">75</td>
                     <td style="width:11%">{{$rapor['Nilai']}}</td>
-                    @if ($Ite2 == 1)    
-                        <td rowspan="4" style="width: 20%">{{$rapor['NilaiRaporHurufTotalLook']}}</td>
+                    @if ($loop->iteration == 1)    
+                        <td rowspan="4" style="width: 20%">{{$rapor['NilaiRaporHuruf']}}</td>
                     @endif
                 </tr>
                 <tr style="text-align: center">
                     <td colspan="3">TOTAL NILAI</td>
-                    <td>{{$rapor['NilaiRaporTotalLook']}}</td>
+                    <td>{{$rapor['NilaiRapor']}}</td>
                 </tr>
             </table>
-            @endif
             @endforeach
             <p class="mt-3">* A:95-100 | B+:90-94 | B:80-89 C+:75-79 <br>
                 A=Excellent B+=Exceeds Standard B=Good C+=Standard
