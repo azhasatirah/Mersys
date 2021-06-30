@@ -170,7 +170,8 @@
         let fil_tea=[]; 
         tea.forEach((ele)=>{
             if(ele.teaStatus != false){
-                if(filterDate(ele.Data,tmp_jadwal_siswa).length==0){
+                // if(filterDate(ele.Data,tmp_jadwal_siswa).length==0){
+                if(true){
                     fil_tea.push({
                         'IDTutor':ele.IDTutor,
                         'Nama':ele.Nama
