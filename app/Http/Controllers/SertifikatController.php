@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use PDF;
 use DB;
+use Illuminate\support\Carbon;
 class SertifikatController extends Controller
 {
     public function depan($id){
@@ -46,6 +47,7 @@ class SertifikatController extends Controller
                     'Desc'=>$Desc
                 ));
             };
+  
             return view('karyawan/sertifikat/depan',['Nilai'=>$DataNilai]);
         }else{
             return redirect()->back()->withErrors(['msg'=>'Belum ada nilai'])->withInput();
