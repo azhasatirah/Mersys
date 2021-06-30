@@ -81,21 +81,40 @@ class KursusSiswaController extends Controller
         public function showProgramSiswaAktif($id){
             $Prodi= DB::table('kursus_siswa')
             ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
-            ->select('kursus_siswa.*','kursus_siswa.UUID as UUIDKelas','program_studi.NamaProdi')
+            ->select('kursus_siswa.*','kursus_siswa.UUID as UUIDKelas','program_studi.NamaProdi','program_studi.IDKategoriGlobalProgram')
             ->where('kursus_siswa.UUID',$id)->get();
-            $Modul = DB::table('program_studi_modul')
-            ->join('program_studi','program_studi_modul.IDProgram','=','program_studi.IDProgram')
-            ->join('kursus_siswa','kursus_siswa.IDProgram','=','program_studi.IDProgram')
-            ->where('kursus_siswa.UUID',$id)->where('program_studi_modul.Status','OPN')->get();
-        
-            $Video = DB::table('program_studi_video')
-            ->join('program_studi','program_studi_video.IDProgram','=','program_studi.IDProgram')
-            ->join('kursus_siswa','kursus_siswa.IDProgram','=','program_studi.IDProgram')
-            ->where('kursus_siswa.UUID',$id)->where('program_studi_video.Status','OPN')->get();
-            $BahanTutor = DB::table('program_studi_bahan_tutor')
-            ->join('program_studi','program_studi_bahan_tutor.IDProgram','=','program_studi.IDProgram')
-            ->join('kursus_siswa','kursus_siswa.IDProgram','=','program_studi.IDProgram')
-            ->where('kursus_siswa.UUID',$id)->where('program_studi_bahan_tutor.Status','OPN')->get();
+            $Modul = [];
+            $Video = [];
+            $BahanTutor = [];
+            if($Prodi[0]->IDKategoriGlobalProgram == 2){
+                $BulananKey = explode('(Bulanan',$Prodi[0]->NamaProdi)[0];
+                $MainProdi = DB::table('program_studi')->where('NamaProdi','like',$BulananKey.'(Bulanan-1)')
+                // ->where('IDProgram',$Prodi[0]->IDProgram)
+                ->where('Status','OPN')->get();
+                 //kunai
+                $Modul = DB::table('program_studi_modul')
+                ->where('IDProgram',$MainProdi[0]->IDProgram)->where('program_studi_modul.Status','OPN')->get();
+                $Video = DB::table('program_studi_video')
+                ->where('IDProgram',$MainProdi[0]->IDProgram)->where('program_studi_video.Status','OPN')->get();
+                $BahanTutor = DB::table('program_studi_bahan_tutor')
+                ->where('IDProgram',$MainProdi[0]->IDProgram)->where('program_studi_bahan_tutor.Status','OPN')->get();
+                //dd($MainProdi,$Video);
+            }else{
+
+                $Modul = DB::table('program_studi_modul')
+                ->join('program_studi','program_studi_modul.IDProgram','=','program_studi.IDProgram')
+                ->join('kursus_siswa','kursus_siswa.IDProgram','=','program_studi.IDProgram')
+                ->where('kursus_siswa.UUID',$id)->where('program_studi_modul.Status','OPN')->get();
+            
+                $Video = DB::table('program_studi_video')
+                ->join('program_studi','program_studi_video.IDProgram','=','program_studi.IDProgram')
+                ->join('kursus_siswa','kursus_siswa.IDProgram','=','program_studi.IDProgram')
+                ->where('kursus_siswa.UUID',$id)->where('program_studi_video.Status','OPN')->get();
+                $BahanTutor = DB::table('program_studi_bahan_tutor')
+                ->join('program_studi','program_studi_bahan_tutor.IDProgram','=','program_studi.IDProgram')
+                ->join('kursus_siswa','kursus_siswa.IDProgram','=','program_studi.IDProgram')
+                ->where('kursus_siswa.UUID',$id)->where('program_studi_bahan_tutor.Status','OPN')->get();
+            }
             return view('siswa.show_program',[
                 'Prodi'=>$Prodi,
                 'Modul'=>$Modul,
