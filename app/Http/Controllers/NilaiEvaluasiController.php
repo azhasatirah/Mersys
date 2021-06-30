@@ -130,6 +130,7 @@ class NilaiEvaluasiController extends Controller
             ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
             ->where('NamaProdi','like',$BulananKey.' (Bulanan%')
             ->where('kursus_siswa.IDSiswa',$DataKursus[0]->IDSiswa)
+            ->where('kursus_siswa.Status','!=','DEL')
             ->orderBy('kursus_materi.IDProgram')
             ->orderBy('NoRecord')->get();
         }else{

@@ -70,9 +70,7 @@
                 <td>#</td>
                     <td>- - - {{$content->NamaNilai}}</td>
                     <td>{{$content->Nilai}}</td>
-                    <td><a class="btn btn-danger"
-                        onclick="deleteData({{$content->IDNilai}})"
-                        href="javascript:void(0)" role="button"><i class="fa fa-trash"></i></a></a></td>
+                    <td></td>
                 </tr>
                 @endforeach     
             @endforeach

@@ -80,7 +80,7 @@
                     <td style="width:10%">75</td>
                     <td style="width:10%">{{$rapor['Nilai']}}</td>
                     @if ($loop->iteration == 1)    
-                        <td rowspan="4" style="width: 20%">{{$rapor['NilaiRaporHuruf']}}</td>
+                        <td rowspan="{{count($Normal)+2}}" style="width: 20%">{{$rapor['NilaiRaporHuruf']}}</td>
                     @endif
                 </tr>            
                 @endforeach
@@ -109,7 +109,7 @@
                     @endif
                 </tr>
                 <tr style="text-align: center">
-                    <td colspan="3">TOTAL NILAI</td>
+                    <td colspan="{{count($Look)+2}}">TOTAL NILAI</td>
                     <td>{{$rapor['NilaiRapor']}}</td>
                 </tr>
             </table>

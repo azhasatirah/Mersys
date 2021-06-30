@@ -48,18 +48,18 @@
 
 <body>
     <a name="" id="" class="btn btn-primary mx-2 my-2" 
-    href="{{url('/karyawan/tutor/sertifikat/depan/cetak')}}/{{$Nilai[0]['UUIDKursus']}}" 
+    href="{{url('/karyawan/tutor/sertifikat/depan/cetak')}}/{{$Nilai['UUIDKursus']}}" 
     role="button">Print</a>
     <div id="body" class="container-fluid">
         <div class="d-flex justify-content-between">
             <div></div>
             <div id="content" style="padding-top: 280px;padding-left:225px">
-                <h4 id="nama" >{{$Nilai[0]['NamaSiswa']}}</h4>
+                <h4 id="nama" >{{$Nilai['NamaSiswa']}}</h4>
                 <p id="des" style="color: red;font-size:14px">
                     has successfully completed the Merachel Program: 
-                    <span style="text-decoration: underline">{{$Nilai[0]['NamaProdi']}}</span> <br>
+                    <span style="text-decoration: underline">{{$Nilai['NamaProdi']}}</span> <br>
                     demonstrating the required skills and knowledge. The Final Evaluation was passed <br>
-                    with a score <span style="text-decoration: underline">{{$Nilai[0]['Grade']}}</span> 
+                    with a score <span style="text-decoration: underline">{{$Nilai['Grade']}}</span> 
                     out of minimum 100% on <span style="text-decoration: underline">{{date('d M Y')}}</span>
                 </p>
             </div>
