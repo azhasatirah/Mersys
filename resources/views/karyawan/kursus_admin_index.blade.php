@@ -56,7 +56,8 @@
 @push('scripts')
     <script>
         let Tabel =  $('#tabeldata').DataTable({
-                "scrollX": true
+                "scrollX": true,
+                "ordering": false
             });
         $(document).ready(function () {
             getData()
@@ -65,7 +66,7 @@
         function getData(){
             Tabel.clear()
             $.get('/karyawan/admin/kursus/get' ).done((ele)=>{
-                ele.forEach(data => {
+                ele.sort((a,b)=> new Date(b.TanggalOrder).getTime() - new Date(a.TanggalOrder).getTime()).forEach(data => {
                     let btn_absen = data['Status']?
                         "<a class=\"btn btn-sm btn-primary\""+
                         "href=\"/karyawan/admin/kursus/show/"+data['UIDKursus']+"\" role=\"button\">Absensi</a>":""
