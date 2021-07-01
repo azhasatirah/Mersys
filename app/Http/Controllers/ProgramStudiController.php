@@ -91,12 +91,8 @@ class ProgramStudiController extends Controller
     }
 
     public function programSiswa($ID,$ID2){
-        
-        $type_tmp = $ID == '3023364374c24e03afdd50430940db3c'?'semua program reguler':'semua program';
-        $type = $type_tmp == 'semua program'&&$ID=='d667956724b54f72b57aef27166a92ed'?'semua program bulanan':$type_tmp;
         $ProgramStudi = ProgramStudi::getProgramStudiByKategori($ID2,$ID);
         $Diskon = DB::table('diskon')->where('Status','OPN')->where('IDSiswa',session()->get('IDUser'))
-        ->where('Type',$type)
         ->get();    
        // dd($ProgramStudi);
         $Data = [];
@@ -111,18 +107,19 @@ class ProgramStudiController extends Controller
             $Cicilan = DB::table('cicilan')
             ->where('IDProgram',$Prodi->IDProgram)
             ->where('Status','OPN')->get();
+            $IDProgram = $Prodi->IDProgram;
             array_push($Data,array(
                 'IDProgram'=>$Prodi->IDProgram,
                 'NamaProdi'=>$Prodi->NamaProdi,
                 'TotalPertemuan'=>$Prodi->TotalPertemuan,
                 'HargaLunas'=>$Prodi->Harga + $Tools->sum('Harga')+$Moduls->sum('Harga'),
-                'Diskon'=>$Diskon,
+                'Diskon'=>array_filter($Diskon->toArray(),function($dat) use ($IDProgram){return $dat->IDProgram == $IDProgram; }),
                 'Tool'=>count($Tools)>0?$Tools:false,
                 'Modul'=>count($Moduls)>0?$Moduls:false,
                 'Cicilan'=>count($Cicilan)>0?$Cicilan:false
             ));
         }
-     //   dd($Data);
+    // dd($Data);
 
         return view('siswa.program',['Program'=>$Data]);
     }
@@ -130,6 +127,8 @@ class ProgramStudiController extends Controller
     public function showDetail($ID){
         $ProgramStudi = DB::table('program_studi')->where('IDProgram',$ID)->get();
         //dd($ProgramStudi);
+        $Diskon = DB::table('diskon')->where('Status','OPN')->where('IDSiswa',session()->get('IDUser'))
+        ->get();    
         $Data = [];
         foreach($ProgramStudi as $Prodi){
             $Tools = DB::table('program_studi_tool')
@@ -141,6 +140,7 @@ class ProgramStudiController extends Controller
             $Cicilan = DB::table('cicilan')
             ->where('IDProgram',$Prodi->IDProgram)
             ->where('Status','OPN')->get();
+            $IDProgram = $Prodi->IDProgram;
             array_push($Data,array(
                 'IDProgram'=>$Prodi->IDProgram,
                 'NamaProdi'=>$Prodi->NamaProdi,
@@ -148,6 +148,7 @@ class ProgramStudiController extends Controller
                 'HargaLunas'=>$Prodi->Harga + $Tools->sum('Harga')+$Moduls->sum('Harga'),
                 'Tool'=>count($Tools)>0?$Tools:false,
                 'Modul'=>count($Moduls)>0?$Moduls:false,
+                'Diskon'=>array_filter($Diskon->toArray(),function($dat) use ($IDProgram){return $dat->IDProgram == $IDProgram; }),
                 'Cicil'=>$Prodi->Cicilan,
                 'Cicilan'=>count($Cicilan)>0?$Cicilan:false
             ));

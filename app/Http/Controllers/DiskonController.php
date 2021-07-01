@@ -15,11 +15,13 @@ class DiskonController extends Controller
     public function getData(){
         $Data = DB::table('diskon as d')
         ->join('siswa as s','d.IDSiswa','=','s.IDSiswa')
-        ->select('d.*','s.NamaSiswa')
+        ->join('program_studi as ps','d.IDProgram','=','ps.IDProgram')
+        ->select('d.*','s.NamaSiswa','ps.NamaProdi')
         ->where('d.Status','OPN')
         ->get();
         $Siswa = DB::table('siswa')->where('Status','CLS')->get();
-        return response()->json([$Data,$Siswa]);
+        $ProgramStudi = DB::table('program_studi')->where('Status','OPN')->where('IDProgram','!=',1)->get();
+        return response()->json([$Data,$Siswa,$ProgramStudi]);
     }
     public function store(Request $request){
         $KodeDiskon = "DSK-" . date("ymHis");
@@ -27,7 +29,7 @@ class DiskonController extends Controller
             'KodeDiskon'=>$KodeDiskon,
             'IDSiswa'=>$request->idsiswa,
             'Nilai'=>$request->nilai,
-            'Type'=>$request->type,
+            'IDProgram'=>$request->idprogram,
             'Status'=>'OPN',
             'UserAdd'=>session()->get('Username'),
             'UserUpd'=>session()->get('Username'),
@@ -36,8 +38,9 @@ class DiskonController extends Controller
         );
         DB::table('diskon')->insert($Data);
         $DataSiswa = DB::table('siswa')->where('IDSiswa',$request->idsiswa)->get();
+        $Prodi = DB::table('program_studi')->where('IDProgram',$request->idprogram)->get();
         DB::table('notif')->insert([
-            'Notif'=> " Selamat anda mendapatkan diskon untuk mengambil " .$request->type.", sebesar ".$request->nilai."%. ambil program sekarang!",
+            'Notif'=> " Anda mendapatkan diskon sebesar Rp " .number_format($request->nilai).", untuk belajar ".$Prodi[0]->NamaProdi."!",
             'NotifFrom'=> session()->get('UID'),
             'NotifTo'=> $DataSiswa[0]->UUID,
             'IsRead'=>false,
@@ -52,20 +55,6 @@ class DiskonController extends Controller
         DB::table('diskon')->where('IDDiskon',$id)->update([
             'Status'=>'DEL',
             'UserUpd'=>session()->get('Username'),
-            'updated_at'=>Carbon::now(),
-        ]);
-        $DataSiswa = DB::table('siswa')
-        ->join('diskon','siswa.IDSiswa','=','diskon.IDSiswa')
-        ->where('diskon.IDDiskon',$id)
-        ->select('siswa.UUID','diskon.Nilai')
-        ->get();
-        DB::table('notif')->insert([
-            'Notif'=> " Promo sebesar".$DataSiswa[0]->Nilai."% sudah berakhir!",
-            'NotifFrom'=> session()->get('UID'),
-            'NotifTo'=> $DataSiswa[0]->UUID,
-            'IsRead'=>false,
-            'Link'=>'',
-            'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);
         return response()->json('Promo di delete');

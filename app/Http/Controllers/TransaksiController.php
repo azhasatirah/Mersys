@@ -504,9 +504,9 @@ class TransaksiController extends Controller
             'IDCicilan'=>$request->idcicilan,
             'Tanggal'=>Carbon::now(),
             'Status'=>'OPN',
-            'Diskon'=>0,
+            'Diskon'=>$request->diskon,
             'SubTotal'=>$request->harga,
-            'Total'=>$request->harga,
+            'Total'=>$request->harga - $request->diskon,
             'Keterangan'=>'',
             'DiskonPersen'=>0,
             'PPN'=>'n',
@@ -537,6 +537,21 @@ class TransaksiController extends Controller
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);
+        if($request->iddiskon!=0){
+            $Diskon = DB::table('diskon')->where('IDDiskon',$request->iddiskon)->get();
+            DB::table('diskon')->where('IDDiskon',$request->iddiskon)->update([
+                'Status'=>'DEL'
+            ]);
+            DB::table('notif')->insert([
+                'Notif'=> "Diskon ".$Diskon[0]->KodeDiskon.", Telah digunakan ".session()->get('NamaUser'),
+                'NotifFrom'=> session()->get('UID'),
+                'NotifTo'=> 'admin',
+                'IsRead'=>false,
+                'Link'=>'/karyawan/admin/diskon',
+                'created_at'=>Carbon::now(),
+                'updated_at'=>Carbon::now(),
+            ]);
+        }
         if($StatusTransaksi['Status']=='success'){
             return redirect('/siswa/pembayaran/info/'.$UUIDTransaksi);
         }

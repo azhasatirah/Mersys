@@ -15,22 +15,25 @@
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
-                <table id="tabeldata" class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Kode Diskon</th>
-                            <th>Nama Siswa</th>
-                            <th>Nilai</th>
-                            <th>Jenis</th>
-                            <th>Dibuat</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="data-table">
+                <div class="table-responsive">
 
-                    </tbody>
-                </table>
+                    <table id="tabeldata" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Kode Diskon</th>
+                                <th>Nama Siswa</th>
+                                <th>Nilai</th>
+                                <th>Program</th>
+                                <th>Dibuat</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="data-table">
+    
+                        </tbody>
+                    </table>
+                </div>
     
             </div>
         </div>
@@ -55,16 +58,12 @@
                 <select class="custom-select" name="idsiswa" id="input-create-siswa"> </select>
             </div>
             <div class="form-group">
-              <label for="">Nilai</label>
+              <label for="">Diskon</label>
               <input type="number" class="form-control" name="nilai" id="input-create-nilai" aria-describedby="helpId" placeholder="">
             </div>
             <div class="form-group">
-                <label for="">Jenis</label>
-                <select class="custom-select" name="type" id="input-create-type">
-                    <option value="semua program reguler">pilih</option>
-                    <option value="semua program">Semua program</option>
-                    <option value="semua program reguler">Semua program reguler</option>
-                    <option value="semua program bulanan">Semua program bulanan</option>
+                <label for="">Program</label>
+                <select class="custom-select" name="idprogram" id="input-create-program">
                 </select>
             </div>
         </div>
@@ -85,7 +84,7 @@
         $(document).ready(function () {
             getData()
             $('#tabeldata').DataTable({
-                "scrollX": true
+             
             });
         });
         function store(){
@@ -112,6 +111,11 @@
                         "<option value=\""+ele.IDSiswa+"\">"+ele.NamaSiswa+"</option>"
                     )
                 })
+                ele[2].forEach(ele=>{
+                    $('#input-create-program').append(
+                        "<option value=\""+ele.IDProgram+"\">"+ele.NamaProdi+"</option>"
+                    );
+                })
                 let i =0
                 ele[0].forEach((ele)=>{
                     i++
@@ -124,8 +128,8 @@
                             "<td>"+i+"</td>"+
                             "<td>"+ele.KodeDiskon+"</td>"+
                             "<td>"+ele.NamaSiswa+"</td>"+
-                            "<td>"+ele.Nilai+"%</td>"+
-                            "<td>"+ele.Type+"</td>"+
+                            "<td>Rp "+ele.Nilai.toLocaleString('id-ID')+"</td>"+
+                            "<td>"+ele.NamaProdi+"</td>"+
                             "<td>"+ele.created_at+"</td>"+
                             "<td>"+btnDelete+"</td>"+
                         "</tr>"
