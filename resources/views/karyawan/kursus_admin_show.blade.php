@@ -45,6 +45,10 @@
                             class="btn btn-nav ">Jadwal</button>           
                         <button type="button" id="btn-ubahjadwal" onclick="changeActiveContent('ubahjadwal')"
                             class="btn btn-nav">Perubahan Jadwal</button>
+                        <button type="button" id="btn-nilai" onclick="changeActiveContent('nilai')"
+                            class="btn btn-nav">Nilai</button>
+                        <button type="button" id="btn-evaluasi" onclick="changeActiveContent('evaluasi')"
+                            class="btn btn-nav">Nilai Evaluasi</button>
                     </div>
                 </div>
 
@@ -145,7 +149,41 @@
                         
                     </div>
                 </div>
-    
+                <div style="display: none" id="content-nilai" class="row mt-3">
+                    <div class="table-responsive">
+
+                        <table style="width:100%;max-width:1000rem" class="table">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Materi</th>
+                                    <th>Nilai</th>
+                                    <th>Jenis</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-nilai">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div style="display: none" id="content-evaluasi" class="row mt-3">
+                    <div class="table-responsive">
+
+                        <table style="width:100%;max-width:1000rem" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Pertemuan</th>
+                                    <th>Materi</th>
+                                    <th>Plus (+)</th>
+                                    <th>Minus (-)</th>
+                                    <th>Saran</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-evaluasi">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -205,12 +243,16 @@
     <script>
     let token = $('#token').val();
         //data from database
-    let DataKelas = [],Absen = [],Changes = [],jadwal = []
+    let DataKelas = [],Absen = [],Changes = [],jadwal = [],Evaluasi = [],Nilai = []
 
     let UIDKelas = window.location.href.split('/')[7]
     let active_content = "jadwal";
     const btn_jadwal = $('#btn-jadwal');
     const btn_ubahjadwal = $('#btn-ubahjadwal');
+    const btn_evaluasi = $('#btn-evaluasi');
+    const btn_nilai = $('#btn-nilai');
+    const content_nilai = $('#content-nilai');
+    const content_evaluasi = $('#content-evaluasi');
     const content_ubahjadwal = $('#content-ubahjadwal');
     const content_jadwal = $('#content-jadwal');
 
@@ -238,14 +280,42 @@
             case 'jadwal':
                 btn_jadwal.addClass('active');
                 btn_ubahjadwal.removeClass('active');
+                btn_nilai.removeClass('active')
+                btn_evaluasi.removeClass('active')
+                content_nilai.hide()
+                content_evaluasi.hide()
                 content_ubahjadwal.hide();
                 content_jadwal.show();
                 break;
             case 'ubahjadwal':
                 btn_jadwal.removeClass('active');
                 btn_ubahjadwal.addClass('active');
+                btn_nilai.removeClass('active')
+                btn_evaluasi.removeClass('active')
+                content_nilai.hide()
+                content_evaluasi.hide()
                 content_jadwal.hide();
                 content_ubahjadwal.show();
+                break;
+            case 'evaluasi':
+                btn_jadwal.removeClass('active');
+                btn_evaluasi.addClass('active');
+                btn_ubahjadwal.removeClass('active');
+                btn_nilai.removeClass('active');
+                content_nilai.hide();
+                content_ubahjadwal.hide();
+                content_jadwal.hide();
+                content_evaluasi.show();
+                break;
+            case 'nilai':
+                btn_jadwal.removeClass('active');
+                btn_nilai.addClass('active');
+                btn_ubahjadwal.removeClass('active')
+                btn_evaluasi.removeClass('active')
+                content_ubahjadwal.hide()
+                content_evaluasi.hide()
+                content_jadwal.hide();
+                content_nilai.show();
                 break;
         }
     }
@@ -256,10 +326,46 @@
             Absen = ele['Absen']
             Changes = ele['Changes']
             jadwal = Object.values(ele['ActiveJadwal'])
+            Evaluasi = ele['Evaluasi']
+            Nilai = ele['Nilai']
             showDataJadwal()
             showDataKelas()
             showChanges()
-      
+            showEvaluasi()
+            showNilai()
+        })
+    }
+    function showEvaluasi(){
+        let TabelEvaluasi = $('#tbody-evaluasi')
+        TabelEvaluasi.empty()
+ 
+        Evaluasi.forEach(ele=>{
+            TabelEvaluasi.append(
+                "<tr>"+
+                    "<td>"+ele.Pertemuan+"</td>"+
+                    "<td>"+ele.Materi+"</td>"+
+                    "<td>"+ele.Plus+"</td>"+
+                    "<td>"+ele.Minus+"</td>"+
+                    "<td>"+ele.Saran+"</td>"+
+                "</tr>"
+            )
+        })
+    }
+    function showNilai(){
+        let TabelNilai = $('#tbody-nilai')
+        TabelNilai.empty()
+        let i =0
+        console.log(Nilai)
+        Nilai.forEach(ele=>{
+            i++
+            TabelNilai.append(
+                "<tr>"+
+                    "<td>"+i+"</td>"+
+                    "<td>"+ele.NamaNilai+"</td>"+
+                    "<td>"+ele.Nilai+"</td>"+
+                    "<td>"+ele.Jenis+"</td>"+
+                "</tr>"
+            )
         })
     }
     function showDataKelas(){

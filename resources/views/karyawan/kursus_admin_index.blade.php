@@ -57,7 +57,9 @@
     <script>
         let Tabel =  $('#tabeldata').DataTable({
                 "scrollX": true,
-                "ordering": false
+                "ordering": false,
+                "deferRender": true,
+                "lengthMenu":[[5,50,-1],[5,50,"All"]]
             });
         $(document).ready(function () {
             getData()
@@ -95,8 +97,15 @@
           }).then((willDelete) => {
               if (willDelete) {
                 $.get('/karyawan/admin/kursus/delete/'+uid).done((res)=>{
+                    swal({
+                        icon : 'success',
+                        title: "Deleted!",
+                        text: res,
+                        type: "success",
+                        timer: 1000,
+                        button: false
+                    })
                     getData()
-                    swal(res) 
                 })
               } else {
                   swal("Dibatalkan!");

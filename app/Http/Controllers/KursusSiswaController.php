@@ -190,6 +190,7 @@ class KursusSiswaController extends Controller
         }
         public function adminShowKursusGetData($id){
             $Data = [];
+            $NilaiEvaluasi = [];
             $Jadwal = DB::table('jadwal as j')
             ->join('kursus_siswa as ks','j.IDKursusSiswa','=','ks.IDKursusSiswa')
             ->join('kursus_materi as mp','j.IDMateri','=','mp.IDKursusMateri')
@@ -243,12 +244,36 @@ class KursusSiswaController extends Controller
             $ActiveJadwal = array_filter($Jadwal->toArray(),function($var){
                 return $var->StatusMateri != 'CLS';
             });
+            $KursusMateri = DB::table('kursus_materi as km')
+            ->join('kursus_siswa as ks','km.IDKursus','=','ks.IDKursusSiswa')
+            ->select('km.*')
+            ->where('ks.UUID',$id)->get();
+            foreach($KursusMateri as $km){
+                $TMPEvaluasi = DB::table('nilai_evaluasi as ne')
+                ->where('ne.IDKursusMateri',$km->IDKursusMateri)
+                ->get();
+                array_push($NilaiEvaluasi,array(
+                    'Pertemuan'=>$km->NoRecord,
+                    'Materi'=>$km->NamaMateri,
+                    'Plus'=>count($TMPEvaluasi)>0?$TMPEvaluasi[0]->Plus:'Belum ada nilai',
+                    'Minus'=>count($TMPEvaluasi)>0?$TMPEvaluasi[0]->Minus:'Belum ada nilai',
+                    'Saran'=>count($TMPEvaluasi)>0?$TMPEvaluasi[0]->Saran:'Belum ada nilai'
+                ));
+            }
+            $Nilai = DB::table('nilai as n')
+            ->join('kursus_siswa as ks','n.IDKursus','=','ks.IDKursusSiswa')
+            ->join('jenis_nilai as js','n.IDJenis','=','js.IDJenisNilai')
+            ->select('n.*','js.Jenis')
+            ->where('ks.UUID',$id)->get();
+
             //kelas datakelas activejadwal
             return response()->json([
                 'DataKelas'=>$DataKelas,
                 'Absen'=>$Data,
                 'Changes'=>$Changes,
-                'ActiveJadwal'=>$ActiveJadwal
+                'ActiveJadwal'=>$ActiveJadwal,
+                'Evaluasi'=>$NilaiEvaluasi,
+                'Nilai'=>$Nilai
             ]);
         }
         public function ownerIndexKursus(){
