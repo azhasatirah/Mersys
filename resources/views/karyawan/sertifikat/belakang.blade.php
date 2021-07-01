@@ -47,9 +47,15 @@
 </head>
 
 <body>
-    <a name="" id="" class="btn btn-primary mx-2 my-2" 
-    href="{{url('/karyawan/tutor/sertifikat/belakang/cetak')}}/{{$Nilai[0]['UUIDKursus']}}" 
-    role="button">Print</a>
+    @if (session()->get('RoleUser')=='siswa')
+        <a name="" id="" class="btn btn-primary mx-2 my-2" 
+        href="{{url('/siswa/sertifikat/belakang/cetak')}}/{{$Nilai[0]['UUIDKursus']}}" 
+        role="button">Print</a>
+    @else
+        <a name="" id="" class="btn btn-primary mx-2 my-2" 
+        href="{{url('/karyawan/tutor/sertifikat/belakang/cetak')}}/{{$Nilai[0]['UUIDKursus']}}" 
+        role="button">Print</a>
+    @endif
     <div id="body" class="container-fluid">
         <div id="content">
             <div class="title text-center">

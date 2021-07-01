@@ -33,9 +33,67 @@
         </div>
     </div>
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal-edit-transaksi" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Transaksi </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-edit-transaksi">
+                    <div class="form-group">
+                        <label for="">Program</label>
+                        <select class="custom-select" name="programstudi" id="update-transaksi-program"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Cicilan</label>
+                        <select class="custom-select" id="update-transaksi-cicilan" onchange="isCicilan()" name="cicilan" >
+                            <option value="n">Tidak</option>
+                            <option value="y">Ya</option>
+                        </select>
+                    </div>
+                    <div style="display: none" id="choose-cicilan" class="form-group">
+                        <label for="">Dicicil berapa kali</label>
+                        <select class="custom-select" name="idcicilan" id="update-transaksi-idcicilan"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Diskon</label>
+                        <input type="text" class="form-control" id="update-transaksi-diskon" name="diskon" aria-describedby="helpId" >
+                    </div>
+                    <div class="form-group">
+                        <label for="">PPN</label>
+                        <select class="custom-select" id="update-transaksi-cicilan" onchange="isCicilan()" name="cicilan" >
+                            <option value="n">Tidak</option>
+                            <option value="y">Ya</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="">Subtotal</label>
+                      <input type="text" class="form-control" name="subtotal" id="update-transaksi-subtotal" readonly >
+                    </div>
+                    <div class="form-group">
+                      <label for="">Total</label>
+                      <input type="text" class="form-control" name="total" id="update-transaksi-total" >
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" onclick="updateTransaksi()" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @push('scripts')
     <script>
+        let Transaksi = []
         var TabelData = $('#tabeldata').DataTable({
                 "scrollX": true
             });
@@ -48,7 +106,7 @@
         });
         function showData(){
             $.get('/karyawan/admin/transaksi/getdata',function(Data){
-                    console.log(Data);
+                    Transaksi = Data
                     var a=0;
                     TabelData.clear().draw();
                     Data.forEach((data) =>{
@@ -62,6 +120,8 @@
                         var TombolDelete = 
                         "<a class=\"btn btn-danger btn-sm text-white\" onclick=\"deleteTransaksi("+data.IDTransaksi+")\">"+
                         "<i class=\"fa fa-trash\"></i></a>";
+                        let TombolEdit =  "<a data-toggle=\"modal\" data-target=\"#modal-edit-transaksi\" class=\"btn btn-primary btn-sm text-white\" onclick=\"setModalEdit("+data.IDTransaksi+")\">"+
+                        "<i class=\"fa fa-pencil\"></i></a>";
                         TabelData.row.add([
                             a,
                             data.KodeTransaksi,
@@ -73,12 +133,16 @@
                             data.Cicilan=='y'?'Ya':'Tidak',
                             data.created_at,
                             data.KodeStatus=='waitForAdmin'?TombolVerif:
-                            data.KodeStatus == 'waitForPayment'?TombolDelete:
+                            data.KodeStatus == 'waitForPayment'?TombolDelete+TombolEdit:
                             data.Status
                         ]).draw();
                     })
                 
             })
+        }
+        function setModalEdit(id){
+            let Data = Transaksi.filter(ele=>ele.IDTransaksi == id)
+            console.log(Data)
         }
         function formatNumber(num) {
             return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')

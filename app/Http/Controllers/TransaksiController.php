@@ -320,7 +320,7 @@ class TransaksiController extends Controller
         ->join('kursus_siswa','transaksi.IDKursusSiswa','=','kursus_siswa.IDKursusSiswa')
         ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
         ->select('transaksi.KodeTransaksi','transaksi.Total','transaksi.SubTotal','transaksi.IDTransaksi',
-            'transaksi.Status','transaksi.UUID as UUIDTransaksi',
+            'transaksi.Status','transaksi.UUID as UUIDTransaksi','program_studi.IDProgram','transaksi.IDCicilan',
             'transaksi.Hutang','transaksi.created_at','siswa.NamaSiswa','program_studi.NamaProdi')
         ->where('transaksi.Status','!=','DEL')
         ->where('transaksi.Status','!=','CLS')
