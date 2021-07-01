@@ -84,6 +84,9 @@
     <script>
         $(document).ready(function () {
             getData()
+            $('#tabeldata').DataTable({
+                "scrollX": true
+            });
         });
         function store(){
             $.ajax({

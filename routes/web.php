@@ -31,6 +31,8 @@ Route::get('/notif/update/{id}','NotifController@update');
 Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 
     //multi karyawanwww
+    Route::post('jadwalchanges/store','JadwalChangesController@storeChanges');
+    Route::get('jadwalchanges/get/{id}','JadwalChangesController@getChanges');
 
     Route::post('/deleteakunkaryawan','KaryawanController@deleteKaryawan');
     Route::post('/undeleteakunkaryawan','KaryawanController@unDeleteKaryawan');
@@ -100,6 +102,10 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         //admin akses melihat semua kursus
         Route::get('kursus','KursusSiswaController@adminIndexKursus');
         Route::get('kursus/show/{id}','KursusSiswaController@adminShowKursus');
+        Route::get('kursus/delete/{id}','KursusSiswaController@adminDeleteKursus');
+        Route::get('kursus/get','KursusSiswaController@adminGetDataKursus');
+        Route::get('kursus/getdata/{id}','KursusSiswaController@adminShowKursusGetData');
+        Route::post('kursus/jadwalchanges/store','JadwalChangesController@adminStoreChanges');
 
         //kunai
         Route::get('prodidetail/getprodi/{id}','ProgramStudiController@pdGetProdi');

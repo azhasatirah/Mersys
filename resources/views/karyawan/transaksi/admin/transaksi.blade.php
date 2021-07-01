@@ -9,7 +9,7 @@
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
-                <table id="tabeldata" class="table table-hover">
+                <table id="tabeldata" style="width: 100%" class="table table-hover">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -36,18 +36,19 @@
 @endsection
 @push('scripts')
     <script>
-        var TabelData = $('#tabeldata').DataTable();
+        var TabelData = $('#tabeldata').DataTable({
+                "scrollX": true
+            });
         var ProgramStudi;
         var KategoriMateri;
 
         $(document).ready(function(){
-            $('#tabeldata').DataTable();
+       
             showData();
         });
         function showData(){
             $.get('/karyawan/admin/transaksi/getdata',function(Data){
                     console.log(Data);
-                    $('#datatabel').empty();
                     var a=0;
                     TabelData.clear().draw();
                     Data.forEach((data) =>{

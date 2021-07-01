@@ -306,6 +306,12 @@ class TransaksiController extends Controller
             'UserUpd'=>session()->get('Username'),
             'updated_at'=>Carbon::now()
         ]);
+        $Transaksi = DB::table('transaksi')->where('IDTransaksi',$id)->get();
+        DB::table('kursus_siswa')->where('IDKursusSiswa',$Transaksi[0]->IDKursusSiswa)->update([
+            'Status'=>'DEL',
+            'UserUpd'=>session()->get('Username'),
+            'updated_at'=>Carbon::now()
+        ]);
         return response()->json('Transaksi berhasil dihapus');  
     }
     public function adminGetTransaksi(){

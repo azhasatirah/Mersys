@@ -124,6 +124,10 @@ class KursusSiswaController extends Controller
         }
 
         public function adminIndexKursus(){
+
+            return view('karyawan.kursus_admin_index');
+        }
+        public function adminGetDataKursus(){
             $Kursus = DB::table('kursus_siswa as ks')
             ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
             ->join('siswa as s','ks.IDSiswa','=','s.IDSiswa')
@@ -171,14 +175,25 @@ class KursusSiswaController extends Controller
                     'ReadStatus'=>$RStatus,
                 ));
             }
-            return view('karyawan.kursus_admin_index',['Kursus'=>$Data]);
+            return response()->json($Data);
         }
         public function adminShowKursus($id){
+            return view('karyawan.kursus_admin_show');
+        }
+        public function adminDeleteKursus($uid){
+            DB::table('kursus_siswa')->where('UUID',$uid)->update([
+                'Status'=>'DEL',
+                'UserUpd'=>session()->get('Username'),
+                'updated_at'=>Carbon::now()
+            ]);
+            return response()->json('Berhasil dihapus');
+        }
+        public function adminShowKursusGetData($id){
             $Data = [];
             $Jadwal = DB::table('jadwal as j')
             ->join('kursus_siswa as ks','j.IDKursusSiswa','=','ks.IDKursusSiswa')
             ->join('kursus_materi as mp','j.IDMateri','=','mp.IDKursusMateri')
-            ->where('ks.UUID',$id)->select('j.*','mp.NoRecord','mp.NamaMateri')->orderBy('mp.NoRecord')->get();
+            ->where('ks.UUID',$id)->select('j.*','ks.IDSiswa','ks.UUID as UUIDProgram','mp.NoRecord','mp.NamaMateri','mp.Status as StatusMateri')->orderBy('mp.NoRecord')->get();
             $DataKelas = DB::table('jadwal as j')
             ->join('kursus_siswa as ks','j.IDKursusSiswa','=','ks.IDKursusSiswa')
             ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
@@ -211,9 +226,30 @@ class KursusSiswaController extends Controller
                     'KehadiranTutor'=>$KehadiranTutor,
                 ));
             }
-            //dd($DataKelas);
-            return view('karyawan.kursus_admin_show',['Absen'=>$Data,'Kelas'=>$DataKelas[0]]);
-
+            $TmpChanges = DB::table('jadwal_change as jc')
+            ->join('kursus_siswa as ks','jc.IDKursusSiswa','=','ks.IDKursusSiswa')
+            ->select('jc.Status','jc.IDJadwalChange')
+            ->where('ks.UUID',$id)
+            ->get();
+            $Changes = [];
+            foreach($TmpChanges as $item){
+                array_push($Changes,array(
+                    'Status'=>$item->Status,
+                    'IDJadwalChange'=>$item->IDJadwalChange,
+                    'JadwalChanges'=>DB::table('jadwal_change_detail')->where('IDJadwalChange',$item->IDJadwalChange)->get()
+                ));
+            }
+            //dd($Jadwal,$Data);
+            $ActiveJadwal = array_filter($Jadwal->toArray(),function($var){
+                return $var->StatusMateri != 'CLS';
+            });
+            //kelas datakelas activejadwal
+            return response()->json([
+                'DataKelas'=>$DataKelas,
+                'Absen'=>$Data,
+                'Changes'=>$Changes,
+                'ActiveJadwal'=>$ActiveJadwal
+            ]);
         }
         public function ownerIndexKursus(){
             $Kursus = DB::table('kursus_siswa as ks')

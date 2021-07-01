@@ -12,7 +12,7 @@
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
-                <table id="tabeldata" class="table table-hover">
+                <table id="tabeldata" style="width: 100%" class="table table-sm table-hover">
                     <thead>
                         <tr>
                             <th>Kode Kursus</th>
@@ -25,22 +25,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($Kursus as $item)
-                            <tr>
-                                <td>{{$item['KodeKursus']}}</td>
-                                <td>{{$item['NamaProdi']}}</td>
-                                <td>{{$item['KodeSiswa']}}</td>
-                                <td>{{$item['NamaSiswa']}}</td>
-                                <td>{{$item['TanggalOrder']}}</td>
-                                <td>{{$item['ReadStatus']}}</td>
-                                <td>
-                                    @if ($item['Status'])
-                                    <a class="btn btn-sm btn-primary" 
-                                    href="{{url('karyawan/admin/kursus/show')}}/{{$item['UIDKursus']}}" role="button">Absensi</a>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
+
                     </tbody>
                 </table>
     
@@ -48,4 +33,75 @@
         </div>
     </div>
 </div>
+{{-- @foreach ($Kursus as $item)
+<tr>
+    <td>{{$item['KodeKursus']}}</td>
+    <td>{{$item['NamaProdi']}}</td>
+    <td>{{$item['KodeSiswa']}}</td>
+    <td>{{$item['NamaSiswa']}}</td>
+    <td>{{$item['TanggalOrder']}}</td>
+    <td>{{$item['ReadStatus']}}</td>
+    <td>
+        @if ($item['Status'])
+        <a class="btn btn-sm btn-primary" 
+        href="{{url('karyawan/admin/kursus/show')}}/{{$item['UIDKursus']}}" role="button">Absensi</a>
+        @endif
+
+        <a class="btn btn-sm btn-danger text-white"  href="javascript:void(0)"
+        onclick="deleteKursus('{{$item['UIDKursus']}}')" role="button">Delete</a>
+
+    </td>
+</tr>
+@endforeach --}}
+@push('scripts')
+    <script>
+        let Tabel =  $('#tabeldata').DataTable({
+                "scrollX": true
+            });
+        $(document).ready(function () {
+            getData()
+           
+        });
+        function getData(){
+            Tabel.clear()
+            $.get('/karyawan/admin/kursus/get' ).done((ele)=>{
+                ele.forEach(data => {
+                    let btn_absen = data['Status']?
+                        "<a class=\"btn btn-sm btn-primary\""+
+                        "href=\"/karyawan/admin/kursus/show/"+data['UIDKursus']+"\" role=\"button\">Absensi</a>":""
+                    let btn_delete = "<a class=\"btn btn-sm btn-danger text-white\"  href=\"javascript:void(0)\""+
+                    "onclick=\"deleteKursus(\'"+data['UIDKursus']+"\')\" role=\"button\">Delete</a>"
+
+                    Tabel.row.add([
+                        data['KodeKursus'],
+                        data['NamaProdi'],
+                        data['KodeSiswa'],
+                        data['NamaSiswa'],
+                        data['TanggalOrder'],
+                        data['ReadStatus'],
+                        btn_absen+btn_delete
+                    ]).draw()
+                })
+            })
+        }
+        function deleteKursus(uid){
+            swal({
+              title: "Apakah anda yakin menghapus program studi ini?",
+              text: "program studi akan hilang di halaman siswa dan tutor!",
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+          }).then((willDelete) => {
+              if (willDelete) {
+                $.get('/karyawan/admin/kursus/delete/'+uid).done((res)=>{
+                    getData()
+                    swal(res) 
+                })
+              } else {
+                  swal("Dibatalkan!");
+              }
+          })
+        }
+    </script>
+@endpush
 @endsection
