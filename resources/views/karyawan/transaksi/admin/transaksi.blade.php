@@ -47,9 +47,14 @@
             </div>
             <div class="modal-body">
                 <form id="form-edit-transaksi">
+                    @csrf
+                    <div class="form-group">
+                      <label for="">Kode Transaksi</label>
+                      <input type="text" readonly class="form-control" name="kodetransaksi" id="update-transaksi-kodetransaksi">
+                    </div>
                     <div class="form-group">
                         <label for="">Program</label>
-                        <select class="custom-select" name="programstudi" id="update-transaksi-program"></select>
+                        <select class="custom-select" onchange="changeProgram()" name="programstudi" id="update-transaksi-program"></select>
                     </div>
                     <div class="form-group">
                         <label for="">Cicilan</label>
@@ -60,15 +65,15 @@
                     </div>
                     <div style="display: none" id="choose-cicilan" class="form-group">
                         <label for="">Dicicil berapa kali</label>
-                        <select class="custom-select" name="idcicilan" id="update-transaksi-idcicilan"></select>
+                        <select class="custom-select" onclick="chooseCicilan()" name="idcicilan" id="update-transaksi-idcicilan"></select>
                     </div>
                     <div class="form-group">
                         <label for="">Diskon</label>
-                        <input type="text" class="form-control" id="update-transaksi-diskon" name="diskon" aria-describedby="helpId" >
+                        <input type="text" onchange="countHargaTotal()" class="form-control" id="update-transaksi-diskon" name="diskon" aria-describedby="helpId" >
                     </div>
                     <div class="form-group">
                         <label for="">PPN</label>
-                        <select class="custom-select" id="update-transaksi-cicilan" onchange="isCicilan()" name="cicilan" >
+                        <select class="custom-select" onchange="countHargaTotal()" id="update-transaksi-ppn"  name="ppn" >
                             <option value="n">Tidak</option>
                             <option value="y">Ya</option>
                         </select>
@@ -93,11 +98,11 @@
 @endsection
 @push('scripts')
     <script>
-        let Transaksi = []
+        let Transaksi = [],ProgramStudi = [],Cicilan=[]
         var TabelData = $('#tabeldata').DataTable({
                 "scrollX": true
             });
-        var ProgramStudi;
+
         var KategoriMateri;
 
         $(document).ready(function(){
@@ -106,10 +111,12 @@
         });
         function showData(){
             $.get('/karyawan/admin/transaksi/getdata',function(Data){
-                    Transaksi = Data
+                    Transaksi = Data[0]
+                    ProgramStudi = Data[1]
+                    Cicilan = Data[2]
                     var a=0;
                     TabelData.clear().draw();
-                    Data.forEach((data) =>{
+                    Transaksi.forEach((data) =>{
                         a++;
                         var TombolAksi =
                             "<a class=\"btn btn-danger btn-sm text-white\"onclick=\"deleteData('"+data.IDTransaksi+"')\">"+
@@ -137,12 +144,74 @@
                             data.Status
                         ]).draw();
                     })
+                    showProgramStudi()
                 
             })
         }
+        function showProgramStudi(){
+            $('#update-transaksi-program').empty()
+            ProgramStudi.forEach(ele=>{
+                $('#update-transaksi-program').append(
+                    "<option value=\""+ele.IDProgram+"\">"+ele.NamaProdi+"</option>"
+                )
+            })
+        }
         function setModalEdit(id){
+            $('#choose-cicilan').hide();
             let Data = Transaksi.filter(ele=>ele.IDTransaksi == id)
-            console.log(Data)
+            $('#update-transaksi-kodetransaksi').val(Data[0].KodeTransaksi)
+            $('#update-transaksi-program').val(Data[0].IDProgram)
+            $('#update-transaksi-cicilan').val(Data[0].Hutang)
+            $('#update-transaksi-diskon').val(Data[0].Diskon)
+            $('#update-transaksi-PPN').val(Data[0].ppn)
+            $('#update-transaksi-subtotal').val(Data[0].SubTotal)
+            $('#update-transaksi-total').val(Data[0].Total)
+            changeCicilan(Data[0].IDProgram)
+        }
+        function changeProgram(){
+            let Data = $('#update-transaksi-program').val()
+            changeCicilan(Data)
+        }
+        function isCicilan(){
+            let data = $('#update-transaksi-cicilan').val()
+            if(data == 'y'){
+                $('#choose-cicilan').show()
+                chooseCicilan()
+            }else{
+                $('#choose-cicilan').hide()
+                let idprogram = $('#update-transaksi-program').val();
+                $('#update-transaksi-subtotal').val(ProgramStudi.filter(ele=>ele.IDProgram == idprogram)[0].Harga)
+                countHargaTotal()
+
+            }
+        }
+        function chooseCicilan(){
+            let idcicilan = $('#update-transaksi-idcicilan').val()
+            let Data = Cicilan.filter(ele=>ele.IDCicilan == idcicilan)
+            $('#update-transaksi-subtotal').val(Data[0].Harga)
+            countHargaTotal()
+        }
+        function countHargaTotal(){
+            let subtotal = $('#update-transaksi-subtotal').val()
+            let diskon = $('#update-transaksi-diskon').val()
+            let ppn = $('#update-transaksi-ppn').val()
+            let total = ppn =='y'?parseInt(parseInt(subtotal) + parseInt(subtotal*10/100)) - diskon:subtotal-diskon
+            $('#update-transaksi-total').val(total)
+        }
+        function changeCicilan(id){
+            $('#update-transaksi-cicilan').val('n')
+            isCicilan()
+            $('#update-transaksi-idcicilan').empty()
+            let Data = Cicilan.filter(ele=> ele.IDProgram == id)
+            $('#update-transaksi-cicilan').attr('disabled',false);
+            if(Data.length == 0){
+                $('#update-transaksi-cicilan').attr('disabled',true);
+            }
+            Data.forEach(ele=>{
+                $('#update-transaksi-idcicilan').append(
+                    "<option value=\""+ele.IDCicilan+"\">dicicil "+ele.Cicilan+" kali</option>"
+                );
+            })
         }
         function formatNumber(num) {
             return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
@@ -164,6 +233,18 @@
                   swal("Dibatalkan!");
               }
           })
+        }
+        function updateTransaksi(){
+            $.ajax({
+                type: "post",
+                url: "/karyawan/admin/transaksi/update",
+                data: $('#form-edit-transaksi').serialize(),
+                success: function (response) {
+                    showData()
+                    $('#modal-edit-transaksi').modal('hide')
+                    swal(response)
+                }
+            });
         }
     </script>
 @endpush

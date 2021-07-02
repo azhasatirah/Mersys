@@ -150,6 +150,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::get('/transaksi/detail/{id}','PembayaranController@adminDetailPembayaran');
         Route::get('/transaksi/getdata','TransaksiController@adminGetTransaksi');
         Route::get('/transaksi/delete/{id}','TransaksiController@adminDeleteTransaksi');
+        Route::post('/transaksi/update','TransaksiController@adminUpdateTransaksi');
         Route::post('transaksi/konfirmasi','PembayaranController@adminKonfirmasi');
         Route::get('/transaksi/selesai','TransaksiController@adminTransaksiSelesai');
         Route::get('/transaksi/exchange','TransaksiController@adminTransaksiExchange');

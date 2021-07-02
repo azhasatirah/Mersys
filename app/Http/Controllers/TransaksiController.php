@@ -320,7 +320,7 @@ class TransaksiController extends Controller
         ->join('kursus_siswa','transaksi.IDKursusSiswa','=','kursus_siswa.IDKursusSiswa')
         ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
         ->select('transaksi.KodeTransaksi','transaksi.Total','transaksi.SubTotal','transaksi.IDTransaksi',
-            'transaksi.Status','transaksi.UUID as UUIDTransaksi','program_studi.IDProgram','transaksi.IDCicilan',
+            'transaksi.Status','transaksi.UUID as UUIDTransaksi','program_studi.IDProgram','transaksi.IDCicilan','transaksi.Diskon','transaksi.PPN',
             'transaksi.Hutang','transaksi.created_at','siswa.NamaSiswa','program_studi.NamaProdi')
         ->where('transaksi.Status','!=','DEL')
         ->where('transaksi.Status','!=','CLS')
@@ -392,14 +392,59 @@ class TransaksiController extends Controller
                     'created_at'=> $Transaksi[$i]->created_at,
                     'NamaSiswa'=> $Transaksi[$i]->NamaSiswa,
                     'NamaProdi'=>$Transaksi[$i]->NamaProdi,
+                    'IDProgram'=>$Transaksi[$i]->IDProgram,
+                    'IDCicilan'=>$Transaksi[$i]->IDCicilan,
                     'KodeStatus'=>$FinalKodeStatus,
+                    'Diskon'=>$Transaksi[$i]->Diskon,
+                    'ppn'=>$Transaksi[$i]->PPN,
                     'Status'=> $Transaksi[$i]->Hutang=='y'?$FinalStatusCicilan :$EndStatus,
                 )
             );
         }
+        $ProgramStudi = DB::table('program_studi')->where('IDProgram','!=',1)->where('Status','OPN')->get();
+        $Cicilan = DB::table('cicilan')->where('Status','OPN')->get();
         //dd($DataTransaksi);
-        return response()->json($DataTransaksi);
+        return response()->json([$DataTransaksi,$ProgramStudi,$Cicilan]);
 
+    }
+    public function adminUpdateTransaksi(Request $request){
+        $Transaksi = DB::table('transaksi as t')
+        ->join('kursus_siswa as ks','t.IDKursusSiswa','=','ks.IDKursusSiswa')
+        ->select('ks.IDProgram','ks.IDKursusSiswa')
+        ->where('t.KodeTransaksi',$request->kodetransaksi)->get();
+        if($Transaksi[0]->IDProgram == $request->programstudi){
+            $DataTransaksi = array(
+                'Hutang'=>$request->cicilan,
+                'IDCicilan'=>$request->Cicilan == 'y'?$request->idcicilan:0,
+                'Diskon'=>$request->diskon,
+                'PPN'=>$request->ppn,
+                'NilaiPPN'=>$request->ppn == 'y'? $request->subtotal*10/100:0,
+                'SubTotal'=>$request->subtotal,
+                'Total'=>$request->total
+            );
+            DB::table('transaksi')->where('KodeTransaksi',$request->kodetransaksi)->update($DataTransaksi);
+        }
+        else{
+            $DataTransaksi = array(
+                'Hutang'=>$request->cicilan,
+                'IDCicilan'=>$request->Cicilan == 'y'?$request->idcicilan:0,
+                'Diskon'=>$request->diskon,
+                'PPN'=>$request->ppn,
+                'NilaiPPN'=>$request->ppn == 'y'? $request->subtotal*10/100:0,
+                'SubTotal'=>$request->subtotal,
+                'Total'=>$request->total,
+                'UserUpd'=>session()->get('Username'),
+                'updated_at'=>Carbon::now()
+            );
+            $DataKursus = array(
+                'IDProgram'=>$request->programstudi,
+                'UserUpd'=>session()->get('Username'),
+                'updated_at'=>Carbon::now()
+            );
+            DB::table('kursus_siswa')->where('IDKursusSiswa',$Transaksi[0]->IDKursusSiswa)->update($DataKursus);
+            DB::table('transaksi')->where('KodeTransaksi',$request->kodetransaksi)->update($DataTransaksi);
+        }
+        return response()->json('Transaksi berhasil di ubah');
     }
 
     public function adminGetTransaksiSelesai(){
