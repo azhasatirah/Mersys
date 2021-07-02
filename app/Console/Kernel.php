@@ -24,17 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->call(function (){
-            DB::table('notif')->insert([
-                'Notif'=> 'system call',
-                'NotifFrom'=> 'owner',
-                'NotifTo'=> 'admin',
-                'IsRead'=>false,
-                'Link'=>'',
-                'created_at'=>Carbon::now(),
-                'updated_at'=>Carbon::now()
-            ]);
-        })->everyMinute();
+        $schedule->command('notifme')->everyMinute();
     }
 
     /**
