@@ -319,7 +319,7 @@ class TransaksiController extends Controller
         ->join('siswa','transaksi.IDSiswa','=','siswa.IDSiswa')
         ->join('kursus_siswa','transaksi.IDKursusSiswa','=','kursus_siswa.IDKursusSiswa')
         ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
-        ->select('transaksi.KodeTransaksi','transaksi.Total','transaksi.SubTotal','transaksi.IDTransaksi',
+        ->select('transaksi.KodeTransaksi','transaksi.Total','transaksi.SubTotal','transaksi.IDTransaksi','kursus_siswa.KodeKursus',
             'transaksi.Status','transaksi.UUID as UUIDTransaksi','program_studi.IDProgram','transaksi.IDCicilan','transaksi.Diskon','transaksi.PPN',
             'transaksi.Hutang','transaksi.created_at','siswa.NamaSiswa','program_studi.NamaProdi')
         ->where('transaksi.Status','!=','DEL')
@@ -398,7 +398,8 @@ class TransaksiController extends Controller
                     'Diskon'=>$Transaksi[$i]->Diskon,
                     'ppn'=>$Transaksi[$i]->PPN,
                     'Status'=> $Transaksi[$i]->Hutang=='y'?$FinalStatusCicilan :$EndStatus,
-                    'Cicilan'=>count($CicilanCLS)
+                    'Cicilan'=>count($CicilanCLS),
+                    'KodeKursus'=>$Transaksi[$i]->KodeKursus
                 )
             );
         }
@@ -695,7 +696,7 @@ class TransaksiController extends Controller
         ->join('kursus_siswa','transaksi.IDKursusSiswa','=','kursus_siswa.IDKursusSiswa')
         ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
         ->select('transaksi.KodeTransaksi','transaksi.Total','transaksi.SubTotal','transaksi.IDTransaksi',
-            'transaksi.Status','transaksi.UUID as UUIDTransaksi',
+            'transaksi.Status','transaksi.UUID as UUIDTransaksi','kursus_siswa.KodeKursus',
             'transaksi.Hutang','transaksi.created_at','siswa.NamaSiswa','program_studi.NamaProdi')
         ->where('transaksi.Status','CLS')->get();
         return response()->json($Transaksi);

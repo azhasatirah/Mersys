@@ -33,6 +33,7 @@
                         <tr>
                             <th>No</th>
                             <th>Kode Transaksi</th>
+                            <th>Kode Kursus</th>
                             <th>Status</th>
                             <th>Nama Siswa</th>
                             <th>Program</th>
@@ -77,6 +78,7 @@
                         TabelData.row.add([
                             a,
                             data.KodeTransaksi,
+                            data.KodeKursus,
                             'Selesai',
                             data.NamaSiswa,
                             data.NamaProdi,
