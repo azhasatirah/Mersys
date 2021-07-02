@@ -159,14 +159,18 @@
         function setModalEdit(id){
             $('#choose-cicilan').hide();
             let Data = Transaksi.filter(ele=>ele.IDTransaksi == id)
+            console.log(Data)
+            changeCicilan(Data[0].IDProgram)
             $('#update-transaksi-kodetransaksi').val(Data[0].KodeTransaksi)
             $('#update-transaksi-program').val(Data[0].IDProgram)
-            $('#update-transaksi-cicilan').val(Data[0].Hutang)
+            $('#update-transaksi-cicilan').val(Data[0].Hutang).change()
             $('#update-transaksi-diskon').val(Data[0].Diskon)
             $('#update-transaksi-PPN').val(Data[0].ppn)
             $('#update-transaksi-subtotal').val(Data[0].SubTotal)
             $('#update-transaksi-total').val(Data[0].Total)
-            changeCicilan(Data[0].IDProgram)
+            if(Data[0].Hutang == 'y'){
+                $('#update-transaksi-idcicilan').val(Data[0].IDCicilan).change()
+            }
         }
         function changeProgram(){
             let Data = $('#update-transaksi-program').val()

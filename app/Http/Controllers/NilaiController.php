@@ -177,7 +177,7 @@ class NilaiController extends Controller
 
         $Tutor = DB::table('kursus_siswa as ks')
         ->join('jadwal as j','ks.IDKursusSiswa','=','j.IDKursusSiswa')
-        ->join('Karyawan as k','j.IDTutor','=','k.IDKaryawan')
+        ->join('karyawan as k','j.IDTutor','=','k.IDKaryawan')
         ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
         ->where('ks.UUID',$id)
         ->select('k.NamaKaryawan')
