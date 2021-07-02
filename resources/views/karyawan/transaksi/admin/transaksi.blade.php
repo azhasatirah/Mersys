@@ -141,8 +141,8 @@
                             'Rp '+formatNumber(data.Total),
                             data.Hutang=='y'?'Ya':'Tidak',
                             data.created_at,
-                            data.Hutang=='y'&&data.Cicilan>0?'Cicilan ke '+data.Cicilan:
                             data.KodeStatus=='waitForAdmin'?TombolVerif:
+                            data.Hutang=='y'&&data.Cicilan>0?'Cicilan ke '+data.Cicilan:
                             data.KodeStatus == 'waitForPayment'?TombolDelete+TombolEdit:
                             data.Status
                         ]).draw();
