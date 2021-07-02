@@ -137,8 +137,9 @@
                             data.NamaProdi,
                             'Rp '+formatNumber(data.SubTotal),
                             'Rp '+formatNumber(data.Total),
-                            data.Cicilan=='y'?'Ya':'Tidak',
+                            data.Hutang=='y'?'Ya':'Tidak',
                             data.created_at,
+                            data.Hutang=='y'&&data.Cicilan>0?'Cicilan ke '+data.Cicilan:
                             data.KodeStatus=='waitForAdmin'?TombolVerif:
                             data.KodeStatus == 'waitForPayment'?TombolDelete+TombolEdit:
                             data.Status

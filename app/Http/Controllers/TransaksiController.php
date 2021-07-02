@@ -398,6 +398,7 @@ class TransaksiController extends Controller
                     'Diskon'=>$Transaksi[$i]->Diskon,
                     'ppn'=>$Transaksi[$i]->PPN,
                     'Status'=> $Transaksi[$i]->Hutang=='y'?$FinalStatusCicilan :$EndStatus,
+                    'Cicilan'=>count($CicilanCLS)
                 )
             );
         }
