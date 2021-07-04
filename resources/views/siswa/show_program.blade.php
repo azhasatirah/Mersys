@@ -191,7 +191,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-7"></div>
+                            <div class="col-md-7 ">
+                 
+                            </div>
+         
                         </div>
                         
                         <div style="display:none" id="input-ubah-jadwal">
@@ -306,40 +309,40 @@
 
 </div>
     
-    <!-- Modal change jadwal   -->
-    <div class="modal fade" id="modal-change-jadwal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                    <div class="modal-header">
-                            <h5 class="modal-title">Kirim permintaan ubah jadwal </h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                        </div>
-                <div class="modal-body">
-                    {{-- <form action=""></form> --}}
-                    <div class="container-fluid">
-                        <div class="form-group">
-                          <label for="">Nama Materi</label>
-                          <input type="text" readonly class="form-control" id="change-jadwal-materi" aria-describedby="helpId" placeholder="">
-                        </div>
-                        <div class="form-group">
-                            <label for="">Tanggal</label>
-                            <input type="date" class="form-control" name="tanggal" id="change-jadwal-tanggal" aria-describedby="helpId" placeholder="">
-                        </div>
-                        <div class="form-group">
-                            <label for="">Jam</label>
-                            <input type="time" class="form-control" name="jam" id="change-jadwal-jam" aria-describedby="helpId" placeholder="">
-                        </div>
+<!-- Modal change jadwal   -->
+<div class="modal fade" id="modal-change-jadwal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <div class="modal-header">
+                        <h5 class="modal-title">Kirim permintaan ubah jadwal </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                    </div>
+            <div class="modal-body">
+                {{-- <form action=""></form> --}}
+                <div class="container-fluid">
+                    <div class="form-group">
+                        <label for="">Nama Materi</label>
+                        <input type="text" readonly class="form-control" id="change-jadwal-materi" aria-describedby="helpId" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Tanggal</label>
+                        <input type="date" class="form-control" name="tanggal" id="change-jadwal-tanggal" aria-describedby="helpId" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Jam</label>
+                        <input type="time" class="form-control" name="jam" id="change-jadwal-jam" aria-describedby="helpId" placeholder="">
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save</button>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 @push('scripts')
@@ -347,7 +350,7 @@
 {{-- <script type="application/javascript" src="{{ asset('js/app.js') }}"></script> --}}
 <script>
     const token = $('#token').val();
-    let active_content = "pertemuan";
+    let active_content = "ubahjadwal";
     const btn_prodi = $('#btn-prodi');
     const btn_pertemuan = $('#btn-pertemuan');
     const btn_modul = $('#btn-modul');

@@ -155,6 +155,7 @@
 @endsection
 @push('scripts')
 <script>
+    
     let TableExchange = $('#table-exchange').DataTable()
     let TransaskiSelesai = [],TransaksiExchange = [],ProgramStudi=[],ExchangeID =''
     getData()

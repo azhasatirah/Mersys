@@ -742,7 +742,18 @@
         $('#id_program').val(id_program);
         getAndSetMateri(id_program);
     }
-
+    function getAndSetMateri(idprogram) {
+        $.ajax({
+            url: '/siswa/getMateriByIDProgram/' + idprogram,
+            type: 'get',
+            success: function (data) {
+          
+                materi = [];
+                materi = data;
+            },
+            async: false
+        });
+    }
     function getAndSetNewestJadwalTutor(start_date) {
         $.ajax({
             url: '/siswa/getJadwalTutor/' + start_date,
@@ -757,18 +768,7 @@
         });
     }
 
-    function getAndSetMateri(idprogram) {
-        $.ajax({
-            url: '/siswa/getMateriByIDProgram/' + idprogram,
-            type: 'get',
-            success: function (data) {
-          
-                materi = [];
-                materi = data;
-            },
-            async: false
-        });
-    }
+
 
 
     
