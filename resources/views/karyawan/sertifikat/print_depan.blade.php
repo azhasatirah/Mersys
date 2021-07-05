@@ -57,7 +57,7 @@
         <div class="d-flex justify-content-between">
             <div></div>
             <div id="content" style="padding-top: 280px;padding-left:225px" >
-                <h4 id="nama" tyle="font-family: play" >{{$Nilai['NamaSiswa']}}</h4>
+                <h1 id="nama" style="font-family:play" >{{$Nilai['NamaSiswa']}}</h1>
                 <p id="des" style="color: red;font-size:14px;font-family:comic">
                     has successfully completed the Merachel Program: 
                     <span style="text-decoration: underline">{{$Nilai['NamaProdi']}}</span> <br>
