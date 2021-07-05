@@ -11,7 +11,7 @@
     {{storage_path('/fonts/comici.ttf')}}
     <style>
         @font-face { 
-            font-family:comic; src: url({{storage_path('fonts/comici.ttf)}}');
+            font-family:comic; src: url({{storage_path('fonts/comici.ttf')}});
         }
         @font-face { 
             font-family:play; src: url({{storage_path('fonts/p3.otf')}});
