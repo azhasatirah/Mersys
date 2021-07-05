@@ -11,10 +11,10 @@
     {{storage_path('/fonts/comici.ttf')}}
     <style>
         @font-face { 
-            font-family:comic; src: url('{{url('fonts/comici.ttf')}}');
+            font-family:comic; src: url({{storage_path('fonts/comici.ttf)}}');
         }
         @font-face { 
-            font-family:play; src: url('{{url('fonts/p3.otf')}}');
+            font-family:play; src: url({{storage_path('fonts/p3.otf')}});
         }
         #body {
             background-image:url('{{url('images/sertifikat/s-depan-blank.png')}}');
