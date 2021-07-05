@@ -86,7 +86,7 @@ class SertifikatController extends Controller
         );
         //dd($DataNilai);
         //return view('karyawan/sertifikat/print_depan',['Nilai'=>$DataNilai]);
-        $Depan = PDF::loadview('karyawan/sertifikat/print_depan',['Nilai'=>$DataNilai]);
+        $Depan = PDF::loadview('karyawan/sertifikat/print_depan',['Nilai'=>$DataNilai])->setPaper('a4', 'landscape')->setWarnings(false);
     
         return $Depan->download('sertifikat depan '.$Nilai[0]->NamaSiswa.'.pdf');
     }

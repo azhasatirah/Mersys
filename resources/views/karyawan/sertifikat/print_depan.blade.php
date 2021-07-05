@@ -7,12 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
+
+    {{storage_path('/fonts/comici.ttf')}}
     <style>
         @font-face { 
-            font-family:comic; src: url('/fonts/comici.ttf');
+            font-family:comic; src: url('{{url('/fonts/comici.ttf')}}');
         }
         @font-face { 
-            font-family:play; src: url('/fonts/p3.otf');
+            font-family:play; src: url('{{url('/fonts/p3.otf')}}');
         }
         #body {
             background-image:url('{{url('images/sertifikat/s-depan-blank.png')}}');
