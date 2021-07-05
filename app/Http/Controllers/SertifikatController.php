@@ -161,6 +161,7 @@ class SertifikatController extends Controller
                 'Desc'=>$Desc
             ));
         };
+        //return view('karyawan/sertifikat/print_belakang',['Nilai'=>$DataNilai]);
         $Belakang = PDF::loadview('karyawan/sertifikat/print_belakang',['Nilai'=>$DataNilai])->setPaper('a4', 'landscape')->setWarnings(false);
         return $Belakang->download('sertifikat.pdf');
     }

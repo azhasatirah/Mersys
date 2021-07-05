@@ -18,7 +18,7 @@
             background-image:url('{{url('images/sertifikat/s-depan-blank.png')}}');
             background-repeat: no-repeat;
             background-position: center;
-            background-size: 65% auto;
+            background-size: 80% auto;
         }
 
         #content {
@@ -56,9 +56,9 @@
     <div id="body" class="container-fluid">
         <div class="d-flex justify-content-between">
             <div></div>
-            <div id="content" style="padding-top: 280px;padding-left:225px" >
-                <h1 id="nama" style="font-family:play" >{{$Nilai['NamaSiswa']}}</h1>
-                <p id="des" style="color: red;font-size:14px;font-family:comic">
+            <div id="content" style="padding-top: 280px;padding-left:210px" >
+                <h1 id="nama" style="font-family:play;font-size:50px" >{{$Nilai['NamaSiswa']}}</h1>
+                <p id="des" style="color: red;font-size:15px;font-family:comic">
                     has successfully completed the Merachel Program: 
                     <span style="text-decoration: underline">{{$Nilai['NamaProdi']}}</span> <br>
                     demonstrating the required skills and knowledge. The Final Evaluation was passed <br>
