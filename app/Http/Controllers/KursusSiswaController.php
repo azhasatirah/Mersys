@@ -127,6 +127,41 @@ class KursusSiswaController extends Controller
 
             return view('karyawan.kursus_admin_index');
         }
+        public function adminAbsenKursus(Request $request){
+            $Data = [];
+            $NamaTabel = $request->person == 1?'absen_siswa':'absen_tutor';
+            $DataJadwal = DB::table('jadwal')->where('IDJadwal',$request->IDJadwal)->get();
+            $Start = explode(' ',$DataJadwal[0]->Tanggal)[1];
+            $End =  date('H:i:s',strtotime('+2 hours',strtotime($DataJadwal[0]->Tanggal)));
+           // dd($Start, $End);
+            if($request->person == 2){
+                $Data = [
+                    'IDTutor'=>$request->IDPerson,
+                    'IDJadwal'=>$request->IDJadwal,
+                    'Start'=>$Start,
+                    'End'=>$End,
+                    'UserAdd'=>session()->get('Username'),
+                    'UserUpd'=>session()->get('Username'),
+                    'created_at'=>Carbon::now(),
+                    'updated_at'=>Carbon::now(),
+                ];
+            }
+            if($request->person == 1){
+                $Data = [
+                    'IDSiswa'=>$request->IDPerson,
+                    'IDJadwal'=>$request->IDJadwal,
+                    'Start'=>$Start,
+                    'End'=>$End,
+                    'IsVirtual'=>0,
+                    'UserAdd'=>session()->get('Username'),
+                    'UserUpd'=>session()->get('Username'),
+                    'created_at'=>Carbon::now(),
+                    'updated_at'=>Carbon::now(),
+                ];
+            }
+            DB::table($NamaTabel)->insert($Data);
+            return response()->json('Absen berhasil ditambahkan');
+        }
         public function adminGetDataKursus(){
             $Kursus = DB::table('kursus_siswa as ks')
             ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
@@ -191,10 +226,14 @@ class KursusSiswaController extends Controller
         public function adminShowKursusGetData($id){
             $Data = [];
             $NilaiEvaluasi = [];
+
             $Jadwal = DB::table('jadwal as j')
             ->join('kursus_siswa as ks','j.IDKursusSiswa','=','ks.IDKursusSiswa')
             ->join('kursus_materi as mp','j.IDMateri','=','mp.IDKursusMateri')
-            ->where('ks.UUID',$id)->select('j.*','ks.IDSiswa','ks.UUID as UUIDProgram','mp.NoRecord','mp.NamaMateri','mp.Status as StatusMateri')->orderBy('mp.NoRecord')->get();
+            ->where('ks.UUID',$id)
+            ->select('j.*','ks.IDSiswa','ks.UUID as UUIDProgram','mp.NoRecord','ks.IDSiswa','j.IDTutor','j.IDJadwal',
+            'mp.NamaMateri','mp.Status as StatusMateri')
+            ->orderBy('mp.NoRecord')->get();
             $DataKelas = DB::table('jadwal as j')
             ->join('kursus_siswa as ks','j.IDKursusSiswa','=','ks.IDKursusSiswa')
             ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
@@ -203,6 +242,8 @@ class KursusSiswaController extends Controller
             ->where('ks.UUID',$id)
             ->select('k.KodeKaryawan','ks.KodeKursus','k.NamaKaryawan','s.NamaSiswa','s.KodeSiswa','ps.NamaProdi')->get();
             foreach($Jadwal as $item){
+                $AbsenSiswa = false ;
+                $AbsenTutor = false ;
                 $a_siswa = DB::table('absen_siswa')->where('IDJadwal',$item->IDJadwal)->get();
                 $a_tutor = DB::table('absen_tutor')->where('IDJadwal',$item->IDJadwal)->get();
                 $KehadiranSiswa ='';
@@ -215,6 +256,8 @@ class KursusSiswaController extends Controller
                 if(strtotime($item->Tanggal)<strtotime(Carbon::now())){
                     $KehadiranSiswa=count($a_siswa)>0?$a_siswa[0]->Start.' sampai '.$a_siswa[0]->End:'Alpha';
                     $KehadiranTutor=count($a_tutor)>0?$a_tutor[0]->Start.' sampai '.$a_tutor[0]->End:'Alpha';
+                    $AbsenSiswa =count($a_siswa)>0?false: true;
+                    $AbsenTutor =count($a_tutor)>0?false: true;
                 }else{
                     $KehadiranSiswa='Belum mulai';
                     $KehadiranTutor='Belum mulai';
@@ -225,6 +268,11 @@ class KursusSiswaController extends Controller
                     'Materi'=>$item->NamaMateri,
                     'KehadiranSiswa'=>$KehadiranSiswa,
                     'KehadiranTutor'=>$KehadiranTutor,
+                    'AbsenTutor'=>$AbsenTutor,
+                    'AbsenSiswa'=>$AbsenSiswa,
+                    'IDSiswa'=>$item->IDSiswa,
+                    'IDTutor'=>$item->IDTutor,
+                    'IDJadwal'=>$item->IDJadwal
                 ));
             }
             $TmpChanges = DB::table('jadwal_change as jc')

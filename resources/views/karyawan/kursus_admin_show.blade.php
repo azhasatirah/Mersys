@@ -505,12 +505,15 @@
     function showDataJadwal(){
         TabelJadwal.clear()
         Absen.forEach((ele)=>{
+            //console.log(ele)
+            let btn_fill_siswa = "<button class=\"btn ml-2 btn-primary btn-sm\" onclick=\"absen(1,"+ele.IDSiswa+","+ele.IDJadwal+")\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></button>"
+            let btn_fill_tutor = "<button class=\"btn ml-2 btn-primary btn-sm\" onclick=\"absen(2,"+ele.IDTutor+","+ele.IDJadwal+")\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></button>"
             TabelJadwal.row.add([
                 ele.Pertemuan,
                 ele.Tanggal,
                 ele.Materi,
-                ele.KehadiranTutor,
-                ele.KehadiranSiswa
+                ele.KehadiranTutor + (ele.AbsenTutor==true?btn_fill_tutor:''),
+                ele.KehadiranSiswa + (ele.AbsenSiswa==true?btn_fill_siswa:'')
             ]).draw()
         })
         //input select change 
@@ -523,6 +526,23 @@
                 "<option value=\""+ele.NoRecord+"\">Ubah pertemuan ke "+ele.NoRecord+"</option>"
             )
         })
+    }
+    function absen(person, IDPerson, IDJadwal){
+        let data = {
+            '_token':token,
+            'person':person,
+            'IDPerson':IDPerson,
+            'IDJadwal':IDJadwal
+        }
+        $.ajax({
+            type: "post",
+            url: "/karyawan/admin/kursus/absen/",
+            data: data,
+            success: function (response) {
+                getData()
+                swal(response)
+            }
+        });
     }
     function showChanges(){
         $('#list-history-changes').empty()
@@ -1263,8 +1283,11 @@
     }
     function reMakeJadwal() {
         //kunaiss
+        // total pertemuan = jadwal yang belum ada absen dan tanggl nya lebih besar sama dengan sekarang
         let start_date = $('#start_date');
-        let total_pertemuan = jadwal.length
+        let filtered_jadwal = jadwal.filter(ele=>new Date(ele.Tanggal.split(' ')[0]).getTime() >= new Date(moment(new Date()).format('Y-MM-DD')).getTime())
+        // console.log(moment(new Date()).format('Y-MM-DD'))
+        let total_pertemuan = filtered_jadwal.length
         let senin = $('#senin');
         let selasa = $('#selasa');
         let rabu = $('#rabu');
@@ -1371,6 +1394,7 @@
     }
 
     function jadwalBuiler(changes){
+        let filtered_jadwal = jadwal.filter(ele=>new Date(ele.Tanggal.split(' ')[0]).getTime() >= new Date(moment(new Date()).format('Y-MM-DD')).getTime() )
         let newJadwal = []
         let DataChanges={
                 '_token':token,
@@ -1386,7 +1410,7 @@
                 'TanggalTo[]':[]
         };
         let i=0
-        jadwal.forEach((data)=>{
+        filtered_jadwal.forEach((data)=>{
             //console.log(tmpDate.getDate(),new Date(tmpDate.setDate(tmpDate.getDate() + freeze)).toString())
             // let date = new Date( tmpDate.setDate(tmpDate.getDate() + freeze))
             newJadwal.push({

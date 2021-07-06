@@ -48,6 +48,7 @@
         }
 
     </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
@@ -55,12 +56,13 @@
 </head>
 
 <body>
+    <a onclick="downloadPDF()" class="btn btn-primary" href="javascript:void(0)" role="button">download</a>
     @if (session()->get('RoleUser')=='siswa')
-    <a name="" id="" class="btn btn-primary mx-2 my-2" 
+    <a  class="btn btn-primary mx-2 my-2" 
     href="{{url('/siswa/sertifikat/depan/cetak')}}/{{$Nilai['UUIDKursus']}}" 
     role="button">Print</a>
     @else
-    <a name="" id="" class="btn btn-primary mx-2 my-2" 
+    <a  class="btn btn-primary mx-2 my-2" 
     href="{{url('/karyawan/tutor/sertifikat/depan/cetak')}}/{{$Nilai['UUIDKursus']}}" 
     role="button">Print</a>
     @endif
@@ -82,8 +84,24 @@
     </div>
     <div class="mt-4"></div>
 
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous">
+    </script>
+    <script>
+   
+
+        // Default export is a4 paper, portrait, using millimeters for units
+        const doc = new jsPDF({
+            orientation : 'landscape'
+        });
+        function downloadPDF(){
+            let ele = document.getElementById('body')
+            doc.fromHTML(ele, 10, 10);
+            doc.save("a4.pdf");
+        }
+
     </script>
 
 </body>
