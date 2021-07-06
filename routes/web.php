@@ -92,6 +92,12 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     //route admin
     Route::group(['middleware'=>['RoleKaryawan:2'],'prefix'=>'admin'],function(){
 
+        Route::get('jadwal/semiprivate','JadwalSemiPrivateController@index');
+        Route::get('jadwal/semiprivate/getdata','JadwalSemiPrivateController@getData');
+        Route::post('jadwal/semiprivate/store','JadwalSemiPrivateController@store');
+        Route::post('jadwal/semiprivate/update','JadwalSemiPrivateController@udpate');
+        Route::post('jadwal/semiprivate/delete','JadwalSemiPrivateController@delete');
+
         Route::get('diskon','DiskonController@adminIndex');
         Route::get('diskon/getdata','DiskonController@getData');
         Route::get('diskon/delete/{id}','DiskonController@delete');

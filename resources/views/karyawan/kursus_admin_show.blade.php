@@ -1394,7 +1394,9 @@
     }
 
     function jadwalBuiler(changes){
-        let filtered_jadwal = jadwal.filter(ele=>new Date(ele.Tanggal.split(' ')[0]).getTime() >= new Date(moment(new Date()).format('Y-MM-DD')).getTime() )
+        // let filtered_jadwal = jadwal.filter(ele=>new Date(ele.Tanggal.split(' ')[0]).getTime() >= new Date(moment(new Date()).format('Y-MM-DD')).getTime() )
+        let filtered_jadwal = jadwal
+        
         let newJadwal = []
         let DataChanges={
                 '_token':token,

@@ -110,7 +110,13 @@
                       <li><a href="{{url('karyawan/admin/master/aktifasi')}}">Pendaftaran Karyawan</a></li>
                     </ul>
                   </li>
-                  <li><a href="{{url('karyawan/admin/jadwal')}}"><i class="fa fa-check"></i>Jadwal</a></li>
+                  <li>
+                    <a><i class="fa fa-calendar" aria-hidden="true"></i>Jadwal <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="{{url('karyawan/admin/jadwal')}}"><i class="fa fa-check"></i>Jadwal</a></li>
+                      <li><a href="{{url('karyawan/admin/jadwal/semiprivate')}}"><i class="fa fa-calendar-o"></i>Jadwal semi private</a></li>
+                    </ul>
+                  </li>
                   <li><a><i class="fa fa-cog"></i> Manage <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{url('karyawan/admin/master/program')}}">Program studi</a></li>
