@@ -571,10 +571,19 @@ class ProgramStudiController extends Controller
         $Tool = [];
         if($Prodi[0]->KategoriGlobal == 'd667956724b54f72b57aef27166a92ed'){
             $NamaProdi = explode('-',$Prodi[0]->NamaProdi)[0];
-            $MainProdi = DB::table('program_studi')->where('NamaProdi','like',$NamaProdi.'-1%')
+            $CurrentBulanan = explode(')',explode('-',$Prodi[0]->NamaProdi)[1])[0];
+            $Prodi = DB::table('program_studi')->where('NamaProdi','like',$NamaProdi.'%')
             ->where('Status','!=','DEL')->get();
-            $Tool = DB::table('program_studi_tool')->where('Status','!=','DEL')
-            ->where('IDProgram',$MainProdi[0]->IDProgram)->get();
+            $FilteredProdi = array_filter($Prodi->toArray(),function($val) use ($CurrentBulanan){
+                return (explode(')',explode('-',$val->NamaProdi)[1])[0]) <= $CurrentBulanan;
+            });
+            foreach($FilteredProdi as $data){
+                $tool = DB::table('program_studi_tool')->where('Status','OPN')
+                ->where('IDProgram',$data->IDProgram)->get();
+                foreach($tool as $dat){
+                    array_push($Tool,$dat);
+                }
+            }
         }else{
             $Tool = DB::table('program_studi_tool')->where('Status','!=','DEL')
             ->where('IDProgram',$id)->get();
