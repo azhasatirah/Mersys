@@ -174,7 +174,8 @@
             </div>
             <div class="x_content">
                 <div style="display: none" id="content-jadwal" class=" mt-3">
-                    <button data-toggle="modal" data-target="#modalcreate"  class="btn btn-primary btn-sm mb-3" role="button">Buat ulang jadwal <i class="fa fa-pencil" aria-hidden="true"></i></button>
+                    <button data-toggle="modal" onclick="setTypeRemakeJadwal(1)" data-target="#modalcreate"  class="btn btn-primary btn-sm mb-3" role="button">Buat ulang jadwal <i class="fa fa-pencil" aria-hidden="true"></i></button>
+                    <button data-toggle="modal" onclick="setTypeRemakeJadwal(2)" data-target="#modalcreate"  class="btn btn-danger btn-sm mb-3" role="button">Reset jadwal <i class="fa fa-pencil" aria-hidden="true"></i></button>
                         <table id="tabeldata" style="width: 100%" class="table table-hover">
                             <thead style="width: 100%">
                                 <tr>
@@ -361,7 +362,7 @@
 @push('scripts')
 <script src="{{asset('assets/js/moment.js')}}"></script>
     <script>
-        
+    let TypeRemakeJadwal = 0
     let token = $('#token').val();
         //data from database
     let DataKelas = [],Absen = [],Changes = [],jadwal = [],Evaluasi = [],Nilai = []
@@ -547,7 +548,7 @@
     function showChanges(){
         $('#list-history-changes').empty()
         Changes.sort((a,b)=> b.IDJadwalChange - a.IDJadwalChange).forEach((ele)=>{
-            //console.log(ele)
+            console.log(ele)
             //  console.log(ele.JadwalChanges[0].TanggalFrom)
             let ChangesSebelum =""
             let ChangesSesudah =""
@@ -1281,11 +1282,16 @@
       
 
     }
+    function setTypeRemakeJadwal(id){      
+        TypeRemakeJadwal = id
+    }
     function reMakeJadwal() {
         //kunaiss
         // total pertemuan = jadwal yang belum ada absen dan tanggl nya lebih besar sama dengan sekarang
         let start_date = $('#start_date');
-        let filtered_jadwal = jadwal.filter(ele=>new Date(ele.Tanggal.split(' ')[0]).getTime() >= new Date(moment(new Date()).format('Y-MM-DD')).getTime())
+        let filtered_jadwal = TypeRemakeJadwal == 1?
+        jadwal.filter(ele=>new Date(ele.Tanggal.split(' ')[0]).getTime() >= new Date(moment(new Date()).format('Y-MM-DD')).getTime()):
+        jadwal
         // console.log(moment(new Date()).format('Y-MM-DD'))
         let total_pertemuan = filtered_jadwal.length
         let senin = $('#senin');
@@ -1385,7 +1391,7 @@
             }
         }
       console.log(jadwal_siswa)
-      jadwalBuiler(jadwal_siswa);
+      jadwalBuiler(jadwal_siswa,filtered_jadwal);
       //kunai
     
         //getAndSetNewestJadwalTutor(start_date.val());
@@ -1393,10 +1399,9 @@
 
     }
 
-    function jadwalBuiler(changes){
-        // let filtered_jadwal = jadwal.filter(ele=>new Date(ele.Tanggal.split(' ')[0]).getTime() >= new Date(moment(new Date()).format('Y-MM-DD')).getTime() )
-        let filtered_jadwal = jadwal
-        
+    function jadwalBuiler(changes,data_jadwal){
+        //let filtered_jadwal = jadwal
+        console.log('ch',changes)
         let newJadwal = []
         let DataChanges={
                 '_token':token,
@@ -1412,7 +1417,7 @@
                 'TanggalTo[]':[]
         };
         let i=0
-        filtered_jadwal.forEach((data)=>{
+        data_jadwal.forEach((data)=>{
             //console.log(tmpDate.getDate(),new Date(tmpDate.setDate(tmpDate.getDate() + freeze)).toString())
             // let date = new Date( tmpDate.setDate(tmpDate.getDate() + freeze))
             newJadwal.push({

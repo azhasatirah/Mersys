@@ -282,11 +282,15 @@ class KursusSiswaController extends Controller
             ->get();
             $Changes = [];
             foreach($TmpChanges as $item){
-                array_push($Changes,array(
-                    'Status'=>$item->Status,
-                    'IDJadwalChange'=>$item->IDJadwalChange,
-                    'JadwalChanges'=>DB::table('jadwal_change_detail')->where('IDJadwalChange',$item->IDJadwalChange)->get()
-                ));
+                $ChangesDetail = DB::table('jadwal_change_detail')->where('IDJadwalChange',$item->IDJadwalChange)->get();
+                if(count($ChangesDetail)>0){
+
+                    array_push($Changes,array(
+                        'Status'=>$item->Status,
+                        'IDJadwalChange'=>$item->IDJadwalChange,
+                        'JadwalChanges'=>$ChangesDetail
+                    ));
+                }
             }
             //dd($Jadwal,$Data);
             $ActiveJadwal = array_filter($Jadwal->toArray(),function($var){
