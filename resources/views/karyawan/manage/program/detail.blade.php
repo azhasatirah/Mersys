@@ -881,7 +881,7 @@
         let HargaModul = 0
         let HaragaTotal = 0
         tool_ss.forEach(ele=>HargaTool += ele.Harga)
-        modul_ss.forEach(ele=>HargaModul += ele.Harga)
+        modul_ss.filter(ele=>ele.IDProgram == program_studi[0].IDProgram).forEach(ele=>HargaModul += ele.Harga)
         HargaTotal = HargaProgram + HargaTool + HargaModul
         $('#input-harga-total').val('Rp '+HargaTotal.toLocaleString('id-ID'));
         $('#input-harga-total-tool').val('Rp '+HargaTool.toLocaleString('id-ID'));
