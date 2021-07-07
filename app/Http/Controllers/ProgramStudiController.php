@@ -767,15 +767,26 @@ class ProgramStudiController extends Controller
         $Modul = [];
         if($Prodi[0]->KategoriGlobal == 'd667956724b54f72b57aef27166a92ed'){
             $NamaProdi = explode('-',$Prodi[0]->NamaProdi)[0];
-            $MainProdi = DB::table('program_studi')->where('NamaProdi','like',$NamaProdi.'-1%')
+            $CurrentBulanan = explode(')',explode('-',$Prodi[0]->NamaProdi)[1])[0];
+            $Prodi = DB::table('program_studi')->where('NamaProdi','like',$NamaProdi.'%')
             ->where('Status','!=','DEL')->get();
-            $Modul = DB::table('program_studi_bahan_tutor')->where('Status','OPN')
-            ->where('IDProgram',$MainProdi[0]->IDProgram)->get();
+            $FilteredProdi = array_filter($Prodi->toArray(),function($val) use ($CurrentBulanan){
+                return (explode(')',explode('-',$val->NamaProdi)[1])[0]) <= $CurrentBulanan;
+            });
+            foreach($FilteredProdi as $data){
+                $modul = DB::table('program_studi_bahan_tutor')->where('Status','OPN')
+                ->where('IDProgram',$data->IDProgram)->get();
+                foreach($modul as $mod){
+                    array_push($Modul,$mod);
+                }
+            }
         }else{
             $Modul = DB::table('program_studi_bahan_tutor')->where('Status','OPN')
             ->where('IDProgram',$id)->get();
         }
         return response()->json($Modul);
+
+        
     }
     public function pdStoreBahan(Request $request){
         //dd($request);

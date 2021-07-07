@@ -48,11 +48,33 @@
                 </a>
                 @else
                 <a href="javascript:void(0)" class="btn btn-primary btn-sm" data-toggle="modal"
-                    data-target="#modalcreate"
+                    data-target="#modaljenis"
                     onclick="setdata({{$item['TotalPertemuan']}},{{$item['IDKursus']}},{{$item['IDProgram']}})">
                     <i class="fa fa-edit"></i>
                     Buat Jadwal
                 </a>
+                <!-- Button trigger modal -->
+
+                
+                <!-- Modal -->
+                <div class="modal fade" id="modaljenis" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body" style="padding: 0px">
+                                <div  class="row text-dark">
+                                    <div onclick="showCreateJadwalPrivate()" style="background:gray;cursor: pointer;" class="col-md-6 text-white">
+                                        <h2>Private</h2>
+                                        <img src="{{url('images/private.png')}}" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|} mb-5" alt="">
+                                    </div>
+                                    <div onclick="showCreateJadwalSemi()" style="background: white;cursor: pointer;" class="col-md-6">
+                                        <h2>Semi Private</h2>
+                                        <img src="{{url('images/semi-private.png')}}" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|} mb-5" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 @endif
 
             </td>
@@ -833,112 +855,19 @@
     }
 
 
-
+    function showCreateJadwalPrivate(){
+        $('#modaljenis').modal('hide')
+        $('#modalcreate').modal('show')
+    }
+    function showCreateJadwalSemi(){
+        $('#modaljenis').modal('hide')
+    }
 
     
 </script>
 @endpush
 @endsection
 
-<!-- 
-{{-- @if($item["StatusJadwal"]=='Jadwal belum dibuat')
-  <div class="form-group">
-      <form action="{{url('siswa/jadwal/store')}}" method="POST">
-@csrf
-<input type="hidden" value="{{$item['IDProgram']}}" name="idprogram">
-<input type="hidden" value="{{$item['IDKursus']}}" name="idkursus">
-<input type="hidden" value="{{$item['NoRecord']}}" name="norecord">
-<input type="hidden" value="{{$item['NamaMateri']}}" name="namamateri">
-<input style="display:" class="mb-1" type="datetime-local" name="jadwal" id="jadwal">
-<button type="submit" class="btn btn-sm btn-danger ">Buat Jadwal</button>
-@if($item["StatusJadwal"]=='Jadwal belum dibuat'&&intval($item['Pertemuan'])>=1)
-<a href="{{url('siswa/jadwal/show')}}/{{$item['UUIDKursus']}}" class="btn btn-primary btn-sm">
-    <i class="fa fa-folder"></i>
-    Lihat Jadwal
-</a>
-@endif
-</form>
-</div>
 
-@else --}}
-
-{{-- @foreach($Kursus as $item)
-    <form class="bg-white" action="{{url('siswa/jadwal/store')}}" method="POST">
-@csrf
-
-
-
-<a href="#" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> View </a>
-<a href="#" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Edit </a>
-<a href="#" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Delete </a>
-
-
-<div class="card mx-2 my-2 item shadow-sm">
-    <input type="hidden" value="{{$item['IDProgram']}}" name="idprogram">
-    <input type="hidden" value="{{$item['IDKursus']}}" name="idkursus">
-    <input type="hidden" value="{{$item['NoRecord']}}" name="norecord">
-    <input type="hidden" value="{{$item['NamaMateri']}}" name="namamateri">
-    <div class="item-info">
-        <span class="item-title">
-            Program:
-        </span>
-        <p class="item-data">
-            {{$item["NamaProgram"]}}
-        </p>
-    </div>
-
-
-    <div class="item-info">
-        <span class="item-title">
-            Total Pertemuan:
-        </span>
-        <p class="item-data">
-            {{$item["TotalPertemuan"]}}
-        </p>
-    </div>
-    <div class="item-info">
-        <span class="item-title">
-            Sisa Pertemuan:
-        </span>
-        <p class="item-data">
-            {{$item["SisaPertemuan"]}}
-        </p>
-    </div>
-    <div class="item-info">
-        <span class="item-title">
-            Pertemuan ke:
-        </span>
-        <p class="item-data">
-            {{$item["Pertemuan"]}}
-        </p>
-    </div>
-    <div class="item-info">
-        <span class="item-title">
-            Materi:
-        </span>
-        <p class="item-data">
-            {{$item["NamaMateri"]}}
-        </p>
-    </div>
-    Jadwal:
-    <div class="item-info">
-        <span class="item-title">
-        </span>
-        <p class="item-data">
-            {{$item["StatusJadwal"]}}
-        </p>
-    </div>
-    @if($item["StatusJadwal"]=='Jadwal belum dibuat')
-    <div class="form-group">
-        <input style="display:" type="datetime-local" name="jadwal" id="jadwal">
-        <button type="submit" class="btn btn-sm btn-primary ">Buat Jadwal</button>
-    </div>
-    @else
-    <a href="{{url('siswa/jadwal/show')}}/{{$item['UUIDKursus']}}" class="btn btn-sm btn-primary btn-block mt-2">Lihat
-        Jadwal</a>
-    @endif
-</div>
-</form>
-@endforeach --}} -->
 
 
