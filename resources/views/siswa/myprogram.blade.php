@@ -268,10 +268,60 @@
             $('#btn-add-jam-'+id).hide();
             $('#jadwal-jam-'+hari).empty();
         }
+        cleanNonActiveJam()
     }
     function deleteJam(id){
         jam_maker = jam_maker.filter(ele=>ele.now_id!=id)
         showElementJam()
+    }
+    function cleanNonActiveJam(){
+        let senin = $('#senin');
+        let selasa = $('#selasa');
+        let rabu = $('#rabu');
+        let kamis = $('#kamis');
+        let jumat = $('#jumat');
+        let sabtu = $('#sabtu');
+        let minggu = $('#minggu');
+        let tmp_meet_in_week = [{
+                'aktif': senin.is(':checked'),
+                'hari': senin.val()
+            },
+            {
+                'aktif': selasa.is(':checked'),
+                'hari': selasa.val()
+            },
+            {
+                'aktif': rabu.is(':checked'),
+                'hari': rabu.val()
+            },
+            {
+                'aktif': kamis.is(':checked'),
+                'hari': kamis.val()
+            },
+            {
+                'aktif': jumat.is(':checked'),
+                'hari': jumat.val()
+            },
+            {
+                'aktif': sabtu.is(':checked'),
+                'hari': sabtu.val()
+            },
+            {
+                'aktif': minggu.is(':checked'),
+                'hari': minggu.val()
+            },
+        ];
+        let meet_in_week = tmp_meet_in_week.filter(ele => ele.aktif == true);
+        let tmp_jadwal_maker =[];
+        jam_maker.forEach(ele=>{
+            meet_in_week.forEach(miw=>{
+                if(miw.aktif && parseInt(miw.hari)==ele.day_id){
+                    tmp_jadwal_maker.push(ele)
+                }
+            })
+        })
+        jam_maker = tmp_jadwal_maker
+
     }
     function showElementJam(){
      
@@ -336,7 +386,8 @@
     }
 
     function create_jadwal() {
-
+        let master_jam = jam_maker.filter(ele=>ele.val!='')
+        console.log(master_jam)
         let start_date = $('#start_date');
         let start_time = $('#start_time');
         let total_pertemuan = $('#total_pertemuan');
@@ -396,10 +447,10 @@
             String(new Date(ele).getDate()).padStart(2, '0')
         );
         //sisa bagi total pertemuan dibagi pertemuan dalam seminggu
-        let a = total_pertemuan.val() % jam_maker.length;
+        let a = total_pertemuan.val() % master_jam.length;
         //hasil pembagian total pertemuan tanpa sisa bagi ( max perulangan)
-        let c = total_pertemuan.val() % jam_maker.length == 0 ? total_pertemuan.val() / jam_maker.length : (
-            total_pertemuan.val() - (total_pertemuan.val() % jam_maker.length)) / jam_maker.length;
+        let c = total_pertemuan.val() % master_jam.length == 0 ? total_pertemuan.val() / master_jam.length : (
+            total_pertemuan.val() - (total_pertemuan.val() % master_jam.length)) / master_jam.length;
         let jadwal_siswa = [];
         let date_increament = 0;
 
@@ -407,7 +458,7 @@
         // jadwal maker
         for (let i = 0; i < c; i++) {
             for (let j = 0; j < date.length; j++) {
-                let hari = jam_maker.filter(ele=>ele.day_id==new Date(date[j]).getDay())
+                let hari = master_jam.filter(ele=>ele.day_id==new Date(date[j]).getDay())
                 for(let jam =0;jam<hari.length;jam++){
                     let tmp_date = new Date(new Date(date[j]).setDate(new Date(date[j]).getDate() + date_increament));
                     let tmp_jadwal = tmp_date.getFullYear() + '-' + String(tmp_date.getMonth() + 1).padStart(2, '0') + '-' +
@@ -423,7 +474,7 @@
         if (a != 0) {
             let indexDay =0 ;
             for (let j = 0; j < a; j++) {
-                let hari = jam_maker.filter(ele=>ele.day_id==new Date(date[indexDay]).getDay())
+                let hari = master_jam.filter(ele=>ele.day_id==new Date(date[indexDay]).getDay())
                 for(let jam =0;jam<hari.length;jam++){
                     let tmp_date = new Date(new Date(date[indexDay]).setDate(new Date(date[indexDay]).getDate() + date_increament));
                     let tmp_jadwal = tmp_date.getFullYear() + '-' + String(tmp_date.getMonth() + 1).padStart(2, '0') + '-' +
@@ -729,6 +780,7 @@
                 break;
 
         }
+        cleanNonActiveJam()
         for(let i=0;i<7;i++){
             visibleAddJam(i)
         }
