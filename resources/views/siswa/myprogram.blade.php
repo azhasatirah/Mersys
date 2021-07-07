@@ -789,6 +789,18 @@
 
     function setdata(total_pertemuan, id_kursus, id_program) {
 
+        $('#minggu').prop('checked', false);
+        $('#senin').prop('checked', false);
+        $('#selasa').prop('checked', false);
+        $('#rabu').prop('checked', false);
+        $('#kamis').prop('checked', false);
+        $('#jumat').prop('checked', false);
+        $('#sabtu').prop('checked', false);
+        for(let i=0;i<7;i++){
+            $('#btn-add-jam-'+i).hide()
+        }
+        cleanNonActiveJam()
+        showElementJam()
         $('#total_pertemuan').val(total_pertemuan);
         $('#id_kursus_siswa').val(id_kursus);
         $('#id_program').val(id_program);
