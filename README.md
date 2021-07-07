@@ -11,7 +11,5 @@
 
 Laravel is a web application framework with expressive, elegant syntax. 
 
-- username : sware.owner; password : merachelV2; role : owner
-- username : sware.admin; password : merachelV2; role : admin
-- username : sware.tutor; password : merachelV2; role : tutor
+
 
