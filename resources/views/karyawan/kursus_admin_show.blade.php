@@ -535,10 +535,15 @@
             'IDPerson':IDPerson,
             'IDJadwal':IDJadwal
         }
-        $.post("/karyawan/admin/kursus/absen/", data ).done(ele=>{
-            getData()
-            swal(ele)
-        })
+        $.ajax({
+            type: "post",
+            url: "/karyawan/admin/kursus/absen",
+            data: data,
+            success: function (response) {
+                getData()
+                swal(response)
+            }
+        });
     }
     function showChanges(){
         $('#list-history-changes').empty()
