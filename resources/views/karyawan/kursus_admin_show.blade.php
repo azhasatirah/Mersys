@@ -680,6 +680,7 @@
                 DataChanges['TanggalTo[]'].push(ele.TanggalTo)
             })
             ReqJadwalChanges = DataChanges
+            console.log(DataChanges)
             setAndShowDataModalChanges(JadwalChanged)
         }
         if(jadwal[jadwalChangedIndex].Tanggal.split(' ')[0] != reqTanggal){
@@ -710,7 +711,7 @@
                         'NoRecordFrom': ele.NoRecord,
                         'NoRecordTo':tmp_new_jadwal[ite].NoRecord,
                         'TanggalFrom': ele.Tanggal,
-                        'TanggalTo':tmp_new_jadwal[ite+1].Tanggal+' '+tmp_new_jadwal[ite+1].Tanggal.split(' ')[1]
+                        'TanggalTo':tmp_new_jadwal[ite+1].Tanggal
                     }
                     ite ++;
                     return data
@@ -731,6 +732,7 @@
                     'TanggalFrom': jadwal[jadwalChangedIndex].Tanggal,
                     'TanggalTo':reqJadwal
                 })
+                console.log(newJadwal)
                 let DataChanges={
                     '_token':token,
                     'UIDProgram[]':[],
