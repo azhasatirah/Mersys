@@ -141,7 +141,7 @@
             })
         }
         function showData(){
-            TabelJadwalSemi.clear()
+            TabelJadwalSemi.clear().draw()
             let i =0
             jadwal_semi.forEach(ele=>{
                 let btnUpdate = " <a data-toggle=\"modal\" data-target=\"#modalupdate\" onclick=\"editData("+ele.IDJadwalSemiPrivate+")\"  class=\"btn btn-primary btn-sm\" href=\"javascript:void(0)\" role=\"button\">   <i class=\"fa fa-pencil\"></i></a>"
@@ -200,6 +200,7 @@
                     $.get('/karyawan/admin/jadwal/semiprivate/delete/'+id).done((res)=>{
                         swal(res) 
                         getData()
+                   
                     })
                 } else {
                     swal("Dibatalkan!");
