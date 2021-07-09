@@ -420,6 +420,7 @@ Route::group(['middleware'=>['Role:siswa'],'prefix'=>'siswa'],function(){
     Route::get('jadwal/create/{id}','JadwalController@createJadwal');
     Route::post('jadwal/store/','JadwalController@storeJadwal');
     Route::get('jadwal/getdata/{id}', 'JadwalController@getdataSiswa');
+    Route::get('jadwal/getjadwalsemi','JadwalController@getJadwalSemi');
 
     Route::get('info','SiswaController@infoPendaftaran');
 

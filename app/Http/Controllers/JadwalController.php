@@ -22,7 +22,11 @@ class JadwalController extends Controller
         //dd($Data);
         return view ('karyawan.jadwal',['Tutor'=>$Tutor]);
     }
-
+    public function getJadwalSemi(){
+        $Data = DB::table('jadwal_semi_private')->where('status','!=','DEL')
+        ->get()->groupBy('KodeHari');
+        return response()->json($Data);
+    }
     public function updateTutor(Request $request){
         //dd($request);
         $DataTutor = DB::table('karyawan')->where('IDKaryawan',$request->tutor)->get();
@@ -426,6 +430,7 @@ class JadwalController extends Controller
                 'IDKursusSiswa'=>$request->idkursus[$i],
                 'IDMateri'=>$KursusMateri[0]->IDKursusMateri,
                 'Tanggal'=>$request->tanggal[$i].' '.$request->jam[$i],
+                'Jenis'=>$request->jenisjadwal,
                 'Status'=>'OPN',
                 'created_at'=>Carbon::now(),
                 'updated_at'=>Carbon::now(),
