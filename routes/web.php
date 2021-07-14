@@ -331,6 +331,8 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 
     //route tutor
     Route::group(['middleware'=>['RoleKaryawan:3'],'prefix'=>'tutor'],function(){
+
+        
         Route::get('/notif','NotifController@notifTutor');
         Route::get('/notif/user/{id}','NotifController@notifUser');
 

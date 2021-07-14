@@ -623,17 +623,22 @@
     
         let ftea = tea.length - fil_tea.length;
         let free_schque = ftea - fil_schque.length;
-
-        if (free_schque <= 0) {
-            swal({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'jadwal tidak ditemukan , coba ganti jam atau tanggal',
-            })
-
-        } else if (free_schque> 0) {
+        if($('#jenis-jadwal').val()=="semi"){
             showNewJadwal(jadwal_siswa);
-        };
+        }else{
+
+            if (free_schque <= 0) {
+                swal({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'jadwal tidak ditemukan , coba ganti jam atau tanggal',
+                })
+
+            } else if (free_schque> 0) {
+                showNewJadwal(jadwal_siswa);
+            };
+        }
+
 
     }
 
