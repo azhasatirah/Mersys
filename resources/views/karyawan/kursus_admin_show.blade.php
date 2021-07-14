@@ -182,6 +182,7 @@
                                     <th>Per</th>
                                     <th>Tanggal</th>
                                     <th>Materi</th>
+                                    <th>Tutor</th>
                                     <th>Kehadiran Tutor</th>
                                     <th>Kehadiran Siswa</th>
                                 </tr>
@@ -358,6 +359,35 @@
     </div>
 
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal-change-tutor" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ganti tutor</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-change-tutor">
+                    @csrf
+                    <input type="hidden" name="jadwal" id="change-tutor-jadwal">
+                    <div class="form-group">
+                        <label for="">Tutor</label>
+                        <select class="custom-select" name="tutor" id="change-tutor-tutor">
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <button type="button" onclick="changeTutor()" class="btn btn-primary">Ganti</button>
+            </div>
+        </div>
+    </div>
+</div>
 <input type="hidden" id="token" name="_token" value="{{ csrf_token() }}" />
 @push('scripts')
 <script src="{{asset('assets/js/moment.js')}}"></script>
@@ -365,7 +395,7 @@
     let TypeRemakeJadwal = 0
     let token = $('#token').val();
         //data from database
-    let DataKelas = [],Absen = [],Changes = [],jadwal = [],Evaluasi = [],Nilai = []
+    let DataKelas = [],Absen = [],Changes = [],jadwal = [],Evaluasi = [],Nilai = [],Tutor = []
 
     let UIDKelas = window.location.href.split('/')[7]
     let active_content = "jadwal";
@@ -455,11 +485,13 @@
             jadwal = Object.values(ele['ActiveJadwal'])
             Evaluasi = ele['Evaluasi']
             Nilai = ele['Nilai']
+            Tutor = ele['Tutor']
             showDataJadwal()
             showDataKelas()
             showChanges()
             showEvaluasi()
             showNilai()
+            appendChangeTutorSelectOption()
         })
     }
     function showEvaluasi(){
@@ -505,14 +537,18 @@
     }
     function showDataJadwal(){
         TabelJadwal.clear()
+        console.log(Absen)
         Absen.forEach((ele)=>{
             //console.log(ele)
             let btn_fill_siswa = "<button class=\"btn ml-2 btn-primary btn-sm\" onclick=\"absen(1,"+ele.IDSiswa+","+ele.IDJadwal+")\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></button>"
             let btn_fill_tutor = "<button class=\"btn ml-2 btn-primary btn-sm\" onclick=\"absen(2,"+ele.IDTutor+","+ele.IDJadwal+")\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></button>"
+            let btn_change_tutor = ele.KehadiranTutor == 'Belum mulai'||ele.KehadiranTutor == 'Alpha'?
+             "<button data-toggle=\"modal\" data-target=\"#modal-change-tutor\" class=\"btn ml-2 btn-primary btn-sm\" onclick=\"setModalChangeTutor("+ele.IDJadwal+","+ele.IDTutor+")\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i></button>":""
             TabelJadwal.row.add([
                 ele.Pertemuan,
                 ele.Tanggal,
                 ele.Materi,
+                ele.Tutor+btn_change_tutor,
                 ele.KehadiranTutor + (ele.AbsenTutor==true?btn_fill_tutor:''),
                 ele.KehadiranSiswa + (ele.AbsenSiswa==true?btn_fill_siswa:'')
             ]).draw()
@@ -1465,6 +1501,30 @@
                 // console.log(tea);
             },
             async: false
+        });
+    }
+    function appendChangeTutorSelectOption(){
+        $('#chagne-tutor-tutor').empty()
+        Tutor.forEach(ele=>{
+            $('#change-tutor-tutor').append(
+                "<option value="+ele.IDKaryawan+">"+ele.NamaKaryawan+"</option>"
+            )
+        })
+    }
+    function setModalChangeTutor(jadwal,tutor){
+        $('#change-tutor-jadwal').val(jadwal)
+        $('#change-tutor-tutor').val(tutor)
+    }
+    function changeTutor(){
+        $.ajax({
+            type: "POST",
+            url: "/karyawan/admin/kursus/changetutor",
+            data: $('#form-change-tutor').serialize(),
+            success: function (response) {
+                swal(response)
+                $('#modal-change-tutor').modal('hide')
+                getData()
+            }
         });
     }
     </script>

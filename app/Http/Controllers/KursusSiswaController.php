@@ -230,9 +230,10 @@ class KursusSiswaController extends Controller
             $Jadwal = DB::table('jadwal as j')
             ->join('kursus_siswa as ks','j.IDKursusSiswa','=','ks.IDKursusSiswa')
             ->join('kursus_materi as mp','j.IDMateri','=','mp.IDKursusMateri')
+            ->join('karyawan as k','j.IDTutor','=','k.IDKaryawan')
             ->where('ks.UUID',$id)
             ->select('j.*','ks.IDSiswa','ks.UUID as UUIDProgram','mp.NoRecord','ks.IDSiswa','j.IDTutor','j.IDJadwal',
-            'mp.NamaMateri','mp.Status as StatusMateri')
+            'k.NamaKaryawan','mp.NamaMateri','mp.Status as StatusMateri')
             ->orderBy('mp.NoRecord')->get();
             $DataKelas = DB::table('jadwal as j')
             ->join('kursus_siswa as ks','j.IDKursusSiswa','=','ks.IDKursusSiswa')
@@ -268,6 +269,7 @@ class KursusSiswaController extends Controller
                     'Materi'=>$item->NamaMateri,
                     'KehadiranSiswa'=>$KehadiranSiswa,
                     'KehadiranTutor'=>$KehadiranTutor,
+                    'Tutor'=>$item->NamaKaryawan,
                     'AbsenTutor'=>$AbsenTutor,
                     'AbsenSiswa'=>$AbsenSiswa,
                     'IDSiswa'=>$item->IDSiswa,
@@ -318,6 +320,12 @@ class KursusSiswaController extends Controller
             ->select('n.*','js.Jenis')
             ->where('ks.UUID',$id)->get();
 
+            $Tutor= DB::table('karyawan as k')
+            ->join('role_karyawan_list as rkl','k.IDKaryawan','=','rkl.IDKaryawan')
+            ->where('rkl.IDRoleKaryawan',3)
+            ->where('k.Status','CLS')
+            ->select('k.*')->get();
+
             //kelas datakelas activejadwal
             return response()->json([
                 'DataKelas'=>$DataKelas,
@@ -325,7 +333,8 @@ class KursusSiswaController extends Controller
                 'Changes'=>$Changes,
                 'ActiveJadwal'=>$ActiveJadwal,
                 'Evaluasi'=>$NilaiEvaluasi,
-                'Nilai'=>$Nilai
+                'Nilai'=>$Nilai,
+                'Tutor'=>$Tutor
             ]);
         }
         public function ownerIndexKursus(){

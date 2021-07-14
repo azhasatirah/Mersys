@@ -128,6 +128,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::get('kursus/get','KursusSiswaController@adminGetDataKursus');
         Route::get('kursus/getdata/{id}','KursusSiswaController@adminShowKursusGetData');
         Route::post('kursus/jadwalchanges/store','JadwalChangesController@adminStoreChanges');
+        Route::post('kursus/changetutor','JadwalController@adminChangeTutor');
 
         //kunai
         Route::get('prodidetail/getprodi/{id}','ProgramStudiController@pdGetProdi');

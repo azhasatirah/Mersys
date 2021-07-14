@@ -11,6 +11,15 @@ use Illuminate\Support\Facades\DB;
 
 class JadwalController extends Controller
 {
+    public function adminChangeTutor(Request $request){
+        DB::table('jadwal')
+        ->where('IDJadwal',$request->jadwal)->update([
+            'IDTutor'=>$request->tutor,
+            'UserUpd'=>session()->get('Username'),
+            'updated_at'=>Carbon::now()
+        ]);
+        return response()->json('Tutor berhasil di update');
+    }
     public function index()
     {
         $Tutor = DB::table('karyawan')
