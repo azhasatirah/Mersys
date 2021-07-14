@@ -1504,7 +1504,7 @@
         });
     }
     function appendChangeTutorSelectOption(){
-        $('#chagne-tutor-tutor').empty()
+        $('#change-tutor-tutor').empty()
         Tutor.forEach(ele=>{
             $('#change-tutor-tutor').append(
                 "<option value="+ele.IDKaryawan+">"+ele.NamaKaryawan+"</option>"
