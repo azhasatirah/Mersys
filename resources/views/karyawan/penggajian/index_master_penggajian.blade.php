@@ -5,7 +5,7 @@
     <div class="col-md-12 col-sm-12  ">
         <div class="x_panel">
             <div class="x_title">
-                <h2>Jadwal semi private <small></small></h2>
+                <h2>Master penggajian <small></small></h2>
                 <ul class="nav navbar-right panel_toolbox">
                     <button type="button" class="btn btn-primary btn-sm" 
                     data-toggle="modal" data-target="#modalcreate" >
@@ -21,9 +21,9 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Hari</th>
-                                <th>Mulai</th>
-                                <th>Sampai</th>
+                                <th>Level</th>
+                                <th>Jenis</th>
+                                <th>Pendapatan per pertemuan</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -43,7 +43,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Tambah jadwal semi</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Tambah master penggajian</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button>
@@ -52,24 +52,20 @@
             <form id="formdata-create">
                 @csrf
                 <div class="form-group">
-                    <label for="">Hari</label>
-                    <select class="custom-select" name="kodehari">
-                        <option value="0">Minggu</option>
-                        <option value="1">Senin</option>
-                        <option value="2">Selasa</option>
-                        <option value="3">Rabu</option>
-                        <option value="4">Kamis</option>
-                        <option value="5">Jumat</option>
-                        <option value="6">Sabtu</option>
+                    <label for="">Level</label>
+                    <select class="custom-select select-level-program" name="idlevel">
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="">Mulai</label>
-                    <input type="time" class="form-control" name="start">
+                    <label for="">Jenis</label>
+                    <select class="custom-select" name="jenisprogram">
+                        <option value="private">Private</option>
+                        <option value="semi">Semi Private</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label for="">Sampai</label>
-                    <input type="time" class="form-control" name="end">
+                    <label for="">Pendapatan per pertmuan</label>
+                    <input type="number" class="form-control" name="pendapatan">
                 </div>
             </form>
         </div>
@@ -94,26 +90,22 @@
             <div class="modal-body">
                 <form id="formdata-edit">
                     @csrf
-                    <input type="hidden" name="idjadwalsemiprivate" id="edit-jadwalsemiprivate">
+                    <input type="hidden" name="idmasterpenggajian" id="edit-masterpenggajian">
                     <div class="form-group">
-                        <label for="">Hari</label>
-                        <select class="custom-select" name="kodehari" id="edit-hari">
-                            <option value="0">Minggu</option>
-                            <option value="1">Senin</option>
-                            <option value="2">Selasa</option>
-                            <option value="3">Rabu</option>
-                            <option value="4">Kamis</option>
-                            <option value="5">Jumat</option>
-                            <option value="6">Sabtu</option>
+                        <label for="">Level</label>
+                        <select id="edit-level" class="custom-select select-level-program" name="idlevel">
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="">Mulai</label>
-                        <input type="time" class="form-control" id="edit-start" name="start">
+                        <label for="">Jenis</label>
+                        <select id="edit-jenis" class="custom-select" name="jenisprogram">
+                            <option value="private">Private</option>
+                            <option value="semi">Semi Private</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label for="">Sampai</label>
-                        <input type="time" class="form-control" id="edit-end" name="end">
+                        <label for="">Pendapatan per pertmuan</label>
+                        <input id="edit-pendapatan" type="number" class="form-control" name="pendapatan">
                     </div>
                 </form>
             </div>
@@ -129,29 +121,37 @@
 @endsection
 @push('scripts')
     <script>
-        let jadwal_semi = []
-        let TabelJadwalSemi = $('#tabeldata').DataTable()
+        let master_penggajian = [],level = []
+        let TabelMasterPenggajian = $('#tabeldata').DataTable()
         $(document).ready(function () {
             getData()
         });
         function getData(){
-            $.get("/karyawan/admin/jadwal/semiprivate/getdata" ).done(ele=>{
-                jadwal_semi = ele
+            $.get("/karyawan/owner/masterpenggajian/getdata" ).done(ele=>{
+                master_penggajian = ele[0]
+                level = ele [1]
+                appendLevelOption()
                 showData()  
             })
         }
+        function appendLevelOption(){
+            $('.select-level-program').empty()
+            level.forEach(ele=>{
+                $('.select-level-program').append("<option value=\""+ele.IDLevel+"\">"+ele.NamaLevel+"</option>")
+            })
+        }
         function showData(){
-            TabelJadwalSemi.clear().draw()
+            TabelMasterPenggajian.clear().draw()
             let i =0
-            jadwal_semi.forEach(ele=>{
-                let btnUpdate = " <a data-toggle=\"modal\" data-target=\"#modalupdate\" onclick=\"editData("+ele.IDJadwalSemiPrivate+")\"  class=\"btn btn-primary btn-sm\" href=\"javascript:void(0)\" role=\"button\">   <i class=\"fa fa-pencil\"></i></a>"
-                let btnDelete = " <a onclick=\"deleteData("+ele.IDJadwalSemiPrivate+")\"  class=\"btn btn-danger btn-sm\" href=\"javascript:void(0)\" role=\"button\">   <i class=\"fa fa-trash-o\"></i></a>"
+            master_penggajian.forEach(ele=>{
+                let btnUpdate = " <a data-toggle=\"modal\" data-target=\"#modalupdate\" onclick=\"editData("+ele.IDMasterPenggajian+")\"  class=\"btn btn-primary btn-sm\" href=\"javascript:void(0)\" role=\"button\">   <i class=\"fa fa-pencil\"></i></a>"
+                let btnDelete = " <a onclick=\"deleteData("+ele.IDMasterPenggajian+")\"  class=\"btn btn-danger btn-sm\" href=\"javascript:void(0)\" role=\"button\">   <i class=\"fa fa-trash-o\"></i></a>"
                 i++
-                TabelJadwalSemi.row.add([
+                TabelMasterPenggajian.row.add([
                    i,
-                   ele.Hari,
-                   ele.Start,
-                   ele.End,
+                   ele.Level,
+                   ele.JenisProgram == 'semi'?'Semi Private':'Private',
+                   'Rp '+ele.Pendapatan.toLocaleString('id-ID'),
                    btnUpdate+btnDelete
                 ]).draw()
             })
@@ -160,7 +160,7 @@
         function store(){
             $.ajax({
                 type: "post",
-                url: "/karyawan/admin/jadwal/semiprivate/store",
+                url: "/karyawan/owner/masterpenggajian/store",
                 data: $('#formdata-create').serialize(),
                 success: function (response) {
                     getData()
@@ -170,16 +170,16 @@
             });
         }
         function editData(id){
-            let data = jadwal_semi.filter(ele=>ele.IDJadwalSemiPrivate==id)
-            $('#edit-hari').val(data[0].KodeHari)
-            $('#edit-start').val(data[0].Start)
-            $('#edit-end').val(data[0].End)
-            $('#edit-jadwalsemiprivate').val(data[0].IDJadwalSemiPrivate)
+            let data = master_penggajian.filter(ele=>ele.IDMasterPenggajian==id)
+            $('#edit-level').val(data[0].IDLevel)
+            $('#edit-jenis').val(data[0].JenisProgram)
+            $('#edit-pendapatan').val(data[0].Pendapatan)
+            $('#edit-masterpenggajian').val(data[0].IDMasterPenggajian)
         }
         function update(){
             $.ajax({
                 type: "post",
-                url: "/karyawan/admin/jadwal/semiprivate/update",
+                url: "/karyawan/owner/masterpenggajian/update",
                 data: $('#formdata-edit').serialize(),
                 success: function (response) {
                     getData()
@@ -190,14 +190,14 @@
         }
         function deleteData(id) {
             swal({
-                title: "Apakah anda yakin menghapus jadwal ini?",
-                text: "Jadwal ini akan hilang setelah di hapus!",
+                title: "Apakah anda yakin menghapus master penggajian ini?",
+                text: "Data ini akan hilang setelah di hapus!",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
             }).then((willDelete) => {
                 if (willDelete) {
-                    $.get('/karyawan/admin/jadwal/semiprivate/delete/'+id).done((res)=>{
+                    $.get('/karyawan/owner/masterpenggajian/delete/'+id).done((res)=>{
                         swal(res) 
                         getData()
                    

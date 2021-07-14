@@ -5,7 +5,7 @@
     <div class="col-md-12 col-sm-12  ">
         <div class="x_panel">
             <div class="x_title">
-                <h2>Jadwal semi private <small></small></h2>
+                <h2>Master biaya transport<small></small></h2>
                 <ul class="nav navbar-right panel_toolbox">
                     <button type="button" class="btn btn-primary btn-sm" 
                     data-toggle="modal" data-target="#modalcreate" >
@@ -21,9 +21,8 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Hari</th>
-                                <th>Mulai</th>
-                                <th>Sampai</th>
+                                <th>Blok</th>
+                                <th>Biaya transport</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -43,7 +42,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Tambah jadwal semi</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Tambah master biaya transport</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button>
@@ -52,24 +51,12 @@
             <form id="formdata-create">
                 @csrf
                 <div class="form-group">
-                    <label for="">Hari</label>
-                    <select class="custom-select" name="kodehari">
-                        <option value="0">Minggu</option>
-                        <option value="1">Senin</option>
-                        <option value="2">Selasa</option>
-                        <option value="3">Rabu</option>
-                        <option value="4">Kamis</option>
-                        <option value="5">Jumat</option>
-                        <option value="6">Sabtu</option>
-                    </select>
+                    <label for="">Blok</label>
+                    <input type="text" class="form-control" name="blok">
                 </div>
                 <div class="form-group">
-                    <label for="">Mulai</label>
-                    <input type="time" class="form-control" name="start">
-                </div>
-                <div class="form-group">
-                    <label for="">Sampai</label>
-                    <input type="time" class="form-control" name="end">
+                    <label for="">Biaya transport</label>
+                    <input type="number" class="form-control" name="biaya">
                 </div>
             </form>
         </div>
@@ -94,26 +81,14 @@
             <div class="modal-body">
                 <form id="formdata-edit">
                     @csrf
-                    <input type="hidden" name="idjadwalsemiprivate" id="edit-jadwalsemiprivate">
+                    <input type="hidden" name="penggajiantransport" id="edit-penggajiantransport">
                     <div class="form-group">
-                        <label for="">Hari</label>
-                        <select class="custom-select" name="kodehari" id="edit-hari">
-                            <option value="0">Minggu</option>
-                            <option value="1">Senin</option>
-                            <option value="2">Selasa</option>
-                            <option value="3">Rabu</option>
-                            <option value="4">Kamis</option>
-                            <option value="5">Jumat</option>
-                            <option value="6">Sabtu</option>
-                        </select>
+                        <label for="">Blok</label>
+                        <input type="text" class="form-control" id="edit-blok" name="blok">
                     </div>
                     <div class="form-group">
-                        <label for="">Mulai</label>
-                        <input type="time" class="form-control" id="edit-start" name="start">
-                    </div>
-                    <div class="form-group">
-                        <label for="">Sampai</label>
-                        <input type="time" class="form-control" id="edit-end" name="end">
+                        <label for="">Biaya transport</label>
+                        <input type="number" class="form-control" id="edit-biaya" name="biaya">
                     </div>
                 </form>
             </div>
@@ -129,29 +104,28 @@
 @endsection
 @push('scripts')
     <script>
-        let jadwal_semi = []
-        let TabelJadwalSemi = $('#tabeldata').DataTable()
+        let master_biaya_transport = []
+        let TabelMasterPenggajian = $('#tabeldata').DataTable()
         $(document).ready(function () {
             getData()
         });
         function getData(){
-            $.get("/karyawan/admin/jadwal/semiprivate/getdata" ).done(ele=>{
-                jadwal_semi = ele
+            $.get("/karyawan/owner/masterpenggajian/transport/getdata" ).done(ele=>{
+                master_biaya_transport = ele
                 showData()  
             })
         }
         function showData(){
-            TabelJadwalSemi.clear().draw()
+            TabelMasterPenggajian.clear().draw()
             let i =0
-            jadwal_semi.forEach(ele=>{
-                let btnUpdate = " <a data-toggle=\"modal\" data-target=\"#modalupdate\" onclick=\"editData("+ele.IDJadwalSemiPrivate+")\"  class=\"btn btn-primary btn-sm\" href=\"javascript:void(0)\" role=\"button\">   <i class=\"fa fa-pencil\"></i></a>"
-                let btnDelete = " <a onclick=\"deleteData("+ele.IDJadwalSemiPrivate+")\"  class=\"btn btn-danger btn-sm\" href=\"javascript:void(0)\" role=\"button\">   <i class=\"fa fa-trash-o\"></i></a>"
+            master_biaya_transport.forEach(ele=>{
+                let btnUpdate = " <a data-toggle=\"modal\" data-target=\"#modalupdate\" onclick=\"editData("+ele.IDMasterPenggajianTransport+")\"  class=\"btn btn-primary btn-sm\" href=\"javascript:void(0)\" role=\"button\">   <i class=\"fa fa-pencil\"></i></a>"
+                let btnDelete = " <a onclick=\"deleteData("+ele.IDMasterPenggajianTransport+")\"  class=\"btn btn-danger btn-sm\" href=\"javascript:void(0)\" role=\"button\">   <i class=\"fa fa-trash-o\"></i></a>"
                 i++
-                TabelJadwalSemi.row.add([
+                TabelMasterPenggajian.row.add([
                    i,
-                   ele.Hari,
-                   ele.Start,
-                   ele.End,
+                   ele.Blok,
+                   'Rp '+ele.Biaya.toLocaleString('id-ID'),
                    btnUpdate+btnDelete
                 ]).draw()
             })
@@ -160,7 +134,7 @@
         function store(){
             $.ajax({
                 type: "post",
-                url: "/karyawan/admin/jadwal/semiprivate/store",
+                url: "/karyawan/owner/masterpenggajian/transport/store",
                 data: $('#formdata-create').serialize(),
                 success: function (response) {
                     getData()
@@ -170,16 +144,15 @@
             });
         }
         function editData(id){
-            let data = jadwal_semi.filter(ele=>ele.IDJadwalSemiPrivate==id)
-            $('#edit-hari').val(data[0].KodeHari)
-            $('#edit-start').val(data[0].Start)
-            $('#edit-end').val(data[0].End)
-            $('#edit-jadwalsemiprivate').val(data[0].IDJadwalSemiPrivate)
+            let data = master_biaya_transport.filter(ele=>ele.IDMasterPenggajianTransport==id)
+            $('#edit-blok').val(data[0].Blok)
+            $('#edit-biaya').val(data[0].Biaya)
+            $('#edit-penggajiantransport').val(data[0].IDMasterPenggajianTransport)
         }
         function update(){
             $.ajax({
                 type: "post",
-                url: "/karyawan/admin/jadwal/semiprivate/update",
+                url: "/karyawan/owner/masterpenggajian/transport/update",
                 data: $('#formdata-edit').serialize(),
                 success: function (response) {
                     getData()
@@ -190,14 +163,14 @@
         }
         function deleteData(id) {
             swal({
-                title: "Apakah anda yakin menghapus jadwal ini?",
-                text: "Jadwal ini akan hilang setelah di hapus!",
+                title: "Apakah anda yakin menghapus master biaya tranport ini?",
+                text: "Data ini akan hilang setelah di hapus!",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
             }).then((willDelete) => {
                 if (willDelete) {
-                    $.get('/karyawan/admin/jadwal/semiprivate/delete/'+id).done((res)=>{
+                    $.get('/karyawan/owner/masterpenggajian/transport/delete/'+id).done((res)=>{
                         swal(res) 
                         getData()
                    

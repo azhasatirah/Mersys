@@ -75,6 +75,13 @@
                   <li><a href="{{url('karyawan/dasbor')}}"><i class="fa fa-square"></i>Beranda</a></li>
                   <!-- Menu Owner -->
                   @if(session()->get('Level')==1)
+                  <li><a><i class="fa fa-dollar"></i> Penggajian <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="{{url('karyawan/owner/penggajian')}}">Penggajian</a></li>
+                      <li><a href="{{url('karyawan/owner/masterpenggajian')}}">Master penggajian</a></li>
+                      <li><a href="{{url('karyawan/owner/masterpenggajian/transport')}}">Master biaya transport</a></li>
+                    </ul>
+                  </li>
                   <li><a><i class="fa fa-cog"></i> Transaksi <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{url('karyawan/owner/transaksi')}}">Transaksi Proses</a></li>

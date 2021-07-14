@@ -44,6 +44,21 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     //route owner
     Route::group(['middleware'=>['RoleKaryawan:1'],'prefix'=>'owner'],function(){
 
+        Route::get('penggajian/','PenggajianController@index');
+        Route::get('penggajian/karyawan/{id}','PenggajianController@show');
+
+        Route::get('masterpenggajian/transport/','MasterPenggajianTransportController@index');
+        Route::get('masterpenggajian/transport/getdata','MasterPenggajianTransportController@getData');
+        Route::post('masterpenggajian/transport/store','MasterPenggajianTransportController@store');
+        Route::post('masterpenggajian/transport/update','MasterPenggajianTransportController@update');
+        Route::get('masterpenggajian/transport/delete/{id}','MasterPenggajianTransportController@delete');
+
+        Route::get('masterpenggajian/','MasterPenggajianController@index');
+        Route::get('masterpenggajian/getdata','MasterPenggajianController@getData');
+        Route::post('masterpenggajian/store','MasterPenggajianController@store');
+        Route::post('masterpenggajian/update','MasterPenggajianController@update');
+        Route::get('masterpenggajian/delete/{id}','MasterPenggajianController@delete');
+
         Route::get('kursus','KursusSiswaController@ownerIndexKursus');
         Route::get('kursus/show/{id}','KursusSiswaController@ownerShowKursus');
 
