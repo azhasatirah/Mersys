@@ -1,5 +1,5 @@
 @extends('karyawan.layouts.layout')
-@section('title','Jadwal semi private')
+@section('title','Master biaya transport')
 @section('content')
 <div class="row">
     <div class="col-md-12 col-sm-12  ">
