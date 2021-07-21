@@ -21,6 +21,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th>Kategori</th>
                                 <th>Level</th>
                                 <th>Jenis</th>
                                 <th>Pendapatan per pertemuan</th>
@@ -52,10 +53,16 @@
             <form id="formdata-create">
                 @csrf
                 <div class="form-group">
+                    <label for="">Kategori</label>
+                    <select class="custom-select select-kategori-program" name="idkategoriprogram">
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="">Level</label>
                     <select class="custom-select select-level-program" name="idlevel">
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label for="">Jenis</label>
                     <select class="custom-select" name="jenisprogram">
@@ -90,6 +97,11 @@
             <div class="modal-body">
                 <form id="formdata-edit">
                     @csrf
+                    <div class="form-group">
+                        <label for="">Kategori</label>
+                        <select id="edit-kategori" class="custom-select select-kategori-program" name="idkategoriprogram">
+                        </select>
+                    </div>
                     <input type="hidden" name="idmasterpenggajian" id="edit-masterpenggajian">
                     <div class="form-group">
                         <label for="">Level</label>
@@ -121,7 +133,7 @@
 @endsection
 @push('scripts')
     <script>
-        let master_penggajian = [],level = []
+        let master_penggajian = [],level = [],kategori_program = []
         let TabelMasterPenggajian = $('#tabeldata').DataTable()
         $(document).ready(function () {
             getData()
@@ -130,8 +142,16 @@
             $.get("/karyawan/owner/masterpenggajian/getdata" ).done(ele=>{
                 master_penggajian = ele[0]
                 level = ele [1]
+                kategori_program = ele[2]
                 appendLevelOption()
+                appendKategoriOption()
                 showData()  
+            })
+        }
+        function appendKategoriOption(){
+            $('.select-kategori-program').empty()
+            kategori_program.forEach(ele=>{
+                $('.select-kategori-program').append("<option value=\""+ele.IDKategoriProgram+"\">"+ele.KategoriProgram+"</option>")
             })
         }
         function appendLevelOption(){
@@ -149,6 +169,7 @@
                 i++
                 TabelMasterPenggajian.row.add([
                    i,
+                   ele.KategoriProgram,
                    ele.Level,
                    ele.JenisProgram == 'semi'?'Semi Private':'Private',
                    'Rp '+ele.Pendapatan.toLocaleString('id-ID'),
@@ -172,6 +193,7 @@
         function editData(id){
             let data = master_penggajian.filter(ele=>ele.IDMasterPenggajian==id)
             $('#edit-level').val(data[0].IDLevel)
+            $('#edit-kategori').val(data[0].IDKategoriProgram)
             $('#edit-jenis').val(data[0].JenisProgram)
             $('#edit-pendapatan').val(data[0].Pendapatan)
             $('#edit-masterpenggajian').val(data[0].IDMasterPenggajian)

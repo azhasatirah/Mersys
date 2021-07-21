@@ -46,6 +46,8 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 
         Route::get('penggajian/','PenggajianController@index');
         Route::get('penggajian/karyawan/{id}','PenggajianController@show');
+        Route::get('penggajian/karyawan/getdata/{id}','PenggajianController@getData');
+        Route::post('penggajian/store','PenggajianController@store');
 
         Route::get('masterpenggajian/transport/','MasterPenggajianTransportController@index');
         Route::get('masterpenggajian/transport/getdata','MasterPenggajianTransportController@getData');

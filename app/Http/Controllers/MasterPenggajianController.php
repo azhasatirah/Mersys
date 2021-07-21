@@ -16,8 +16,11 @@ class MasterPenggajianController extends Controller
     public function getData(){
         $MasterPenggajian = DB::table('master_penggajian')
         ->where('Status','!=','DEL')->get();
-        $Level = DB::table('level_program')->where('Status','!=','DEL')->get();
-        return response()->json([$MasterPenggajian,$Level]);
+        $Level = DB::table('level_program')->where('Status','!=','DEL')
+        ->where('IDLevel','!=',10)->get();
+        $Kategori = DB::table('kategori_program')->where('Status','OPN')
+        ->where('IDKategoriProgram','!=',18)->get();
+        return response()->json([$MasterPenggajian,$Level,$Kategori]);
 
     }
     public function getLevelName($id){
@@ -25,11 +28,18 @@ class MasterPenggajianController extends Controller
         $LevelName = $Level[0]->NamaLevel;
         return $LevelName;
     }
+    public function getKategoriProgram($id){
+        $Kategori = DB::table('kategori_program')->where('IDKategoriProgram',$id)->get();
+        $KategoriName = $Kategori[0]->KategoriProgram;
+        return $KategoriName;
+    }
     public function store(Request $request){
         $Data = array(
             'IDLevel'=>$request->idlevel,
             'Level'=>$this->getLevelName($request->idlevel),
             'JenisProgram'=>$request->jenisprogram,
+            'KategoriProgram'=>$this->getKategoriProgram($request->idkategoriprogram),
+            'IDKategoriProgram'=>$request->idkategoriprogram,
             'Pendapatan'=>$request->pendapatan,
             'Status'=>'OPN',
             'UserAdd'=>session()->get('Username'),
@@ -44,6 +54,8 @@ class MasterPenggajianController extends Controller
         $Data = array(
             'IDLevel'=>$request->idlevel,
             'Level'=>$this->getLevelName($request->idlevel),
+            'KategoriProgram'=>$this->getKategoriProgram($request->idkategoriprogram),
+            'IDKategoriProgram'=>$request->idkategoriprogram,
             'JenisProgram'=>$request->jenisprogram,
             'Pendapatan'=>$request->pendapatan,
             'UserUpd'=>session()->get('Username'),
