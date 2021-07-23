@@ -30,6 +30,15 @@ Route::get('/notif/update/{id}','NotifController@update');
 //karyawan
 Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 
+    Route::get('kursus','KursusSiswaController@adminIndexKursus');
+    Route::get('kursus/show/{id}','KursusSiswaController@adminShowKursus');
+    Route::post('kursus/absen','KursusSiswaController@adminAbsenKursus');
+    Route::get('kursus/delete/{id}','KursusSiswaController@adminDeleteKursus');
+    Route::get('kursus/get','KursusSiswaController@adminGetDataKursus');
+    Route::get('kursus/getdata/{id}','KursusSiswaController@adminShowKursusGetData');
+    Route::post('kursus/jadwalchanges/store','JadwalChangesController@adminStoreChanges');
+    Route::post('kursus/changetutor','JadwalController@adminChangeTutor');
+
     //multi karyawanwww
     Route::post('jadwalchanges/store','JadwalChangesController@storeChanges');
     Route::get('jadwalchanges/get/{id}','JadwalChangesController@getChanges');
@@ -61,8 +70,8 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::post('masterpenggajian/update','MasterPenggajianController@update');
         Route::get('masterpenggajian/delete/{id}','MasterPenggajianController@delete');
 
-        Route::get('kursus','KursusSiswaController@ownerIndexKursus');
-        Route::get('kursus/show/{id}','KursusSiswaController@ownerShowKursus');
+        Route::get('kursus','KursusSiswaController@adminIndexKursus');
+        Route::get('kursus/show/{id}','KursusSiswaController@adminShowKursus');
 
         Route::get('/syarat', 'SyaratController@index');
         Route::post('/syarat/store', 'SyaratController@store');
@@ -125,12 +134,12 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         //admin akses melihat semua kursus
         Route::get('kursus','KursusSiswaController@adminIndexKursus');
         Route::get('kursus/show/{id}','KursusSiswaController@adminShowKursus');
-        Route::post('kursus/absen','KursusSiswaController@adminAbsenKursus');
-        Route::get('kursus/delete/{id}','KursusSiswaController@adminDeleteKursus');
-        Route::get('kursus/get','KursusSiswaController@adminGetDataKursus');
-        Route::get('kursus/getdata/{id}','KursusSiswaController@adminShowKursusGetData');
-        Route::post('kursus/jadwalchanges/store','JadwalChangesController@adminStoreChanges');
-        Route::post('kursus/changetutor','JadwalController@adminChangeTutor');
+        // Route::post('kursus/absen','KursusSiswaController@adminAbsenKursus');
+        // Route::get('kursus/delete/{id}','KursusSiswaController@adminDeleteKursus');
+        // Route::get('kursus/get','KursusSiswaController@adminGetDataKursus');
+        // Route::get('kursus/getdata/{id}','KursusSiswaController@adminShowKursusGetData');
+        // Route::post('kursus/jadwalchanges/store','JadwalChangesController@adminStoreChanges');
+        // Route::post('kursus/changetutor','JadwalController@adminChangeTutor');
 
         //kunai
         Route::get('prodidetail/getprodi/{id}','ProgramStudiController@pdGetProdi');
@@ -335,7 +344,9 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     //route tutor
     Route::group(['middleware'=>['RoleKaryawan:3'],'prefix'=>'tutor'],function(){
 
-        
+        Route::get('/dasbor','KaryawanController@dasborTutor');
+
+
         Route::get('/notif','NotifController@notifTutor');
         Route::get('/notif/user/{id}','NotifController@notifUser');
 

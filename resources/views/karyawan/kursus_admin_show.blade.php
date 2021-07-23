@@ -397,7 +397,7 @@
         //data from database
     let DataKelas = [],Absen = [],Changes = [],jadwal = [],Evaluasi = [],Nilai = [],Tutor = []
 
-    let UIDKelas = window.location.href.split('/')[7]
+    let UIDKelas = window.location.href.split('/')[6]
     let active_content = "jadwal";
     const btn_jadwal = $('#btn-jadwal');
     const btn_ubahjadwal = $('#btn-ubahjadwal');
@@ -477,7 +477,7 @@
         }
     }
     function getData(){
-        Promise.resolve($.get("/karyawan/admin/kursus/getdata/"+UIDKelas))
+        Promise.resolve($.get("/karyawan/kursus/getdata/"+UIDKelas))
         .then((ele)=>{
             DataKelas = ele['DataKelas'][0]
             Absen = ele['Absen']
@@ -573,7 +573,7 @@
         }
         $.ajax({
             type: "post",
-            url: "/karyawan/admin/kursus/absen",
+            url: "/karyawan/kursus/absen",
             data: data,
             success: function (response) {
                 getData()
@@ -833,7 +833,7 @@
     }
     function storeChanges(){
         $('#modal-jadwal-changes').modal('hide')
-        $.post("/karyawan/admin/kursus/jadwalchanges/store", ReqJadwalChanges, (ele) =>{
+        $.post("/karyawan/kursus/jadwalchanges/store", ReqJadwalChanges, (ele) =>{
              swal(ele)
              $('#input-ubah-jadwal').hide();
              $('#input-ubah-semua-jadwal').hide();
@@ -1518,7 +1518,7 @@
     function changeTutor(){
         $.ajax({
             type: "POST",
-            url: "/karyawan/admin/kursus/changetutor",
+            url: "/karyawan/kursus/changetutor",
             data: $('#form-change-tutor').serialize(),
             success: function (response) {
                 swal(response)

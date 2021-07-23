@@ -44,7 +44,7 @@
     <td>
         @if ($item['Status'])
         <a class="btn btn-sm btn-primary" 
-        href="{{url('karyawan/admin/kursus/show')}}/{{$item['UIDKursus']}}" role="button">Absensi</a>
+        href="{{url('karyawan/kursus/show')}}/{{$item['UIDKursus']}}" role="button">Absensi</a>
         @endif
 
         <a class="btn btn-sm btn-danger text-white"  href="javascript:void(0)"
@@ -67,11 +67,11 @@
         });
         function getData(){
             Tabel.clear()
-            $.get('/karyawan/admin/kursus/get' ).done((ele)=>{
+            $.get('/karyawan/kursus/get' ).done((ele)=>{
                 ele.sort((a,b)=> new Date(b.TanggalOrder).getTime() - new Date(a.TanggalOrder).getTime()).forEach(data => {
                     let btn_absen = data['Status']?
                         "<a class=\"btn btn-sm btn-primary\""+
-                        "href=\"/karyawan/admin/kursus/show/"+data['UIDKursus']+"\" role=\"button\">Absensi</a>":""
+                        "href=\"/karyawan/kursus/show/"+data['UIDKursus']+"\" role=\"button\">Absensi</a>":""
                     let btn_delete = "<a class=\"btn btn-sm btn-danger text-white\"  href=\"javascript:void(0)\""+
                     "onclick=\"deleteKursus(\'"+data['UIDKursus']+"\')\" role=\"button\">Delete</a>"
 
@@ -96,7 +96,7 @@
               dangerMode: true,
           }).then((willDelete) => {
               if (willDelete) {
-                $.get('/karyawan/admin/kursus/delete/'+uid).done((res)=>{
+                $.get('/karyawan/kursus/delete/'+uid).done((res)=>{
                     swal({
                         icon : 'success',
                         title: "Deleted!",

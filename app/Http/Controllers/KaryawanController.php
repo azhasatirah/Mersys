@@ -24,6 +24,20 @@ class KaryawanController extends Controller
         return view('karyawan/index',['Dasbor'=>$Dasbor]);
 
     }
+    public function dasborTutor(){
+        $Dasbor = [];
+        $Siswa = DB::table('siswa')->where('Status','!=','DEL')->get();
+        $Karyawan = DB::table('karyawan')->where('Status','!=','DEL')->get();
+        $Transaksi = DB::table('transaksi')->where('Status','!=','DEL')->get();
+        $KasBank = DB::table('kas_bank')->get();
+        $Dasbor = array(
+            'JumlahSiswa'=>count($Siswa),
+            'JumlahKaryawan'=>count($Karyawan),
+            'Transaksi'=>count($Transaksi),
+            'Omset'=>$KasBank->sum('Total')
+        );
+        return view('karyawan/index',['Dasbor'=>$Dasbor]);
+    }
     public function getDataTutor(){
         $Tutor = DB::table('karyawan')
         ->join('role_karyawan_list','karyawan.IDKaryawan','=','role_karyawan_list.IDKaryawan')
