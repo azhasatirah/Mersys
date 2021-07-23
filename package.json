@@ -11,13 +11,14 @@
     },
     "devDependencies": {
         "axios": "^0.21",
-        "laravel-mix": "^6.0.6",
+        "laravel-mix": "^6.0.25",
         "lodash": "^4.17.19",
         "postcss": "^8.1.14"
     },
     "dependencies": {
+        "dom-to-image": "^2.6.0",
         "laravel-echo": "^1.10.0",
-        "mammoth": "^1.4.16",
+        "mammoth": "^1.4.17",
         "socket.io-client": "^2.4.0"
     }
 }

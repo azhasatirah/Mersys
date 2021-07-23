@@ -34,18 +34,16 @@
     <div class="col-md-12 col-sm-12  ">
         <div class="x_panel" style="border:0px;">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <h2 style="color: black"> Kelas {{$Prodi[0]->NamaProdi}} </h2>
                     <input type="hidden" id="UUIDKelas" value="{{$Prodi[0]->UUIDKelas}}">
                     {{-- <small>({{$Prodi[0]->KodeKursus}})</small>**/ --}}
                 </div>
-                <div class="col-md-4">
-                    <ul class="nav navbar-right panel_toolbox">
-                        <a class="btn btn-sm btn-primary" href="{{url('siswa/nilai')}}/{{$Prodi[0]->UUIDKelas}}" role="button">Nilai</a>
-                    </ul>
-                    <ul class="nav navbar-right panel_toolbox">
-                        <a class="btn btn-sm btn-primary" href="{{url('siswa/nilaieval')}}/{{$Prodi[0]->UUIDKelas}}" role="button">Nilai Evaluasi</a>
-                    </ul>
+                <div class="col-md-6">
+                    <a style="display: none" class="btn btn-hasil-nilai btn-primary btn-sm" href="{{url('siswa/sertifikat/depan')}}/{{$Prodi[0]->UUIDKelas}}" role="button">Sertifikat depan</a>
+                    <a style="display: none" class="btn btn-hasil-nilai btn-primary btn-sm" href="{{url('siswa/sertifikat/belakang')}}/{{$Prodi[0]->UUIDKelas}}" role="button">Sertifikat Belakang</a>
+                    <a style="display: none" class="btn btn-hasil-nilai btn-primary btn-sm" href="{{url('siswa/rapor')}}/{{$Prodi[0]->UUIDKelas}}" role="button">Rapor</a>
+                    <a style="display: none" class="btn btn-hasil-nilai btn-primary btn-sm" href="{{url('siswa/evaluasi')}}/{{$Prodi[0]->UUIDKelas}}" role="button">Evaluasi</a>
                 </div>
                 {{-- nav menu --}}
 
@@ -350,7 +348,7 @@
 {{-- <script type="application/javascript" src="{{ asset('js/app.js') }}"></script> --}}
 <script>
     const token = $('#token').val();
-    let active_content = "ubahjadwal";
+    let active_content = "pertemuan";
     const btn_prodi = $('#btn-prodi');
     const btn_pertemuan = $('#btn-pertemuan');
     const btn_modul = $('#btn-modul');
@@ -575,6 +573,10 @@
                 
 
             });
+            if(jadwal.length==0){
+                console.log('jadwal selesai')
+                $('.btn-hasil-nilai').show()
+            }
             $('#input-ubah-jadwal-select').empty();
             $('#input-ubah-jadwal-select').append('<option>pilih</option>');
             $('#input-ubah-jadwal-select').append('<option value="all">Izin Cuti</option>');

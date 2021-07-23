@@ -585,7 +585,7 @@
         $('#list-history-changes').empty()
         Changes.sort((a,b)=> b.IDJadwalChange - a.IDJadwalChange).forEach((ele)=>{
             console.log(ele)
-            //  console.log(ele.JadwalChanges[0].TanggalFrom)
+            console.log(ele.JadwalChanges)
             let ChangesSebelum =""
             let ChangesSesudah =""
             let StatusChange = ele.Status == 'OPN'?'Permintaan Terkirim':ele.Status=='CLS'?'Permintaan Disetujui':'Permintaan Ditolak'
@@ -595,7 +595,7 @@
                         "<td>"+ele.NoRecordFrom+"</td>"+
                         "<td>"+ele.TanggalFrom.split(' ')[0]+"</td>"+
                         "<td>"+ele.TanggalFrom.split(' ')[1]+"</td>"+
-                        "<td>"+ele.IDMateriFrom+"</td>"+
+                        "<td>"+ele.NamaMateriFrom+"</td>"+
                     "</tr>"
             })
             ele.JadwalChanges.sort((a,b)=> a.NoRecordTo - b.NoRecordTo).forEach((ele)=>{
@@ -604,7 +604,7 @@
                         "<td>"+ele.NoRecordTo+"</td>"+
                         "<td>"+ele.TanggalTo.split(' ')[0]+"</td>"+
                         "<td>"+ele.TanggalTo.split(' ')[1]+"</td>"+
-                        "<td>"+ele.IDMateriTo+"</td>"+
+                        "<td>"+ele.NamaMateriTo+"</td>"+
                     "</tr>"
                 
             })

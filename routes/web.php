@@ -401,9 +401,7 @@ Route::group(['middleware'=>['Role:siswa'],'prefix'=>'siswa'],function(){
     Route::get('program/stream/modul/{id}','DocumentController@streamModul');
 
     Route::get('sertifikat/belakang/{id}','SertifikatController@belakang');
-    Route::get('sertifikat/belakang/cetak/{id}','SertifikatController@print');
     Route::get('sertifikat/depan/{id}','SertifikatController@depan');
-    Route::get('sertifikat/depan/cetak/{id}','SertifikatController@printDepan');
     //pembayaran
     Route::get('pembayaran/','PembayaranController@index');
 

@@ -47,15 +47,7 @@
 </head>
 
 <body>
-    @if (session()->get('RoleUser')=='siswa')
-        <a name="" id="" class="btn btn-primary mx-2 my-2" 
-        href="{{url('/siswa/sertifikat/belakang/cetak')}}/{{$Nilai[0]['UUIDKursus']}}" 
-        role="button">Print</a>
-    @else
-        <a name="" id="" class="btn btn-primary mx-2 my-2" 
-        href="{{url('/karyawan/tutor/sertifikat/belakang/cetak')}}/{{$Nilai[0]['UUIDKursus']}}" 
-        role="button">Print</a>
-    @endif
+    <button type="button" onclick="getImage()" class="btn btn-primary ">Download</button>
     <div id="body" class="container-fluid">
         <div id="content">
             <div class="title text-center">
@@ -122,6 +114,25 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous">
+    </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+    <script>
+
+        function getImage(){
+            var node = document.getElementById('body');
+          
+            domtoimage.toPng(node,{quality:1})
+                .then(function (dataUrl) {
+                    let name = new Date().getTime()
+                    var link = document.createElement('a');
+                    link.download = 'sertifikat-belakang'+name+'.jpeg';
+                    link.href = dataUrl;
+                    link.click();
+                })
+                .catch(function (error) {
+                    console.error('oops, something went wrong!', error);
+                });
+        }
     </script>
 
 </body>

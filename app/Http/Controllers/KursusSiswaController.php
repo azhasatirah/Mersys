@@ -284,7 +284,11 @@ class KursusSiswaController extends Controller
             ->get();
             $Changes = [];
             foreach($TmpChanges as $item){
-                $ChangesDetail = DB::table('jadwal_change_detail')->where('IDJadwalChange',$item->IDJadwalChange)->get();
+                $ChangesDetail = DB::table('jadwal_change_detail as jcd')
+                ->join('kursus_materi as kmf','jcd.IDMateriFrom','=','kmf.IDKursusMateri')
+                ->join('kursus_materi as kmt','jcd.IDMateriTo','=','kmt.IDKursusMateri')
+                ->select('jcd.*','kmf.NamaMateri as NamaMateriFrom','kmt.NamaMateri as NamaMateriTo')
+                ->where('IDJadwalChange',$item->IDJadwalChange)->get();
                 if(count($ChangesDetail)>0){
 
                     array_push($Changes,array(

@@ -56,16 +56,7 @@
 </head>
 
 <body>
-    <a onclick="downloadPDF()" class="btn btn-primary" href="javascript:void(0)" role="button">download</a>
-    @if (session()->get('RoleUser')=='siswa')
-    <a  class="btn btn-primary mx-2 my-2" 
-    href="{{url('/siswa/sertifikat/depan/cetak')}}/{{$Nilai['UUIDKursus']}}" 
-    role="button">Print</a>
-    @else
-    <a  class="btn btn-primary mx-2 my-2" 
-    href="{{url('/karyawan/tutor/sertifikat/depan/cetak')}}/{{$Nilai['UUIDKursus']}}" 
-    role="button">Print</a>
-    @endif
+    <a onclick="getImage()" class="btn btn-primary" href="javascript:void(0)" role="button">download</a>
     <div id="body" class="container-fluid">
         <div class="d-flex justify-content-between">
             <div ></div>
@@ -89,9 +80,24 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous">
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
     <script>
    
-
+        function getImage(){
+            var node = document.getElementById('body');
+          
+            domtoimage.toPng(node,{quality:1})
+                .then(function (dataUrl) {
+                    let name = new Date().getTime()
+                    var link = document.createElement('a');
+                    link.download = 'sertifikat-depan'+name+'.jpeg';
+                    link.href = dataUrl;
+                    link.click();
+                })
+                .catch(function (error) {
+                    console.error('oops, something went wrong!', error);
+                });
+        }
         // Default export is a4 paper, portrait, using millimeters for units
         const doc = new jsPDF({
             orientation : 'landscape'
