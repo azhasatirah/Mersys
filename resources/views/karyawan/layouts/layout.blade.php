@@ -72,7 +72,13 @@
               <div class="menu_section">
                 <h3>General</h3>
                 <ul class="nav side-menu">
-                  <li><a href="{{url('karyawan/dasbor')}}"><i class="fa fa-square"></i>Beranda</a></li>
+                  @php
+                      $DasborLink = 'karyawan/dasbor';
+                      if(session()->get('Level')==3){
+                        $DasborLink = 'karyawan/tutor/dasbor';
+                      }
+                  @endphp
+                  <li><a href="{{url($DasborLink)}}"><i class="fa fa-square"></i>Beranda</a></li>
                   <!-- Menu Owner -->
                   @if(session()->get('Level')==1)
                   <li><a><i class="fa fa-dollar"></i> Penggajian <span class="fa fa-chevron-down"></span></a>

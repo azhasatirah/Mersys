@@ -25,6 +25,7 @@ class KaryawanController extends Controller
 
     }
     public function dasborTutor(){
+  
         $Dasbor = [];
         $Siswa = DB::table('siswa')->where('Status','!=','DEL')->get();
         $Karyawan = DB::table('karyawan')->where('Status','!=','DEL')->get();
@@ -36,7 +37,7 @@ class KaryawanController extends Controller
             'Transaksi'=>count($Transaksi),
             'Omset'=>$KasBank->sum('Total')
         );
-        return view('karyawan/index',['Dasbor'=>$Dasbor]);
+        return view('karyawan/tutor',['Dasbor'=>$Dasbor]);
     }
     public function getDataTutor(){
         $Tutor = DB::table('karyawan')

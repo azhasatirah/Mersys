@@ -356,7 +356,6 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::get('program/stream/modul/{id}','DocumentController@streamModul');
         Route::post('evaluasi/store','NilaiController@storeNilaiEvaluasi');
         // TODO merger with Kelas
-        Route::get('/dasbor',function(){return view('karyawan.index');});
         Route::get('/jadwal','JadwalController@jadwalTutor');
         Route::get('jadwal/getdata', 'JadwalController@getdataTutor');
         Route::get('jadwal/getdetaildata/{id}', 'JadwalController@getDetailDataTutor');
