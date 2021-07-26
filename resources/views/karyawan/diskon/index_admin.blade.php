@@ -50,80 +50,30 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <form id="formdata-create">
-            @csrf
+      <form id="formdata">
+      @csrf
+        <div class="modal-body">
             <div class="form-group">
-                <label for="">Hari</label>
-                <select class="custom-select" name="kodehari">
-                    <option value="0">Minggu</option>
-                    <option value="1">Senin</option>
-                    <option value="2">Selasa</option>
-                    <option value="3">Rabu</option>
-                    <option value="4">Kamis</option>
-                    <option value="5">Jumat</option>
-                    <option value="6">Sabtu</option>
+                <label for="">Nama Siswa</label>
+                <select class="custom-select" name="idsiswa" id="input-create-siswa"> </select>
+            </div>
+            <div class="form-group">
+              <label for="">Diskon</label>
+              <input type="number" class="form-control" name="nilai" id="input-create-nilai" aria-describedby="helpId" placeholder="">
+            </div>
+            <div class="form-group">
+                <label for="">Program</label>
+                <select class="custom-select" name="idprogram" id="input-create-program">
                 </select>
             </div>
-            <div class="form-group">
-                <label for="">Mulai</label>
-                <input type="time" class="form-control" name="start">
-            </div>
-            <div class="form-group">
-                <label for="">Sampai</label>
-                <input type="time" class="form-control" name="end">
-            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+            <button onclick="store()" type="button" class="btn btn-primary">Tambah</button>
+        </div>
         </form>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-        <button onclick="store()" type="button" class="btn btn-primary">Tambah</button>
-    </div>
-    </div>
   </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="modalupdate" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit jadwal</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-            </div>
-            <div class="modal-body">
-                <form id="formdata-create">
-                    @csrf
-                    <div class="form-group">
-                        <label for="">Hari</label>
-                        <select class="custom-select" name="kodehari" id="edit-hari">
-                            <option value="0">Minggu</option>
-                            <option value="1">Senin</option>
-                            <option value="2">Selasa</option>
-                            <option value="3">Rabu</option>
-                            <option value="4">Kamis</option>
-                            <option value="5">Jumat</option>
-                            <option value="6">Sabtu</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="">Mulai</label>
-                        <input type="time" class="form-control" id="edit-start" name="start">
-                    </div>
-                    <div class="form-group">
-                        <label for="">Sampai</label>
-                        <input type="time" class="form-control" id="edit-end" name="end">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button onclick="update()" type="button" class="btn btn-primary">Edit</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 
@@ -131,10 +81,11 @@
 
 @push('scripts')
     <script>
-        let Jadwal = []
         $(document).ready(function () {
             getData()
-            $('#tabeldata').DataTable();
+            $('#tabeldata').DataTable({
+             
+            });
         });
         function store(){
             $.ajax({
@@ -150,7 +101,40 @@
         }
         function getData(){
             $.get("/karyawan/admin/diskon/getdata",(ele)=>{
-                Jadwal = ele
+                let inputSiswa = $('#input-create-siswa')
+                let promo = $('#data-table')
+                inputSiswa.empty()
+                promo.empty()
+                inputSiswa.append("<option>Pilih</option>")
+                ele[1].forEach((ele)=>{
+                    inputSiswa.append(
+                        "<option value=\""+ele.IDSiswa+"\">"+ele.NamaSiswa+"</option>"
+                    )
+                })
+                ele[2].forEach(ele=>{
+                    $('#input-create-program').append(
+                        "<option value=\""+ele.IDProgram+"\">"+ele.NamaProdi+"</option>"
+                    );
+                })
+                let i =0
+                ele[0].forEach((ele)=>{
+                    i++
+                    let btnDelete = 
+                    "<a onclick=\"deleteData("+ele.IDDiskon+")\" class=\"btn btn-sm text-white btn-danger\" href=\"javascript:void(0)\" role=\"button\">"+
+                        "<i class=\"fa fa-trash\" aria-hidden=\"true\"></i>"+
+                    "</a>"
+                    promo.append(
+                        "<tr>"+
+                            "<td>"+i+"</td>"+
+                            "<td>"+ele.KodeDiskon+"</td>"+
+                            "<td>"+ele.NamaSiswa+"</td>"+
+                            "<td>Rp "+ele.Nilai.toLocaleString('id-ID')+"</td>"+
+                            "<td>"+ele.NamaProdi+"</td>"+
+                            "<td>"+ele.created_at+"</td>"+
+                            "<td>"+btnDelete+"</td>"+
+                        "</tr>"
+                    )
+                })
             })
         }
 
