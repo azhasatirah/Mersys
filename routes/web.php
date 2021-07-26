@@ -26,7 +26,6 @@ Route::get('/notif/update/{id}','NotifController@update');
 
 
 
-
 //karyawan
 Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 

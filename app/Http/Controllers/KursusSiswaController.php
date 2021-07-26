@@ -133,6 +133,7 @@ class KursusSiswaController extends Controller
             $DataJadwal = DB::table('jadwal')->where('IDJadwal',$request->IDJadwal)->get();
             $Start = explode(' ',$DataJadwal[0]->Tanggal)[1];
             $End =  date('H:i:s',strtotime('+2 hours',strtotime($DataJadwal[0]->Tanggal)));
+            
            // dd($Start, $End);
             if($request->person == 2){
                 $Data = [
@@ -160,6 +161,9 @@ class KursusSiswaController extends Controller
                 ];
             }
             DB::table($NamaTabel)->insert($Data);
+            DB::table('kursus_materi')->where('IDKursusMateri',$DataJadwal[0]->IDMateri)->update(array(
+                'Status'=>'CLS'
+            ));
             return response()->json('Absen berhasil ditambahkan');
         }
         public function adminGetDataKursus(){
@@ -299,9 +303,7 @@ class KursusSiswaController extends Controller
                 }
             }
             //dd($Jadwal,$Data);
-            $ActiveJadwal = array_filter($Jadwal->toArray(),function($var){
-                return $var->StatusMateri != 'CLS';
-            });
+            $ActiveJadwal = $Jadwal;
             $KursusMateri = DB::table('kursus_materi as km')
             ->join('kursus_siswa as ks','km.IDKursus','=','ks.IDKursusSiswa')
             ->select('km.*')

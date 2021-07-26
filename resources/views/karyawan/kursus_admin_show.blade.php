@@ -479,6 +479,7 @@
     function getData(){
         Promise.resolve($.get("/karyawan/kursus/getdata/"+UIDKelas))
         .then((ele)=>{
+            console.log(ele)
             DataKelas = ele['DataKelas'][0]
             Absen = ele['Absen']
             Changes = ele['Changes']
@@ -514,7 +515,7 @@
         let TabelNilai = $('#tbody-nilai')
         TabelNilai.empty()
         let i =0
-        console.log(Nilai)
+
         Nilai.forEach(ele=>{
             i++
             TabelNilai.append(
@@ -558,7 +559,7 @@
         $('#input-ubah-jadwal-select').empty();
         $('#input-ubah-jadwal-select').append('<option>pilih</option>');
         $('#input-ubah-jadwal-select').append('<option value="all">Izin Cuti</option>');
-        jadwal.forEach((ele)=>{
+        jadwal.filter(jwl=>jwl.StatusMateri != 'CLS').forEach((ele)=>{
             $('#input-ubah-jadwal-select').append(
                 "<option value=\""+ele.NoRecord+"\">Ubah pertemuan ke "+ele.NoRecord+"</option>"
             )
@@ -584,8 +585,7 @@
     function showChanges(){
         $('#list-history-changes').empty()
         Changes.sort((a,b)=> b.IDJadwalChange - a.IDJadwalChange).forEach((ele)=>{
-            console.log(ele)
-            console.log(ele.JadwalChanges)
+
             let ChangesSebelum =""
             let ChangesSesudah =""
             let StatusChange = ele.Status == 'OPN'?'Permintaan Terkirim':ele.Status=='CLS'?'Permintaan Disetujui':'Permintaan Ditolak'
@@ -675,7 +675,7 @@
         }
         if(reqJam != jadwal[jadwalChangedIndex].Tanggal.split(' ')[1] && 
         jadwal[jadwalChangedIndex].Tanggal.split(' ')[0] == reqTanggal){
-            console.log('jam only')
+         
             JadwalChanged.push({
                 'UIDProgram':jadwal[jadwalChangedIndex].UUIDProgram,
                 'IDSiswa':jadwal[jadwalChangedIndex].IDSiswa,
@@ -719,11 +719,16 @@
             console.log(DataChanges)
             setAndShowDataModalChanges(JadwalChanged)
         }
-        if(jadwal[jadwalChangedIndex].Tanggal.split(' ')[0] != reqTanggal){
-            let reqJadwal = jadwal[jadwalChangedIndex].Tanggal.split(' ')[0] != reqTanggal
-            && jadwal[jadwalChangedIndex].Tanggal.split(' ')[1] != reqJam ?reqTanggal+' '+reqJam:
-            jadwal[jadwalChangedIndex].Tanggal.split(' ')[0] != reqTanggal
-            && jadwal[jadwalChangedIndex].Tanggal.split(' ')[1] == reqJam? reqTanggal+' '+jadwal[jadwalChangedIndex].Tanggal.split(' ')[1]:''
+        let jadwal_not_changed = jadwal.filter(jwd=>jwd.NoRecord != InputNoRecord).filter(jwd=> jwd.StatusMateri != 'CLS')
+       // console.log(jadwal_not_changed)
+        let is_over_date = jadwal_not_changed.some(jnc=>new Date(jnc.Tanggal.split(' ')[0]).getTime() <= new Date(reqTanggal).getTime() )
+        if(is_over_date){
+            swal('Tidak bisa mengganti ke tanggal ini, coba ganti ke tanggal lebih kecil')
+        }
+        if(!is_over_date && jadwal[jadwalChangedIndex].Tanggal.split(' ')[0] != reqTanggal){
+            let reqJadwal = reqTanggal+' '+reqJam
+
+            console.log(reqJadwal)
             if(filterSameDate(jadwal,reqJadwal).length != 0){
                 swal('Jadwal penuh')
             }else{
@@ -732,8 +737,7 @@
                 // reqJadwal = perubahan jadwal
                 let tmp_new_jadwal = filterCheckPrevRecord(jadwal,reqJadwal,jadwalPrevChanged)
                 let ite = 0
-                console.log(tmp_new_jadwal)
-                console.log(tmp_new_jadwal.length,'berapa cm')
+          
                 let newJadwal = tmp_new_jadwal.filter(ele=>ele.NoRecord != InputNoRecord).map((ele)=>{
                     let data = {
                         'UIDProgram':jadwal[jadwalChangedIndex].UUIDProgram,
@@ -768,7 +772,7 @@
                     'TanggalFrom': jadwal[jadwalChangedIndex].Tanggal,
                     'TanggalTo':reqJadwal
                 })
-                console.log(newJadwal)
+           
                 let DataChanges={
                     '_token':token,
                     'UIDProgram[]':[],
@@ -794,14 +798,14 @@
                     DataChanges['TanggalFrom[]'].push(ele.TanggalFrom)
                     DataChanges['TanggalTo[]'].push(ele.TanggalTo)
                 })
-                console.log(DataChanges)
+            
                 ReqJadwalChanges = DataChanges
-                console.log(ReqJadwalChanges)
+              
                 setAndShowDataModalChanges(newJadwal)
              
             }
         }
-        //kunai
+
        
     }
     function setAndShowDataModalChanges(data){
@@ -1328,8 +1332,9 @@
         // total pertemuan = jadwal yang belum ada absen dan tanggl nya lebih besar sama dengan sekarang
         let start_date = $('#start_date');
         let filtered_jadwal = TypeRemakeJadwal == 1?
-        jadwal.filter(ele=>new Date(ele.Tanggal.split(' ')[0]).getTime() >= new Date(moment(new Date()).format('Y-MM-DD')).getTime()):
+        jadwal.filter(ele=>new Date(ele.Tanggal.split(' ')[0]).getTime() >= new Date(moment(new Date()).format('Y-MM-DD')).getTime()&& ele.StatusMateri!='CLS'):
         jadwal
+        console.log('filtered jadwal',filtered_jadwal,TypeRemakeJadwal)
         // console.log(moment(new Date()).format('Y-MM-DD'))
         let total_pertemuan = filtered_jadwal.length
         let senin = $('#senin');
@@ -1428,7 +1433,7 @@
                 date_increament += 7;
             }
         }
-      console.log(jadwal_siswa)
+
       jadwalBuiler(jadwal_siswa,filtered_jadwal);
       //kunai
     
@@ -1439,7 +1444,7 @@
 
     function jadwalBuiler(changes,data_jadwal){
         //let filtered_jadwal = jadwal
-        console.log('ch',changes)
+     
         let newJadwal = []
         let DataChanges={
                 '_token':token,
