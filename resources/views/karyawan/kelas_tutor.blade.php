@@ -279,6 +279,7 @@
     const content_bahantutor = $('#content-bahantutor');
     const TabelDataJadwal = $('#table-jadwal').DataTable();
     let JadwalChanges = [];
+    const URLData = window.location.hash
     const Hari = [
         {'Hari':'Senin','No':1},
         {'Hari':'Selasa','No':2},
@@ -295,12 +296,17 @@
         'preventDuplicates' :true
     }
     $(document).ready(function () {
-        console.log(active_content);
+        let LinkData = URLData.split('#')
         $('#table-jadwal').DataTable();
-        showContent();
         showCicilan();
         showDataJadwal();
         getChanges();
+        if(LinkData.length>1){
+            active_content = LinkData[1]
+
+        }
+        showContent();
+
     });
 
     function dialogEndKelas(NamaKelas,IDKursusMateri,NamaMateri,KodeKelas,NoRecord){
@@ -326,7 +332,7 @@
     function showDataJadwal(){
         $.get('/karyawan/tutor/jadwal/getdetaildata/'+$('#UUIDKelas').val(),function(Data){
   
-                console.log(Data);
+       
                 $('#datatabel').empty();
                 var a=0;
                 var datenow = new Date().toLocaleString('en-US',{timeZone:'Asia/Bangkok'});
@@ -338,7 +344,7 @@
                 TabelDataJadwal.clear().draw();
                 Data.forEach((data) =>{
                     a++;
-                    console.log(data);
+          
                     var b_mulai = "<form id=\"formstart"+data.IDKursusMateri+"\">"+
                         "<input type=\"hidden\" name=\"_token\" value=\""+$('#csrf').val()+"\">"+
                     "<input type=\"hidden\" name=\"idkursusmateri\" value=\""+data.IDKursusMateri+"\">"+
@@ -407,7 +413,7 @@
     }
 
     $('#content-prodi').on('change', function () {
-        console.log('hello');
+      //  console.log('hello');
         toastr.success(
             '<div class="d-flex justify-content-between">'+
                 '<p >Perhatian - Kamu belum menyimpan perubahan!</p>'+
@@ -537,7 +543,7 @@
     }
 
     function showCicilan() {
-        console.log($('#input-prodi-cicilan').val());
+    
         if ($('#input-prodi-cicilan').val() == 'y') {
             $('#table-cicilan').show();
         } else {
@@ -562,10 +568,10 @@
     function getChanges(){
         $('#list-history-changes').empty()
         $.get("/karyawan/tutor/jadwalchanges/get/"+$('#UUIDKelas').val(), (ele)=>{
-            console.log(ele)
-            JadwalChanges = ele
+           
+            JadwalChanges = ele.filter(jc=>jc.JadwalChanges.length>0)
             JadwalChanges.sort((a,b)=> b.IDJadwalChange - a.IDJadwalChange).forEach((ele)=>{
-                console.log(ele.JadwalChanges[0].TanggalFrom)
+                // console.log(ele.JadwalChanges[0].TanggalFrom)
                 let ChangesSebelum =""
                 let ChangesSesudah =""
                 let ChangesButton = ele.Status == 'OPN'?"<a class=\"btn btn-sm btn-danger text-white\""+
@@ -578,7 +584,7 @@
                             "<td>"+ele.NoRecordFrom+"</td>"+
                             "<td>"+ele.TanggalFrom.split(' ')[0]+"</td>"+
                             "<td>"+ele.TanggalFrom.split(' ')[1]+"</td>"+
-                            "<td>"+ele.IDMateriFrom+"</td>"+
+                            "<td>"+ele.NamaMateriFrom+"</td>"+
                         "</tr>"
                 })
                 ele.JadwalChanges.sort((a,b)=> a.NoRecordTo - b.NoRecordTo).forEach((ele)=>{
@@ -587,18 +593,19 @@
                             "<td>"+ele.NoRecordTo+"</td>"+
                             "<td>"+ele.TanggalTo.split(' ')[0]+"</td>"+
                             "<td>"+ele.TanggalTo.split(' ')[1]+"</td>"+
-                            "<td>"+ele.IDMateriTo+"</td>"+
+                            "<td>"+ele.NamaMateriTo+"</td>"+
                         "</tr>"
                     
                 })
-                console.log(ChangesSebelum)
+                let LinkData =URLData.split('#')
+                let disChanges = LinkData[1]=='ubahjadwal'&&parseInt(LinkData[2])==ele.IDJadwalChange?'':'none'
                 $('#list-history-changes').append(
                     "<a style=\"cursor: pointer\" onclick=\"showHistoryChanges("+ele.IDJadwalChange+")\" class=\"list-group-item list-group-item-action\">"+
                         "<h2>"+ele.JadwalChanges[0].TanggalFrom+
                         "<span class=\"text-success\">( "+StatusChange+" )</span>"+
 
                         "</h2>"+
-                        "<div id=\"history-changes-"+ele.IDJadwalChange+"\" class=\"row\" style=\"display: none\">"+
+                        "<div id=\"history-changes-"+ele.IDJadwalChange+"\" class=\"row\" style=\"display: "+disChanges+"\">"+
                             "<div class=\"col-md-6\">"+
                                 "<h4>Sebelum</h4>"+
                                 "<table class=\"table\">"+
@@ -619,9 +626,11 @@
                 );
             })
         });
+
+
     }
     function showHistoryChanges(id){
-
+        console.log(id)
         if($('#history-changes-'+id+':hidden').length == 1){
 
         $('#history-changes-'+id).show();

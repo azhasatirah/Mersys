@@ -367,6 +367,7 @@
     const content_bahantutor = $('#content-bahantutor');
     const TabelJadwal = $('#tabel-jadwal').DataTable();
     const TabelJadwalSelesai = $('#tabel-jadwal-selesai').DataTable();
+    const URLData = window.location.hash
     let jadwal_selesai=[];
     let jadwal = [];
     let ReqJadwalChanges = [];
@@ -389,7 +390,12 @@
         'preventDuplicates' :true
     }
     $(document).ready(function () {
-
+        let url = window.location
+        console.log(url)
+        let LinkData = URLData.split('#')
+        if(LinkData.length>1){
+            active_content = LinkData[1]
+        }
         $('#tabel-jadwal').DataTable();
         showContent();
         showJadwal();
@@ -998,7 +1004,7 @@
                             "<td>"+ele.NoRecordFrom+"</td>"+
                             "<td>"+ele.TanggalFrom.split(' ')[0]+"</td>"+
                             "<td>"+ele.TanggalFrom.split(' ')[1]+"</td>"+
-                            "<td>"+ele.IDMateriFrom+"</td>"+
+                            "<td>"+ele.NamaMateriFrom+"</td>"+
                         "</tr>"
                 })
                 ele.JadwalChanges.sort((a,b)=> a.NoRecordTo - b.NoRecordTo).forEach((ele)=>{
@@ -1007,15 +1013,17 @@
                             "<td>"+ele.NoRecordTo+"</td>"+
                             "<td>"+ele.TanggalTo.split(' ')[0]+"</td>"+
                             "<td>"+ele.TanggalTo.split(' ')[1]+"</td>"+
-                            "<td>"+ele.IDMateriTo+"</td>"+
+                            "<td>"+ele.NamaMateriTo+"</td>"+
                         "</tr>"
                     
                 })
+                let LinkData =URLData.split('#')
+                let disChanges = LinkData[1]=='ubahjadwal'&&parseInt(LinkData[2])==ele.IDJadwalChange?'':'none'
               // console.log(ChangesSebelum)
                 $('#list-history-changes').append(
                     "<a style=\"cursor: pointer\" onclick=\"showHistoryChanges("+ele.IDJadwalChange+")\" class=\"list-group-item list-group-item-action\">"+
                         "<h2>"+ele.JadwalChanges[0].TanggalFrom+"<span class=\"text-success\">( "+StatusChange+" )</span></h2>"+
-                        "<div id=\"history-changes-"+ele.IDJadwalChange+"\" class=\"row\" style=\"display: none\">"+
+                        "<div id=\"history-changes-"+ele.IDJadwalChange+"\" class=\"row\" style=\"display: "+disChanges+"\">"+
                             "<div class=\"col-md-6\">"+
                                 "<h4>Sebelum</h4>"+
                                 "<table class=\"table\">"+

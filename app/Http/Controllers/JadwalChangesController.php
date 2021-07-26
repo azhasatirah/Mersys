@@ -62,7 +62,7 @@ class JadwalChangesController extends Controller
             'NotifFrom'=> session()->get('UID'),
             'NotifTo'=>$DataNotif[0]->UIDTutor,
             'IsRead'=>false,
-            'Link'=>'/karyawan/tutor/kelas/show/'.$DataNotif[0]->UIDKelas,
+            'Link'=>'/karyawan/tutor/kelas/show/'.$DataNotif[0]->UIDKelas.'#ubahjadwal#'.$JadwalChanges[0]->IDJadwalChange,
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);
@@ -91,7 +91,7 @@ class JadwalChangesController extends Controller
                 'NotifFrom'=> session()->get('UID'),
                 'NotifTo'=>$DataNotif[0]->UIDSiswa,
                 'IsRead'=>false,
-                'Link'=>'/siswa/kursus/show/'.$DataNotif[0]->UIDKelas,
+                'Link'=>'/siswa/kursus/show/'.$DataNotif[0]->UIDKelas.'#ubahjadwal#'.$id,
                 'created_at'=>Carbon::now(),
                 'updated_at'=>Carbon::now(),
             ]);
@@ -106,7 +106,7 @@ class JadwalChangesController extends Controller
                 'NotifFrom'=> session()->get('UID'),
                 'NotifTo'=>$DataNotif[0]->UIDSiswa,
                 'IsRead'=>false,
-                'Link'=>'/siswa/kursus/show/'.$DataNotif[0]->UIDKelas,
+                'Link'=>'/siswa/kursus/show/'.$DataNotif[0]->UIDKelas.'#ubahjadwal#'.$id,
                 'created_at'=>Carbon::now(),
                 'updated_at'=>Carbon::now(),
             ]);
@@ -117,6 +117,7 @@ class JadwalChangesController extends Controller
     }
     public function getChanges($id){
         //->join('jadwal_changes_detail as jcd','jc.IDJadwalChanges','=','jcd.IDJadwalChanges')
+
         $TmpChanges = DB::table('jadwal_change as jc')
         ->join('kursus_siswa as ks','jc.IDKursusSiswa','=','ks.IDKursusSiswa')
         ->select('jc.Status','jc.IDJadwalChange')
@@ -124,11 +125,19 @@ class JadwalChangesController extends Controller
         ->get();
         $Changes = [];
         foreach($TmpChanges as $item){
-            array_push($Changes,array(
-                'Status'=>$item->Status,
-                'IDJadwalChange'=>$item->IDJadwalChange,
-                'JadwalChanges'=>DB::table('jadwal_change_detail')->where('IDJadwalChange',$item->IDJadwalChange)->get()
-            ));
+            $ChangesDetail = DB::table('jadwal_change_detail as jcd')
+            ->join('kursus_materi as kmf','jcd.IDMateriFrom','=','kmf.IDKursusMateri')
+            ->join('kursus_materi as kmt','jcd.IDMateriTo','=','kmt.IDKursusMateri')
+            ->select('jcd.*','kmf.NamaMateri as NamaMateriFrom','kmt.NamaMateri as NamaMateriTo')
+            ->where('IDJadwalChange',$item->IDJadwalChange)->get();
+            if(count($ChangesDetail)>0){
+
+                array_push($Changes,array(
+                    'Status'=>$item->Status,
+                    'IDJadwalChange'=>$item->IDJadwalChange,
+                    'JadwalChanges'=>$ChangesDetail
+                ));
+            }
         }
         return response()->json($Changes);
     }
@@ -182,7 +191,7 @@ class JadwalChangesController extends Controller
          ->where('jadwal_change.IDJadwalChange',$JadwalChanges[0]->IDJadwalChange)->get();
 
          $TmpJadwalChanges = DB::table('jadwal_change_detail')->where('IDJadwalChange',$JadwalChanges[0]->IDJadwalChange)->get();
-         $JadwalChanges =[];
+        // $JadwalChanges =[];
          foreach($TmpJadwalChanges as $Item){
              DB::table('jadwal')->where('IDJadwal',$Item->IDJadwal)->update([
                  'IDMateri'=>$Item->IDMateriTo,
@@ -195,7 +204,7 @@ class JadwalChangesController extends Controller
              'NotifFrom'=> session()->get('UID'),
              'NotifTo'=>$DataNotif[0]->UIDTutor,
              'IsRead'=>false,
-             'Link'=>'/karyawan/tutor/kelas/show/'.$DataNotif[0]->UIDKelas,
+             'Link'=>'/karyawan/tutor/kelas/show/'.$DataNotif[0]->UIDKelas.'#ubahjadwal#'.$JadwalChanges[0]->IDJadwalChange,
              'created_at'=>Carbon::now(),
              'updated_at'=>Carbon::now(),
          ]);
@@ -204,7 +213,7 @@ class JadwalChangesController extends Controller
             'NotifFrom'=> session()->get('UID'),
             'NotifTo'=>$DataNotif[0]->UIDSiswa,
             'IsRead'=>false,
-            'Link'=>'/siswa/kursus/show/'.$DataNotif[0]->UIDKelas,
+            'Link'=>'/siswa/kursus/show/'.$DataNotif[0]->UIDKelas.'#ubahjadwal#'.$JadwalChanges[0]->IDJadwalChange,
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         ]);

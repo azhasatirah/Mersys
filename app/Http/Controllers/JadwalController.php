@@ -144,7 +144,7 @@ class JadwalController extends Controller
         'siswa.NamaSiswa','jadwal.IDJadwal','jadwal.IDTutor')
        // ->where('jadwal.Status','CFM')
         ->where('kursus_siswa.UUID',$id)
-        ->where('IDTutor',session()->get('IDUser'))->get();
+        ->where('jadwal.IDTutor',session()->get('IDUser'))->get();
         return response()->json($Jadwal);
     }
     public function getDataSiswa($id){
