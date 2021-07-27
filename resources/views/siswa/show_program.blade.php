@@ -853,7 +853,7 @@
                 // reqJadwal = perubahan jadwal
                 let tmp_new_jadwal = filterCheckPrevRecord(jadwal,reqJadwal,jadwalPrevChanged)
                 let ite = 0
-                console.log(tmp_new_jadwal)
+     
                 let newJadwal = tmp_new_jadwal.filter(ele=>ele.NoRecord != InputNoRecord).map((ele)=>{
                     let data = {
                         'UIDProgram':jadwal[jadwalChangedIndex].UUIDProgram,
@@ -872,7 +872,7 @@
                     ite ++;
                     return data
                 })
-                console.log('new jadwal',newJadwal)
+    
 
                 newJadwal.push({
                     'UIDProgram':jadwal[jadwalChangedIndex].UUIDProgram,

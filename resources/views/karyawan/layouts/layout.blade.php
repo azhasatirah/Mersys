@@ -86,6 +86,8 @@
                       <li><a href="{{url('karyawan/owner/penggajian')}}">Penggajian</a></li>
                       <li><a href="{{url('karyawan/owner/masterpenggajian')}}">Master penggajian</a></li>
                       <li><a href="{{url('karyawan/owner/masterpenggajian/transport')}}">Master biaya transport</a></li>
+                      <li><a href="{{url('karyawan/owner/masterpenggajian/gajipokok')}}">Master gaji pokok</a></li>
+                      <li><a href="{{url('karyawan/owner/masterpenggajian/denda')}}">Master denda keterlambatan</a></li>
                     </ul>
                   </li>
                   <li><a><i class="fa fa-cog"></i> Transaksi <span class="fa fa-chevron-down"></span></a>

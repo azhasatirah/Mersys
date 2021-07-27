@@ -52,6 +52,18 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     //route owner
     Route::group(['middleware'=>['RoleKaryawan:1'],'prefix'=>'owner'],function(){
 
+        Route::get('masterpenggajian/gajipokok/','GajiPokokController@indexOwner');
+        Route::get('masterpenggajian/gajipokok/getdata','GajiPokokController@getData');
+        Route::post('masterpenggajian/gajipokok/store','GajiPokokController@store');
+        Route::post('masterpenggajian/gajipokok/update','GajiPokokController@update');
+        Route::get('masterpenggajian/gajipokok/delete/{id}','GajiPokokController@delete');
+
+        Route::get('masterpenggajian/denda/','DendaController@indexOwner');
+        Route::get('masterpenggajian/denda/getdata','DendaController@getData');
+        Route::post('masterpenggajian/denda/store','DendaController@store');
+        Route::post('masterpenggajian/denda/update','DendaController@update');
+        Route::get('masterpenggajian/denda/delete/{id}','DendaController@delete');
+
         Route::get('penggajian/','PenggajianController@index');
         Route::get('penggajian/karyawan/{id}','PenggajianController@show');
         Route::get('penggajian/karyawan/getdata/{id}','PenggajianController@getData');
