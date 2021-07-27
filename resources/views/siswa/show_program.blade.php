@@ -784,7 +784,8 @@
         let reqTanggal = $('#input-ubah-jadwal-tanggal').val()
         let reqJam = $('#input-ubah-jadwal-jam').val()
         let jadwalChangedIndex = jadwal.findIndex(ele => ele.NoRecord == InputNoRecord)
-        let jadwalPrevChanged = jadwal[jadwalChangedIndex].Tanggal+' '+jadwal[jadwalChangedIndex].Jam
+        let jadwalPrevChanged = jadwal[jadwalChangedIndex].Tanggal
+        console.log('hae',jadwal[jadwalChangedIndex],reqJam,reqTanggal)
  
         if(reqJam == jadwal[jadwalChangedIndex].Jam && 
         jadwal[jadwalChangedIndex].Tanggal == reqTanggal){
@@ -792,6 +793,7 @@
         }
         if(reqJam != jadwal[jadwalChangedIndex].Jam && 
         jadwal[jadwalChangedIndex].Tanggal == reqTanggal){
+         
             JadwalChanged.push({
                 'UIDProgram':jadwal[jadwalChangedIndex].UUIDProgram,
                 'IDSiswa':jadwal[jadwalChangedIndex].IDSiswa,
@@ -832,13 +834,17 @@
                 DataChanges['TanggalTo[]'].push(ele.TanggalTo)
             })
             ReqJadwalChanges = DataChanges
+            console.log(DataChanges)
             setAndShowDataModalChanges(JadwalChanged)
         }
-        if(jadwal[jadwalChangedIndex].Tanggal != reqTanggal){
-            let reqJadwal = jadwal[jadwalChangedIndex].Tanggal != reqTanggal
-            && jadwal[jadwalChangedIndex].Jam != reqJam ?reqTanggal+' '+reqJam:
-            jadwal[jadwalChangedIndex].Tanggal != reqTanggal
-            && jadwal[jadwalChangedIndex].Jam == reqJam? reqTanggal+' '+jadwal[jadwalChangedIndex].Jam:''
+        let jadwal_not_changed = jadwal.filter(jwd=>jwd.NoRecord != InputNoRecord).filter(jwd=> jwd.StatusMateri != 'CLS')
+       // console.log(jadwal_not_changed)
+        let is_over_date = jadwal_not_changed.some(jnc=>new Date(jnc.Tanggal).getTime() <= new Date(reqTanggal).getTime() )
+        if(is_over_date){
+            swal('Tidak bisa mengganti ke tanggal ini, coba ganti ke tanggal lebih kecil')
+        }
+        if(!is_over_date && jadwal[jadwalChangedIndex].Tanggal != reqTanggal){
+            let reqJadwal = reqTanggal+' '+reqJam
             if(filterSameDate(jadwal,reqJadwal).length != 0){
                 swal('Jadwal penuh')
             }else{
@@ -848,7 +854,6 @@
                 let tmp_new_jadwal = filterCheckPrevRecord(jadwal,reqJadwal,jadwalPrevChanged)
                 let ite = 0
                 console.log(tmp_new_jadwal)
-                console.log(tmp_new_jadwal.length,'berapa cm')
                 let newJadwal = tmp_new_jadwal.filter(ele=>ele.NoRecord != InputNoRecord).map((ele)=>{
                     let data = {
                         'UIDProgram':jadwal[jadwalChangedIndex].UUIDProgram,
@@ -862,7 +867,7 @@
                         'NoRecordFrom': ele.NoRecord,
                         'NoRecordTo':tmp_new_jadwal[ite].NoRecord,
                         'TanggalFrom': ele.Tanggal+' '+ele.Jam,
-                        'TanggalTo':tmp_new_jadwal[ite+1].Tanggal+' '+tmp_new_jadwal[ite+1].Jam
+                        'TanggalTo':tmp_new_jadwal[ite+1].Tanggal
                     }
                     ite ++;
                     return data
@@ -883,6 +888,7 @@
                     'TanggalFrom': jadwal[jadwalChangedIndex].Tanggal+' '+jadwal[jadwalChangedIndex].Jam,
                     'TanggalTo':reqJadwal
                 })
+           
                 let DataChanges={
                     '_token':token,
                     'UIDProgram[]':[],
@@ -908,16 +914,156 @@
                     DataChanges['TanggalFrom[]'].push(ele.TanggalFrom)
                     DataChanges['TanggalTo[]'].push(ele.TanggalTo)
                 })
-                console.log(DataChanges)
+            
                 ReqJadwalChanges = DataChanges
-                console.log(ReqJadwalChanges)
+              
                 setAndShowDataModalChanges(newJadwal)
              
             }
         }
-        //kunai
+
        
     }
+    // function traceJadwalChange(){
+    //     let JadwalChanged =[]
+    //     let InputNoRecord = $('#input-ubah-jadwal-select').val()
+    //     let reqTanggal = $('#input-ubah-jadwal-tanggal').val()
+    //     let reqJam = $('#input-ubah-jadwal-jam').val()
+    //     let jadwalChangedIndex = jadwal.findIndex(ele => ele.NoRecord == InputNoRecord)
+    //     let jadwalPrevChanged = jadwal[jadwalChangedIndex].Tanggal+' '+jadwal[jadwalChangedIndex].Jam
+ 
+    //     if(reqJam == jadwal[jadwalChangedIndex].Jam && 
+    //     jadwal[jadwalChangedIndex].Tanggal == reqTanggal){
+    //         swal('Anda belum mengubah jadwal')
+    //     }
+    //     if(reqJam != jadwal[jadwalChangedIndex].Jam && 
+    //     jadwal[jadwalChangedIndex].Tanggal == reqTanggal){
+    //         JadwalChanged.push({
+    //             'UIDProgram':jadwal[jadwalChangedIndex].UUIDProgram,
+    //             'IDSiswa':jadwal[jadwalChangedIndex].IDSiswa,
+    //             'IDTutor':jadwal[jadwalChangedIndex].IDTutor,
+    //             'IDJadwal':jadwal[jadwalChangedIndex].IDJadwal,
+    //             'IDMateriFrom':jadwal[jadwalChangedIndex].IDMateri,
+    //             'IDMateriTo':jadwal[jadwalChangedIndex].IDMateri,
+    //             'MateriFrom':jadwal[jadwalChangedIndex].NamaMateri,
+    //             'MateriTo':jadwal[jadwalChangedIndex].NamaMateri,
+    //             'NoRecordFrom': parseInt(InputNoRecord),
+    //             'NoRecordTo':parseInt(InputNoRecord),
+    //             'TanggalFrom': jadwal[jadwalChangedIndex].Tanggal+' '+jadwal[jadwalChangedIndex].Jam,
+    //             'TanggalTo':jadwal[jadwalChangedIndex].Tanggal+' '+reqJam+':00'
+    //         })
+    //         let DataChanges={
+    //             '_token':token,
+    //             'UIDProgram[]':[],
+    //             'IDSiswa[]':[],
+    //             'IDTutor[]':[],
+    //             'IDJadwal[]':[],
+    //             'IDMateriFrom[]':[],
+    //             'IDMateriTo[]':[],
+    //             'NoRecordFrom[]': [],
+    //             'NoRecordTo[]':[],
+    //             'TanggalFrom[]': [],
+    //             'TanggalTo[]':[]
+    //         };
+    //         JadwalChanged.forEach((ele)=>{
+    //             DataChanges['UIDProgram[]'].push(ele.UIDProgram)
+    //             DataChanges['IDSiswa[]'].push(ele.IDSiswa)
+    //             DataChanges['IDTutor[]'].push(ele.IDTutor)
+    //             DataChanges['IDJadwal[]'].push(ele.IDJadwal)
+    //             DataChanges['IDMateriFrom[]'].push(ele.IDMateriFrom)
+    //             DataChanges['IDMateriTo[]'].push(ele.IDMateriTo)
+    //             DataChanges['NoRecordFrom[]'].push(ele.NoRecordFrom)
+    //             DataChanges['NoRecordTo[]'].push(ele.NoRecordTo)
+    //             DataChanges['TanggalFrom[]'].push(ele.TanggalFrom)
+    //             DataChanges['TanggalTo[]'].push(ele.TanggalTo)
+    //         })
+    //         ReqJadwalChanges = DataChanges
+    //         setAndShowDataModalChanges(JadwalChanged)
+    //     }
+    //     if(jadwal[jadwalChangedIndex].Tanggal != reqTanggal){
+    //         let reqJadwal = jadwal[jadwalChangedIndex].Tanggal != reqTanggal
+    //         && jadwal[jadwalChangedIndex].Jam != reqJam ?reqTanggal+' '+reqJam:
+    //         jadwal[jadwalChangedIndex].Tanggal != reqTanggal
+    //         && jadwal[jadwalChangedIndex].Jam == reqJam? reqTanggal+' '+jadwal[jadwalChangedIndex].Jam:''
+    //         if(filterSameDate(jadwal,reqJadwal).length != 0){
+    //             swal('Jadwal penuh')
+    //         }else{
+    //             // jadwalPrevChanged = jadwal yang akan di ubah
+    //             // jadwal = semua jadwal yang belum di ubah
+    //             // reqJadwal = perubahan jadwal
+    //             let tmp_new_jadwal = filterCheckPrevRecord(jadwal,reqJadwal,jadwalPrevChanged)
+    //             let ite = 0
+    //             console.log(tmp_new_jadwal)
+    //             console.log(tmp_new_jadwal.length,'berapa cm')
+    //             let newJadwal = tmp_new_jadwal.filter(ele=>ele.NoRecord != InputNoRecord).map((ele)=>{
+    //                 let data = {
+    //                     'UIDProgram':jadwal[jadwalChangedIndex].UUIDProgram,
+    //                     'IDSiswa':ele.IDSiswa,
+    //                     'IDTutor':ele.IDTutor,
+    //                     'IDJadwal':ele.IDJadwal,
+    //                     'IDMateriFrom':ele.IDMateri,
+    //                     'IDMateriTo':tmp_new_jadwal[ite].IDMateri,
+    //                     'MateriFrom':ele.NamaMateri,
+    //                     'MateriTo':tmp_new_jadwal[ite].NamaMateri,
+    //                     'NoRecordFrom': ele.NoRecord,
+    //                     'NoRecordTo':tmp_new_jadwal[ite].NoRecord,
+    //                     'TanggalFrom': ele.Tanggal+' '+ele.Jam,
+    //                     'TanggalTo':tmp_new_jadwal[ite+1].Tanggal+' '+tmp_new_jadwal[ite+1].Jam
+    //                 }
+    //                 ite ++;
+    //                 return data
+    //             })
+    //             console.log('new jadwal',newJadwal)
+
+    //             newJadwal.push({
+    //                 'UIDProgram':jadwal[jadwalChangedIndex].UUIDProgram,
+    //                 'IDSiswa':jadwal[jadwalChangedIndex].IDSiswa,
+    //                 'IDTutor':jadwal[jadwalChangedIndex].IDTutor,
+    //                 'IDJadwal':jadwal[jadwalChangedIndex].IDJadwal,
+    //                 'IDMateriFrom':jadwal[jadwalChangedIndex].IDMateri,
+    //                 'IDMateriTo':tmp_new_jadwal.length == 0?jadwal[jadwalChangedIndex].IDMateri:tmp_new_jadwal[tmp_new_jadwal.length-1].IDMateri,
+    //                 'MateriFrom':jadwal[jadwalChangedIndex].NamaMateri,
+    //                 'MateriTo':tmp_new_jadwal.length == 0?jadwal[jadwalChangedIndex].NamaMateri:tmp_new_jadwal[tmp_new_jadwal.length-1].NamaMateri,
+    //                 'NoRecordFrom': parseInt(InputNoRecord),
+    //                 'NoRecordTo':tmp_new_jadwal.length == 0?parseInt(InputNoRecord):tmp_new_jadwal[tmp_new_jadwal.length-1].NoRecord,
+    //                 'TanggalFrom': jadwal[jadwalChangedIndex].Tanggal+' '+jadwal[jadwalChangedIndex].Jam,
+    //                 'TanggalTo':reqJadwal
+    //             })
+    //             let DataChanges={
+    //                 '_token':token,
+    //                 'UIDProgram[]':[],
+    //                 'IDSiswa[]':[],
+    //                 'IDTutor[]':[],
+    //                 'IDJadwal[]':[],
+    //                 'IDMateriFrom[]':[],
+    //                 'IDMateriTo[]':[],
+    //                 'NoRecordFrom[]': [],
+    //                 'NoRecordTo[]':[],
+    //                 'TanggalFrom[]': [],
+    //                 'TanggalTo[]':[]
+    //             };
+    //             newJadwal.forEach((ele)=>{
+    //                 DataChanges['UIDProgram[]'].push(ele.UIDProgram)
+    //                 DataChanges['IDSiswa[]'].push(ele.IDSiswa)
+    //                 DataChanges['IDTutor[]'].push(ele.IDTutor)
+    //                 DataChanges['IDJadwal[]'].push(ele.IDJadwal)
+    //                 DataChanges['IDMateriFrom[]'].push(ele.IDMateriFrom)
+    //                 DataChanges['IDMateriTo[]'].push(ele.IDMateriTo)
+    //                 DataChanges['NoRecordFrom[]'].push(ele.NoRecordFrom)
+    //                 DataChanges['NoRecordTo[]'].push(ele.NoRecordTo)
+    //                 DataChanges['TanggalFrom[]'].push(ele.TanggalFrom)
+    //                 DataChanges['TanggalTo[]'].push(ele.TanggalTo)
+    //             })
+    //             console.log(DataChanges)
+    //             ReqJadwalChanges = DataChanges
+    //             console.log(ReqJadwalChanges)
+    //             setAndShowDataModalChanges(newJadwal)
+             
+    //         }
+    //     }
+    //     //kunai
+       
+    // }
 
     function setAndShowDataModalChanges(data){
         let TableJadwalChangesFrom = $('#tbody-jadwal-changes-from')
