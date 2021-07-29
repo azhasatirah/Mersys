@@ -20,7 +20,9 @@ class MasterPenggajianController extends Controller
         ->where('IDLevel','!=',10)->get();
         $Kategori = DB::table('kategori_program')->where('Status','OPN')
         ->where('IDKategoriProgram','!=',18)->get();
-        return response()->json([$MasterPenggajian,$Level,$Kategori]);
+        $KategoriGlobalProgram = DB::table('kategori_global_program')->where('Status','OPN')
+        ->where('IDKategoriGlobalProgram','!=',7)->get();
+        return response()->json([$MasterPenggajian,$Level,$Kategori,$KategoriGlobalProgram]);
 
     }
     public function getLevelName($id){
@@ -33,14 +35,25 @@ class MasterPenggajianController extends Controller
         $KategoriName = $Kategori[0]->KategoriProgram;
         return $KategoriName;
     }
+    public function getKategoriGlobalProgram($id){
+        $Kategori = DB::table('kategori_global_program')->where('IDKategoriGlobalProgram',$id)->get();
+        $KategoriName = $Kategori[0]->KategoriGlobalProgram;
+        return $KategoriName;
+    }
+    public function idrToInt($idr){
+        $n = str_replace('.','',str_replace('Rp. ','',$idr));
+        return intval($n);
+    }
     public function store(Request $request){
         $Data = array(
             'IDLevel'=>$request->idlevel,
+            'IDKategoriProgram'=>$request->idkategoriprogram,
+            'IDKategoriGlobalProgram'=>$request->idkategoriglobalprogram,
+            'KategoriGlobalProgram'=>$this->getKategoriGlobalProgram($request->idkategoriglobalprogram),
             'Level'=>$this->getLevelName($request->idlevel),
             'JenisProgram'=>$request->jenisprogram,
             'KategoriProgram'=>$this->getKategoriProgram($request->idkategoriprogram),
-            'IDKategoriProgram'=>$request->idkategoriprogram,
-            'Pendapatan'=>$request->pendapatan,
+            'Pendapatan'=>$this->idrToInt($request->pendapatan),
             'Status'=>'OPN',
             'UserAdd'=>session()->get('Username'),
             'UserUpd'=>session()->get('Username'),
@@ -56,8 +69,10 @@ class MasterPenggajianController extends Controller
             'Level'=>$this->getLevelName($request->idlevel),
             'KategoriProgram'=>$this->getKategoriProgram($request->idkategoriprogram),
             'IDKategoriProgram'=>$request->idkategoriprogram,
+            'IDKategoriGlobalProgram'=>$request->idkategoriglobalprogram,
+            'KategoriGlobalProgram'=>$this->getKategoriGlobalProgram($request->idkategoriglobalprogram),
             'JenisProgram'=>$request->jenisprogram,
-            'Pendapatan'=>$request->pendapatan,
+            'Pendapatan'=>$this->idrToInt($request->pendapatan),
             'UserUpd'=>session()->get('Username'),
             'updated_at'=>Carbon::now(),
         );

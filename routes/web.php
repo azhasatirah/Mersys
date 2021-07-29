@@ -68,6 +68,9 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::get('penggajian/karyawan/{id}','PenggajianController@show');
         Route::get('penggajian/karyawan/getdata/{id}','PenggajianController@getData');
         Route::post('penggajian/store','PenggajianController@store');
+        Route::post('penggajian/update','PenggajianController@updatePenggajian');
+        Route::get('penggajian/delete/{id}','PenggajianController@delete');
+        Route::get('penggajian/confirm/{id}','PenggajianController@confirm');
 
         Route::get('masterpenggajian/transport/','MasterPenggajianTransportController@index');
         Route::get('masterpenggajian/transport/getdata','MasterPenggajianTransportController@getData');
@@ -356,7 +359,8 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     Route::group(['middleware'=>['RoleKaryawan:3'],'prefix'=>'tutor'],function(){
 
         Route::get('/dasbor','KaryawanController@dasborTutor');
-
+        Route::get('/gaji','PenggajianController@tutorIndex');
+        Route::get('/gaji/getdata','PenggajianController@tutorGetData');
 
         Route::get('/notif','NotifController@notifTutor');
         Route::get('/notif/user/{id}','NotifController@notifUser');
@@ -409,7 +413,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 
 Route::group(['middleware'=>['Role:siswa'],'prefix'=>'siswa'],function(){
 
-   Route::get('diskon/getdata/{id}','DiskonController@siswaData');  
+    Route::get('diskon/getdata/{id}','DiskonController@siswaData');  
 
     Route::post('jadwalchanges/store','JadwalChangesController@storeChanges');
     Route::get('jadwalchanges/get/{id}','JadwalChangesController@getChanges');

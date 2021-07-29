@@ -29,6 +29,7 @@ class PenggajianController extends Controller
         ->join('karyawan as k','p.IDKaryawan','=','k.IDKaryawan')
         ->select('p.*')
         ->where(DB::raw('YEAR(p.Tanggal)'),date('Y'))
+        ->where('p.Status','!=','DEL')
         ->where('k.UUID',$id)->get();
         $Penggajian =[];
         $JadwalTutor = DB::table('jadwal as j')
@@ -40,7 +41,7 @@ class PenggajianController extends Controller
         ->where(DB::raw('YEAR(j.Tanggal)'),date('Y'))
         ->where('k.UUID',$id)
         ->select('j.IDJadwal','km.NamaMateri','km.NoRecord','ps.NamaProdi','s.NamaSiswa','j.IDKursusSiswa',
-        'ps.IDLevel','ps.IDKategoriProgram','j.Jenis','j.Tanggal')->get();
+        'ps.IDLevel','ps.IDKategoriProgram','ps.IDKategoriGlobalProgram','j.Jenis','j.Tanggal')->get();
         $KelasTutor = [];
         foreach($JadwalTutor as $jt){
             $absen_tutor = DB::table('absen_tutor')->where('IDJadwal',$jt->IDJadwal)->get();
@@ -50,17 +51,21 @@ class PenggajianController extends Controller
                 'NamaMateri'=>$jt->NamaMateri,
                 'NoRecord'=>$jt->NoRecord,
                 'NamaProdi'=>$jt->NamaProdi,
+                'AbsensiTutor'=>count($absen_tutor)>0?$absen_tutor[0]->Start:false,
                 'Kelas'=>count($absen_tutor)>0,
                 'Tanggal'=>$jt->Tanggal,
                 'IDLevel'=>$jt->IDLevel,
                 'IDKategoriProgram'=>$jt->IDKategoriProgram,
                 'JenisProgram'=>$jt->Jenis,
-                'NamaSiswa'=>$jt->NamaSiswa
+                'NamaSiswa'=>$jt->NamaSiswa,
+                'IDKategoriGlobalProgram'=>$jt->IDKategoriGlobalProgram,
             ));
         }
 
         $MasterPenggajian = DB::table('master_penggajian')->where('Status','!=','DEL')->get();
         $MasterPenggajianTransport = DB::table('master_penggajian_transport')->where('Status','!=','DEL')->get();
+        $MasterDendaKeterlambatan = DB::table('master_penggajian_denda_terlambat')->where('Status','!=','DEL')->get();
+        $MasterGajiPokok = DB::table('master_penggajian_gaji_pokok')->where('Status','!=','DEL')->get();
 
         $Karyawan = DB::table('karyawan as k')
         ->join('role_karyawan_list as rkl','k.IDKaryawan','=','rkl.IDKaryawan')
@@ -80,6 +85,7 @@ class PenggajianController extends Controller
                 'PPN'=>$pg->PPN,
                 'NilaiPPN'=>$pg->NilaiPPN,
                 'Total'=>$pg->Total,
+                'Status'=>$pg->Status,
                 'Detail'=>$DPenggajian
             ));
         }
@@ -89,7 +95,9 @@ class PenggajianController extends Controller
             $Penggajian,
             $MasterPenggajian,
             $MasterPenggajianTransport,
-            $Karyawan
+            $Karyawan,
+            $MasterDendaKeterlambatan,
+            $MasterGajiPokok
         ]);
     }
     public function getDetailData($id){
@@ -127,21 +135,7 @@ class PenggajianController extends Controller
         ->where('Total',$request->Total)
         ->where('created_at',$TimeData)
         ->get();
-        $KodeKasBank = "KBK-" . date("myHis");
-        $KasBank = array(
-            'KodeKasBank'=>$KodeKasBank,
-            'IDPembayaran'=>$Penggajian[0]->IDPenggajian,
-            'Total'=>intval($request->Total)*-1,
-            'Keterangan'=>'Penggajian karyawan ',
-            'Status'=>'OPN',
-            'UserUpd'=>session()->get('Username'),
-            'UserAdd'=>session()->get('Username'),
-            'created_at'=>Carbon::now(),
-            'updated_at'=>Carbon::now(),
-            'Tanggal'=>Carbon::now(),
 
-        );
-        DB::table('kas_bank')->insert($KasBank);
         $DataPenggajianDetail = [];
         $ite = 0;
         foreach($request->dt_title as $random){
@@ -160,5 +154,112 @@ class PenggajianController extends Controller
         }
         DB::table('penggajian_detail')->insert($DataPenggajianDetail);
         return response()->json('Penggajian di tambahkan');
+    }
+    public function delete($id){
+        DB::table('penggajian')->where('IDPenggajian',$id)->update(array(
+            'Status'=>'DEL',
+            'UserUpd'=>session()->get('Username'),
+            'updated_at'=>Carbon::now()
+        ));
+        return response()->json('Data berhasil dihapus');
+    }
+    public function confirm($id){
+        DB::table('penggajian')->where('IDPenggajian',$id)->update(array(
+            'Status'=>'CFM',
+            'UserUpd'=>session()->get('Username'),
+            'updated_at'=>Carbon::now()
+        ));
+        $Penggajian = DB::table('penggajian')
+        ->where('IDPenggajian',$id)
+        ->get();
+        $KodeKasBank = "KBK-" . date("myHis");
+        $KasBank = array(
+            'KodeKasBank'=>$KodeKasBank,
+            'IDPembayaran'=>$Penggajian[0]->IDPenggajian,
+            'Total'=>intval($Penggajian[0]->Total)*-1,
+            'Keterangan'=>'Penggajian karyawan',
+            'Status'=>'OPN',
+            'UserUpd'=>session()->get('Username'),
+            'UserAdd'=>session()->get('Username'),
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+            'Tanggal'=>Carbon::now(),
+
+        );
+        DB::table('kas_bank')->insert($KasBank);
+        return response()->json('Penggajian dikonfirmasi');
+    }
+    public function updatePenggajianAddDetail(Request $request){
+
+    }
+    public function updatePenggajian(Request $request){
+        $TimeData = Carbon::now();
+        $DataPenggajian = array(
+            'Jenis'=>'tutor',
+            'SubTotal'=>$request->SubTotal,
+            'Total'=>$request->Total,
+            'Tanggal'=>$TimeData,
+            'updated_at'=>$TimeData,
+            'UserUpd'=>session()->get('Username'),
+        );
+        
+      //  dd($DataPenggajian);
+        DB::table('penggajian')->where('IDPenggajian',$request->IDPenggajian)->update($DataPenggajian);
+        $ite = 0;
+        foreach($request->dt_title as $random){
+            $InfoData = $request->dt_jenispendapatan[$ite].'[,]'.$request->dt_title[$ite].'[,]'.$request->dt_subtitle[$ite].'[,]'.$request->dt_data1[$ite].'[,]'.$request->dt_data2[$ite].'[,]'.$request->dt_data3[$ite];
+            $DataPenggajianDetail=array(
+                'InfoData'=>$InfoData,
+                'Nominal'=>$request->dt_nominal[$ite],
+                'updated_at'=>$TimeData,
+                'UserUpd'=>session()->get('Username'),
+            );
+            DB::table('penggajian_detail')
+            ->where('IDPenggajianDetail',$request->dt_id[$ite])
+            ->update($DataPenggajianDetail);
+            $ite++;
+        }
+        return response()->json('Penggajian berhasil di edit');
+    }
+    public function tutorIndex(){
+        return view('karyawan/penggajian/index_tutor');
+    }
+    public function tutorGetData(){
+        $TMP_Penggajian = DB::table('penggajian as p')
+        ->join('karyawan as k','p.IDKaryawan','=','k.IDKaryawan')
+        ->select('p.*')
+        ->where(DB::raw('YEAR(p.Tanggal)'),date('Y'))
+        ->where('p.Status','CFM')
+        ->where('k.IDKaryawan',session()->get('IDUser'))->get();
+        $Penggajian =[];
+        $Karyawan = DB::table('karyawan as k')
+        ->join('role_karyawan_list as rkl','k.IDKaryawan','=','rkl.IDKaryawan')
+        ->join('role_karyawan as rk','rkl.IDRoleKaryawan','=','rk.IDRoleKaryawan')
+        ->select('k.*','k.IDKaryawan','rk.RoleKaryawan')
+        ->where('k.IDKaryawan',session()->get('IDUser'))
+        ->get();
+        foreach($TMP_Penggajian as $pg){
+            $DPenggajian = DB::table('penggajian_detail')->where('IDPenggajian',$pg->IDPenggajian)->where('Status','OPN')->get();
+            array_push($Penggajian,array(
+                'IDPenggajian'=>$pg->IDPenggajian,
+                'Tanggal'=>$pg->Tanggal,
+                'Jenis'=>$pg->Jenis,
+                'IDKaryawan'=>$pg->IDKaryawan,
+                'NamaKaryawan'=>$pg->NamaKaryawan,
+                'SubTotal'=>$pg->SubTotal,
+                'PPN'=>$pg->PPN,
+                'NilaiPPN'=>$pg->NilaiPPN,
+                'Total'=>$pg->Total,
+                'Status'=>$pg->Status,
+                'Detail'=>$DPenggajian
+            ));
+        }
+
+        return response()->json([
+
+            $Penggajian,
+            $Karyawan,
+
+        ]);
     }
 }

@@ -159,6 +159,7 @@
                   <li class="@yield('kelas')"><a href="{{url('karyawan/tutor/siswa')}}">
                     <i class="fa fa-book" aria-hidden="true"></i>
                     Kelas</a></li>
+                    <li><a href="{{url('karyawan/tutor/gaji')}}"><i class="fa fa-dollar"></i>Gaji</a></li>
                   @endif
                 </ul>
               </div>

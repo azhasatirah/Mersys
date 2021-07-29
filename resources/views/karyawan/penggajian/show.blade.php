@@ -13,6 +13,9 @@
         margin-left: auto;
         margin-right:auto
     }
+    .modal{
+        overflow-y:auto
+    }
 </style>
 <div class="row">
     <div class="col-md-12">
@@ -43,6 +46,7 @@
                                 <th>Tahun</th>
                                 <th>Bulan</th>
                                 <th>Total Commision</th>
+                                <th>Status</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -73,7 +77,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal create penggajian -->
 <div class="modal fade" id="modal-create-penggajian" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -111,7 +115,7 @@
                                 <th style="width:40%"></th>
                                 <th style="width:10%"></th>
                                 <th style="width:10%"></th>
-                                <th style="width:20%"></th>
+                                <th style="width:20%">Master </th>
                                 <th style="width:15%">Nominal</th>
                                 <th style="width:5%"></th>
                             </tr>
@@ -121,9 +125,13 @@
                                 <td>Gaji pokok</td>
                                 <td></td>
                                 <td></td>
-                                <td></td>
+                                <td>
+                                    <select class="custom-select select-master-gaji-pokok" id="gaji-pokok" onchange="selectGajiPokok()">
+
+                                    </select>
+                                </td>
                                 <td>            
-                                    <input type="number" class="form-control" onchange="updateCreatePenggajian('gakok',6)" id="datagakokadd6">                
+                                    <input type="text" class="form-control" onkeyup="updateCreatePenggajian('gakok',6)" id="datagakokadd6">                
                                 </td>
                             </tr>
                         </tbody>
@@ -248,7 +256,7 @@
                                 <td style="widtd:10%"></td>
                                 <td style="widtd:20%"></td>
                                 <td style="width:15%">
-                                    <input type="number" class="form-control" value="0" onchange="countGaji()" id="penggajian-other">
+                                    <input type="text" class="form-control" value="Rp. 0" onkeyup="countGaji()" id="penggajian-other">
                                 </td>
                                 <td style="width:5%">
                                 </td>
@@ -288,17 +296,7 @@
                 <div class="table-responsive">
 
                     <table class="table">
-                        <thead>
-                            <tr>
-                                <th style="width:40%">Program</th>
-                                <th style="width:10%">Jumlah Pertemuan</th>
-                                <th style="width:10%">Pertemuan ke</th>
-                                <th style="width:20%">Tanggal</th>
-                                <th style="width:15%">Nominal</th>
-                                <th style="width:5%"></th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-detail-penggajian-program">
+                        <tbody id="data-edit-penggajian-program">
                         </tbody>
                     </table>
                 </div>
@@ -316,16 +314,8 @@
                                 <th style="width:5%"></th>
                             </tr>
                         </thead>
-                        <tbody >
-                            <tr>
-                                <td>Gaji pokok</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>            
-                                    <input type="number" class="form-control" onchange="updateCreatePenggajian('gakok',6)" id="datadtlgakokadd6">                
-                                </td>
-                            </tr>
+                        <tbody id="data-edit-penggajian-gajipokok">
+
                         </tbody>
                     </table>
                 </div>
@@ -347,7 +337,7 @@
                                 <th style="width:5%"></th>
                             </tr>
                         </thead>
-                        <tbody id="dpbodyprestasikerja">
+                        <tbody id="data-edit-penggajian-prestasi">
                         </tbody>
                     </table>
                 </div>
@@ -367,7 +357,7 @@
                                 <th style="width:5%"></th>
                             </tr>
                         </thead>
-                        <tbody id="dpbodyhttransport">
+                        <tbody id="data-edit-penggajian-transport">
                         </tbody>
                     </table>
                 </div>
@@ -385,7 +375,7 @@
                                 <th style="width:5%"></th>
                             </tr>
                         </thead>
-                        <tbody id="dpbodyhtlain">
+                        <tbody id="data-edit-penggajian-lain">
                         </tbody>
                     </table>
                 </div>
@@ -405,7 +395,7 @@
                                 <th style="width:5%"></th>
                             </tr>
                         </thead>
-                        <tbody id="dpbodyabsensi">
+                        <tbody id="data-edit-penggajian-absensi">
                         </tbody>
                     </table>
                 </div>
@@ -432,7 +422,7 @@
                                 <td style="widtd:10%"></td>
                                 <td style="widtd:20%"></td>
                                 <td style="width:15%"></td>
-                                <td style="width:5%" id="penggajian-subtotal"></td>
+                                <td style="width:5%" id="edit-penggajian-subtotal"></td>
                             </tr>
                             <tr>
                                 <td style="width:40%">Tax rate</td>
@@ -440,7 +430,7 @@
                                 <td style="widtd:10%"></td>
                                 <td style="widtd:20%"></td>
                                 <td style="width:15%"></td>
-                                <td style="width:5%" id="penggajian-tax"></td>
+                                <td style="width:5%" id="edit-penggajian-tax"></td>
                             </tr>
                             <tr>
                                 <td style="width:40%">Other</td>
@@ -449,7 +439,7 @@
                                 <td style="widtd:20%"></td>
                                 <td style="width:15%"></td>
                                 <td style="width:5%">
-                                    <input type="number" value="0" onchange="countGaji()" id="penggajian-other">
+                                    <input type="number" value="0" onchange="countEditGaji()" id="edit-penggajian-other">
                                 </td>
                             </tr>
                             <tr>
@@ -458,14 +448,14 @@
                                 <td style="widtd:10%"></td>
                                 <td style="widtd:20%"></td>
                                 <td style="width:15%"></td>
-                                <td style="width:5%" id="penggajian-total"></td>
+                                <td style="width:5%" id="edit-penggajian-total"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
             <div class="modal-footer">
-            
+                <button type="button" onclick="updatePenggajian()" class="btn btn-primary btn-sm">Simpan perubahan</button>
             </div>
         </div>
     </div>
@@ -477,7 +467,7 @@
         <div class="modal-content">
             <div id="table-detail-penggajian-wrap" class="modal-body">
 
-  {{-- kunai --}}
+                {{-- kunai --}}
   
                 <table id="table-detail-penggajian" class="table table-inverse table-responsive">
                     <thead>
@@ -510,9 +500,8 @@
                     <span style="font-size:12pt;color:#4f81bd;font-weight:bold">THANK YOU FOR YOUR COOPERATION!</span> 
                 </p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                <button onclick="createPDF()" type="button" class="btn btn-success">Simpan</button>
+            <div class="modal-footer" id="modal-footer-detail">
+
                 {{-- <button type="button" class="btn btn-primary">Edit</button> --}}
             </div>
         </div>
@@ -530,12 +519,13 @@
     <script>
         let token = $('#token').val()
         let TabelPenggajian =    $('#tabeldata').DataTable()
-        let KelasTutor = [],Penggajian =[],MasterPenggajian = [],MasterPenggajianTransport=[],Karyawan =[]
+        let KelasTutor = [],Penggajian =[],MasterPenggajian = [],MasterPenggajianTransport=[],Karyawan =[],MasterDendaKeterlambatan=[],MasterGajiPokok =[]
         let UIDKaryawan = window.location.href.split('/')[7]
         let CreatePenggajian
         let NMonth = new Date().getMonth()
         let NYear =  new Date().getFullYear()
         let CreatePenggajianMain = []
+        let EditPenggajian = [],EditPenggajianMain=[]
         let doc = new jsPDF()
         console.log(NMonth,NYear)
         $(document).ready(function () {
@@ -568,6 +558,66 @@
             win.print()
 
         }
+
+        function confirmPenggajian(id){
+            $('#modal-detail-penggajian').modal('hide')
+            $.get("/karyawan/owner/penggajian/confirm/"+id).done(response=>{
+                getData()
+                swal(response)
+            })
+        }
+        function deletePenggajian(id){
+            swal({
+                title: "Apakah anda yakin menghapus penggajian ini?",
+                text: "Data ini akan hilang setelah di hapus!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $('#modal-detail-penggajian').modal('hide')
+                    $.get("/karyawan/owner/penggajian/delete/"+id).done(response=>swal(response))
+                } else {
+                    swal("Dibatalkan!");
+                }
+            })
+        }
+        function appendFooterModalDetail(data){
+      
+            //console.log(data)
+            $('#modal-footer-detail').empty()
+            let btn_tutup = "<button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Tutup</button>"
+            let btn_download = "<button onclick=\"createPDF()\" type=\"button\" class=\"btn btn-success\">Donwload</button>"
+            let btn_delete ="<button onclick=\"deletePenggajian("+data.IDPenggajian+")\" type=\"button\" class=\"btn btn-danger\">Hapus <i class=\"fa fa-trash\"></i></button>"
+            let btn_konfirmasi ="<button onclick=\"confirmPenggajian("+data.IDPenggajian+")\" type=\"button\" class=\"btn btn-success\">Konfirmasi <i class=\"fa fa-check\"></i></button>"
+            let btn_edit ="<button onclick=\"editPenggajian("+data.IDPenggajian+")\" type=\"button\" class=\"btn btn-primary\">Edit <i class=\"fa fa-pencil\"></i></button>"
+            let buttons = data.Status =='OPN'?btn_tutup+btn_delete+btn_konfirmasi+btn_edit:btn_tutup+btn_download
+            $('#modal-footer-detail').append(buttons)
+        }
+
+        //kunaisss
+        function editPenggajian(id){
+            EditPenggajianMain = []
+            let Data = Penggajian.filter(ele=>ele.IDPenggajian == id)[0]
+            let DetailData = Data.Detail
+            EditPenggajianMain.push(Data.SubTotal,Data.Total,Data.IDPenggajian)
+            DetailData.forEach(ele=>{
+                let info_data =ele.InfoData.split('[,]')
+                EditPenggajian.push({
+                    'id':ele.IDPenggajianDetail,
+                    'data':[info_data[0],info_data[1],info_data[2],info_data[3],info_data[4],info_data[5],numberToIDR(ele.Nominal)]
+                })
+            })
+            console.log('data edit',EditPenggajianMain,EditPenggajian)
+            $('#modal-detail-penggajian').modal('hide')
+            $('#modal-edit-penggajian').modal('show')            
+
+            appendTableEditPenggajian()
+            countEditGaji()
+
+        }
+
+
         function initButtonCreatePenggajian(){
             let penggajianThisMonth = Penggajian.some(ele=>{
                 let tanggal = ele.Tanggal.split(' ')[0]
@@ -597,16 +647,42 @@
             val==10?'November':'Desember'
             return Month
         }
+        function appendOptionGajiPokok(){
+            $('#gaji-pokok').empty()
+            $('#gaji-pokok').append('<option value=\"0\">Pilih master penggajian</option>')
+            MasterGajiPokok.forEach(ele=>{
+                $('#gaji-pokok').append(
+                    '<option value=\"'+ele.Gaji+'\">'+ele.Kelas+'</option>'
+                )
+            })
+        }
+        function selectGajiPokok(){
+            let gaji_pokok = $('#gaji-pokok').val()
+            $('#datagakokadd6').val(gaji_pokok)
+            updateCreatePenggajian('gakok',6)
+        
+        }
         function getData(){
             $.get("/karyawan/owner/penggajian/karyawan/getdata/"+UIDKaryawan).done(ele=>{
+                console.log(ele)
                 KelasTutor = ele[0]
                 Penggajian = ele[1]
                 MasterPenggajian = ele[2]
                 MasterPenggajianTransport = ele[3]
                 Karyawan = ele[4]
-                console.log(Penggajian)
+                MasterDendaKeterlambatan=ele[5].map(ele=>{
+                    let remapDenda = {
+                        'a':ele.MinuteMin * 60000,
+                        'b':ele.MinuteMax * 60000,
+                        'Denda':ele.Denda
+                    }
+                    return remapDenda
+                })
+                MasterGajiPokok = ele[6]
+                //console.log('Master denda keterlambatan',MasterDendaKeterlambatan)
                 addRowTablePenggajian()
                 showDataKaryawan()
+                appendOptionGajiPokok()
                 initButtonCreatePenggajian()
                 
             })
@@ -646,6 +722,7 @@
                    new Date(tgl).getFullYear(),
                   NamaBulan( new Date(tgl).getMonth()),
                    'Rp '+ele.Total.toLocaleString('id-ID'),
+                   ele.Status == 'OPN'?'Belum dikonfirmasi':ele.Status=='CFM'?'Dikonfirmasi':'',
                    btnDetail
                 ]).draw()
             })
@@ -654,16 +731,34 @@
 
         //penggajian
         function setDataCreatePenggajian(){
-            //nkelas = kelas bulan ini
+            //nkelas = kelas bulan ini yang sudah selesai
+            //penaltyk = keterlambatan memulai kelas 
             CreatePenggajian = []
-            let NKelas =KelasTutor.filter(ele=>new Date(ele.Tanggal).getMonth()==NMonth)
-            console.log(NKelas)
+            let NKelas =KelasTutor.filter(ele=>new Date(ele.Tanggal).getMonth()==NMonth && ele.Kelas==true)
+            let penaltyk = NKelas.filter(ele=>{
+                let absen = new Date(ele.Tanggal.split(' ')[0]+' '+ele.AbsensiTutor).getTime() - new Date(ele.Tanggal).getTime() 
+                return MasterDendaKeterlambatan.some(dk=>{
+                    return (absen>=dk.a&&absen<=dk.b)
+                })
+      
+            }).map(ele=>{
+                let absen = new Date(ele.Tanggal.split(' ')[0]+' '+ele.AbsensiTutor).getTime() - new Date(ele.Tanggal).getTime() 
+                let penalty = MasterDendaKeterlambatan.filter(dk=>{
+                    return absen <= 0||(absen>=dk.a&&absen<=dk.b)
+                })
+                return {
+                    'DataKelas':ele,
+                    'Keterlambatan':Math.floor(absen/60000),
+                    'Denda':penalty[0].Denda
+                }
+            })
             NKelas = NKelas.map(ele=>{
                 let nkelas_jenisprogram = ele.JenisProgram==""?"private":ele.JenisProgram
                 //pendapatan per pertemuan dari master
                 let nkelas_harga = MasterPenggajian.filter(mp=>
                         mp.IDLevel == ele.IDLevel&&
                         parseInt(mp.IDKategoriProgram) == parseInt(ele.IDKategoriProgram)&&
+                        parseInt(mp.IDKategoriGlobalProgram) == parseInt(ele.IDKategoriGlobalProgram)&&
                         mp.JenisProgram.toLowerCase() == nkelas_jenisprogram.toLowerCase()
                 )
                 return {
@@ -682,14 +777,14 @@
             })
             NKelas.forEach(ele=>{
                 let total_pertemuan = KelasTutor.filter(kt=>kt.IDKursusSiswa == ele.IDKursusSiswa).length
-                if(ele.Kelas){
-                    CreatePenggajian.push(
-                        {
-                            'id':new Date().getTime()+Math.random().toString(16).slice(2),
-                            'data':['program',ele.NamaSiswa,ele.NamaProdi,total_pertemuan,ele.NoRecord,ele.Tanggal,ele.Harga]
-                        }
-                    )
-                }
+                //ele.kelas boolean = true if kelas selesai
+                CreatePenggajian.push(
+                    {
+                        'id':new Date().getTime()+Math.random().toString(16).slice(2),
+                        'data':['program',ele.NamaSiswa,ele.NamaProdi,total_pertemuan,ele.NoRecord,ele.Tanggal,numberToIDR(ele.Harga)]
+                    }
+                )
+    
             })
 
             CreatePenggajian.push(
@@ -698,6 +793,17 @@
                     'data':['gajipokok',null,null,null,null,null,0]
                 }
             )
+            penaltyk.forEach(ele=>{
+                let dk = ele.DataKelas
+                CreatePenggajian.push(
+                    {
+                        'id':new Date().getTime()+Math.random().toString(16).slice(2),
+                        'data':['absensi','Keterlambatan','',dk.Tanggal.split(' ')[0],ele.Keterlambatan+' Menit',
+                        'Prodi: '+dk.NamaProdi+', Pertemuan ke: '+dk.NoRecord+', Materi:'+dk.NamaMateri+',Siswa:'+dk.NamaSiswa,
+                        numberToIDR(ele.Denda)]
+                    }
+                )
+            })
     
             countGaji()
             appendTableCreatePenggajianProgram()
@@ -710,12 +816,12 @@
             penggajian_program.forEach(ele=>{
                 tabel.append(
                     "<tr>"+
-                        "<td>"+ele['data'][2]+"</td>"+
+                        "<td>"+ele['data'][2]+" Siswa:"+ele['data'][1]+"</td>"+
                         "<td>"+ele['data'][3]+"</td>"+
                         "<td>"+ele['data'][4]+"</td>"+
                         "<td>"+ele['data'][5].split(' ')[0]+"</td>"+
                         "<td>"+
-                            "<input id=\"data"+ele['id']+"add6\" type=\"number\" class=\"form-control\" value=\""+ele['data'][6]+"\" onchange=\"updateCreatePenggajian(\'"+ele['id']+"\',6)\">"+
+                            "<input id=\"data"+ele['id']+"add6\" type=\"text\" class=\"form-control\" value=\""+numberToIDR(ele['data'][6])+"\" onkeyup=\"updateCreatePenggajian(\'"+ele['id']+"\',6)\">"+
                         "</td>"+
                     "</tr>"
                 )
@@ -724,16 +830,28 @@
         }
         function updateCreatePenggajian(id,address){
             let data = $('#data'+id+'add'+address).val()
-            console.log('hae',data)
+            $('#data'+id+'add'+address).val(address ==6?numberToIDR(data):data)
             CreatePenggajian.forEach(ele=>{
                 if(ele['id']==id){
-                    ele['data'][address] = data
+                    ele['data'][address] = address ==6? numberToIDR(data):data
                 }
             })
+           
             countGaji()
         }
+        function updateEditPenggajian(id,address){
+            let data = $('#data'+id+'add'+address).val()
+            $('#data'+id+'add'+address).val(address ==6?numberToIDR(data):data)
+            console.log('data update edit p',data)
+            EditPenggajian.forEach(ele=>{
+                if(ele['id']==id){
+                    ele['data'][address] = address ==6? numberToIDR(data):data
+                }
+            })
+            countEditGaji()
+        }
         function addCreatePenggajian(jenis){
-            console.log(jenis)
+           // console.log(jenis)
             switch (jenis) {
                 case 'prestasikerja':
                     CreatePenggajian.push(
@@ -774,12 +892,17 @@
             appendTableCreatePenggajian()
         }
         function deleteCreatePenggajian(id){
-            console.log(id)
             CreatePenggajian = CreatePenggajian.filter(ele=>ele['id']!=id)
+            countGaji()
             appendTableCreatePenggajian()
         }
+        function deleteEditPenggajian(id){
+            EditPenggajian = EditPenggajian.filter(ele=>ele['id']!=id)
+            countEditGaji()
+            appendTableEditPenggajian()
+        }
         function appendTableCreatePenggajian(){
-            let penggajian = CreatePenggajian.filter(ele=>ele['data'][0]!='program'||ele['data'][0]!='gajipokok')
+           let penggajian = CreatePenggajian.filter(ele=>ele['data'][0]!='program'||ele['data'][0]!='gajipokok')
            $('#cpbodyprestasikerja').empty()
            $('#cpbodyhttransport').empty()
            $('#cpbodyhtlain').empty()
@@ -796,19 +919,20 @@
                 
                         "<tr>"+
                             "<td>"+
-                                "<input id=\"data"+pg['id']+"add1\" type=\"text\" class=\"form-control\" value=\""+pg['data'][1]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',1)\">"+
+                                "<input id=\"data"+pg['id']+"add1\" type=\"text\" class=\"form-control\" value=\""+pg['data'][1]+"\" onkeyup=\"updateCreatePenggajian(\'"+pg['id']+"\',1)\">"+
                             "</td>"+
                             "<td>"+
                                 "<input id=\"data"+pg['id']+"add3\" type=\"date\" class=\"form-control\" value=\""+pg['data'][3]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',3)\">"+
                             "</td>"+
                             "<td>"+
-                                "<input id=\"data"+pg['id']+"add4\" type=\"text\" class=\"form-control\" value=\""+pg['data'][4]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',4)\">"+
+                                "<input id=\"data"+pg['id']+"add4\" type=\"text\" class=\"form-control\" value=\""+pg['data'][4]+"\" onkeyup=\"updateCreatePenggajian(\'"+pg['id']+"\',4)\">"+
                             "</td>"+
                             "<td>"+
-                                "<input id=\"data"+pg['id']+"add5\" type=\"text\" class=\"form-control\" value=\""+pg['data'][5]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',5)\">"+
+
+                                "<textarea onkeyup=\"updateCreatePenggajian(\'"+pg['id']+"\',5)\" id=\"data"+pg['id']+"add5\" class=\"form-control\" rows=\"3\">"+pg['data'][5]+"</textarea>"+
                             "</td>"+
                             "<td>"+
-                                "<input id=\"data"+pg['id']+"add6\" type=\"number\" class=\"form-control\" value=\""+pg['data'][6]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',6)\">"+
+                                "<input id=\"data"+pg['id']+"add6\" type=\"text\" class=\"form-control\" value=\""+pg['data'][6]+"\" onkeyup=\"updateCreatePenggajian(\'"+pg['id']+"\',6)\">"+
                             "</td>"+
                             "<td>"+
                                 "<a onclick=\"deleteCreatePenggajian(\'"+pg['id']+"\')\" class=\"btn btn-sm btn-danger\" href=\"javascript:void(0)\" role=\"button\"><i class=\"fa fa-trash\"></i></a>"+
@@ -818,15 +942,15 @@
                     pg['data'][0]=='prestasikerja'? 
                         "<tr>"+
                             "<td>"+
-                                "<input id=\"data"+pg['id']+"add1\" type=\"text\" class=\"form-control\" value=\""+pg['data'][1]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',1)\">"+
+                                "<input id=\"data"+pg['id']+"add1\" type=\"text\" class=\"form-control\" value=\""+pg['data'][1]+"\" onkeyup=\"updateCreatePenggajian(\'"+pg['id']+"\',1)\">"+
                             "</td>"+
                             "<td></td>"+
                             "<td></td>"+
                             "<td>"+
-                                "<input id=\"data"+pg['id']+"add5\" type=\"text\" class=\"form-control\" value=\""+pg['data'][5]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',5)\">"+
+                                "<input id=\"data"+pg['id']+"add5\" type=\"text\" class=\"form-control\" value=\""+pg['data'][5]+"\" onkeyup=\"updateCreatePenggajian(\'"+pg['id']+"\',5)\">"+
                             "</td>"+
                             "<td>"+
-                                "<input id=\"data"+pg['id']+"add6\" type=\"number\" class=\"form-control\" value=\""+pg['data'][6]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',6)\">"+
+                                "<input id=\"data"+pg['id']+"add6\" type=\"text\" class=\"form-control\" value=\""+pg['data'][6]+"\" onkeyup=\"updateCreatePenggajian(\'"+pg['id']+"\',6)\">"+
                             "</td>"+
                             "<td>"+
                                 "<a onclick=\"deleteCreatePenggajian(\'"+pg['id']+"\')\" class=\"btn btn-sm btn-danger\" href=\"javascript:void(0)\" role=\"button\"><i class=\"fa fa-trash\"></i></a>"+
@@ -836,19 +960,19 @@
                     pg['data'][0]=='honortambahan'&&pg['data'][1]=='Lain-lain'? 
                         "<tr>"+
                             "<td>"+
-                                "<input id=\"data"+pg['id']+"add2\" type=\"text\" class=\"form-control\" value=\""+pg['data'][2]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',2)\">"+
+                                "<input id=\"data"+pg['id']+"add2\" type=\"text\" class=\"form-control\" value=\""+pg['data'][2]+"\" onkeyup=\"updateCreatePenggajian(\'"+pg['id']+"\',2)\">"+
                             "</td>"+
                             "<td>"+
                                 "<input id=\"data"+pg['id']+"add3\" type=\"date\" class=\"form-control\" value=\""+pg['data'][3]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',3)\">"+
                             "</td>"+
                             "<td>"+
-                                "<input id=\"data"+pg['id']+"add4\" type=\"text\" class=\"form-control\" value=\""+pg['data'][4]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',4)\">"+
+                                "<input id=\"data"+pg['id']+"add4\" type=\"text\" class=\"form-control\" value=\""+pg['data'][4]+"\" onkeyup=\"updateCreatePenggajian(\'"+pg['id']+"\',4)\">"+
                             "</td>"+
                             "<td>"+
-                                "<input id=\"data"+pg['id']+"add5\" type=\"text\" class=\"form-control\" value=\""+pg['data'][5]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',5)\">"+
+                                "<input id=\"data"+pg['id']+"add5\" type=\"text\" class=\"form-control\" value=\""+pg['data'][5]+"\" onkeyup=\"updateCreatePenggajian(\'"+pg['id']+"\',5)\">"+
                             "</td>"+
                             "<td>"+
-                                "<input id=\"data"+pg['id']+"add6\" type=\"number\" class=\"form-control\" value=\""+pg['data'][6]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',6)\">"+
+                                "<input id=\"data"+pg['id']+"add6\" type=\"text\" class=\"form-control\" value=\""+pg['data'][6]+"\" onkeyup=\"updateCreatePenggajian(\'"+pg['id']+"\',6)\">"+
                             "</td>"+
                             "<td>"+
                                 "<a onclick=\"deleteCreatePenggajian(\'"+pg['id']+"\')\" class=\"btn btn-sm btn-danger\" href=\"javascript:void(0)\" role=\"button\"><i class=\"fa fa-trash\"></i></a>"+
@@ -857,19 +981,19 @@
                         :
                         "<tr>"+
                             "<td>"+
-                                "<input id=\"data"+pg['id']+"add2\" type=\"text\" class=\"form-control\" value=\""+pg['data'][2]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',2)\">"+
+                                "<input id=\"data"+pg['id']+"add2\" type=\"text\" class=\"form-control\" value=\""+pg['data'][2]+"\" onkeyup=\"updateCreatePenggajian(\'"+pg['id']+"\',2)\">"+
                             "</td>"+
                             "<td>"+
                                 "<input id=\"data"+pg['id']+"add3\" type=\"date\" class=\"form-control\" value=\""+pg['data'][3]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',3)\">"+
                             "</td>"+
                             "<td>"+
-                                "<input id=\"data"+pg['id']+"add4\" type=\"text\" class=\"form-control\" value=\""+pg['data'][4]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',4)\">"+
+                                "<input id=\"data"+pg['id']+"add4\" type=\"text\" class=\"form-control\" value=\""+pg['data'][4]+"\" onkeyup=\"updateCreatePenggajian(\'"+pg['id']+"\',4)\">"+
                             "</td>"+
                             "<td>"+
-                                "<input id=\"data"+pg['id']+"add5\" type=\"text\" class=\"form-control\" value=\""+pg['data'][5]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',5)\">"+
+                                "<input id=\"data"+pg['id']+"add5\" type=\"text\" class=\"form-control\" value=\""+pg['data'][5]+"\" onkeyup=\"updateCreatePenggajian(\'"+pg['id']+"\',5)\">"+
                             "</td>"+
                             "<td>"+
-                                "<input id=\"data"+pg['id']+"add6\" type=\"number\" class=\"form-control\" value=\""+pg['data'][6]+"\" onchange=\"updateCreatePenggajian(\'"+pg['id']+"\',6)\">"+
+                                "<input id=\"data"+pg['id']+"add6\" type=\"text\" class=\"form-control\" value=\""+pg['data'][6]+"\" onkeyup=\"updateCreatePenggajian(\'"+pg['id']+"\',6)\">"+
                             "</td>"+
                             "<td>"+
                                 "<a onclick=\"deleteCreatePenggajian(\'"+pg['id']+"\')\" class=\"btn btn-sm btn-danger\" href=\"javascript:void(0)\" role=\"button\"><i class=\"fa fa-trash\"></i></a>"+
@@ -878,30 +1002,194 @@
 
   
                 if(tabel!=false){
-
-                tabel.append(data)
+                    tabel.append(data)
                 }
             
 
             })
             
         }
+        
+        function appendTableEditPenggajian(){
+           let penggajian = EditPenggajian
+           $('#data-edit-penggajian-program').empty()
+           $('#data-edit-penggajian-prestasi').empty()
+           $('#data-edit-penggajian-transport').empty()
+           $('#data-edit-penggajian-lain').empty()
+           $('#data-edit-penggajian-absensi').empty()
+            penggajian.forEach(pg=>{
+                let tabel = pg['data'][0]=='gajipokok'? $('#data-edit-penggajian-gajipokok'):
+                pg['data'][0]=='absensi'? $('#data-edit-penggajian-absensi'):
+                pg['data'][0]=='prestasikerja'? $('#data-edit-penggajian-prestasi'):
+                pg['data'][0]=='honortambahan'&&pg['data'][1]=='Lain-lain'? $('#data-edit-penggajian-lain'):
+                pg['data'][0]=='honortambahan'&&pg['data'][1]=='Tunjangan transport di luar murid'?
+                $('#data-edit-penggajian-transport'):
+                pg['data'][0]=='program'?$('#data-edit-penggajian-program'):false
+          
+                let data = 
+                    pg['data'][0]=='gajipokok'?
+                        "<tr>"+
+                            "<td>Gaji pokok</td>"+
+                            "<td></td>"+
+                            "<td></td>"+
+                            "<td></td>"+
+                            "<td>"+
+                                "<input type=\"text\" class=\"form-control\" value=\""+numberToIDR(pg['data'][6])+"\" onkeyup=\"updateEditPenggajian("+pg['id']+",6)\" id=\"data"+pg['id']+"add6\">"+
+                            "</td>"+
+                        "</tr>":
+                    pg['data'][0]=='program'?
+                        "<tr>"+
+                            "<td>"+pg['data'][2]+" Siswa:"+pg['data'][1]+"</td>"+
+                            "<td>"+pg['data'][3]+"</td>"+
+                            "<td>"+pg['data'][4]+"</td>"+
+                            "<td>"+pg['data'][5].split(' ')[0]+"</td>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add6\" type=\"text\" class=\"form-control\" value=\""+numberToIDR(pg['data'][6])+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',6)\">"+
+                            "</td>"+
+                            "<td></td>"+
+                        "</tr>":
+                    pg['data'][0]=='absensi'? 
+                
+                        "<tr>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add1\" type=\"text\" class=\"form-control\" value=\""+pg['data'][1]+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',1)\">"+
+                            "</td>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add3\" type=\"date\" class=\"form-control\" value=\""+pg['data'][3]+"\" onchange=\"updateEditPenggajian(\'"+pg['id']+"\',3)\">"+
+                            "</td>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add4\" type=\"text\" class=\"form-control\" value=\""+pg['data'][4]+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',4)\">"+
+                            "</td>"+
+                            "<td>"+
+
+                                "<textarea onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',5)\" id=\"data"+pg['id']+"add5\" class=\"form-control\" rows=\"3\">"+pg['data'][5]+"</textarea>"+
+                            "</td>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add6\" type=\"text\" class=\"form-control\" value=\""+pg['data'][6]+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',6)\">"+
+                            "</td>"+
+                            "<td>"+
+                                "<a onclick=\"deleteEditPenggajian(\'"+pg['id']+"\')\" class=\"btn btn-sm btn-danger\" href=\"javascript:void(0)\" role=\"button\"><i class=\"fa fa-trash\"></i></a>"+
+                            "</td>"+
+                        "</tr>"
+                        :
+                    pg['data'][0]=='prestasikerja'? 
+                        "<tr>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add1\" type=\"text\" class=\"form-control\" value=\""+pg['data'][1]+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',1)\">"+
+                            "</td>"+
+                            "<td></td>"+
+                            "<td></td>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add5\" type=\"text\" class=\"form-control\" value=\""+pg['data'][5]+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',5)\">"+
+                            "</td>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add6\" type=\"text\" class=\"form-control\" value=\""+pg['data'][6]+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',6)\">"+
+                            "</td>"+
+                            "<td>"+
+                                "<a onclick=\"deleteEditPenggajian(\'"+pg['id']+"\')\" class=\"btn btn-sm btn-danger\" href=\"javascript:void(0)\" role=\"button\"><i class=\"fa fa-trash\"></i></a>"+
+                            "</td>"+
+                        "</tr>"
+                        :
+                    pg['data'][0]=='honortambahan'&&pg['data'][1]=='Lain-lain'? 
+                        "<tr>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add2\" type=\"text\" class=\"form-control\" value=\""+pg['data'][2]+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',2)\">"+
+                            "</td>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add3\" type=\"date\" class=\"form-control\" value=\""+pg['data'][3]+"\" onchange=\"updateEditPenggajian(\'"+pg['id']+"\',3)\">"+
+                            "</td>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add4\" type=\"text\" class=\"form-control\" value=\""+pg['data'][4]+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',4)\">"+
+                            "</td>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add5\" type=\"text\" class=\"form-control\" value=\""+pg['data'][5]+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',5)\">"+
+                            "</td>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add6\" type=\"text\" class=\"form-control\" value=\""+pg['data'][6]+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',6)\">"+
+                            "</td>"+
+                            "<td>"+
+                                "<a onclick=\"deleteEditPenggajian(\'"+pg['id']+"\')\" class=\"btn btn-sm btn-danger\" href=\"javascript:void(0)\" role=\"button\"><i class=\"fa fa-trash\"></i></a>"+
+                            "</td>"+
+                        "</tr>"
+                        :
+                        "<tr>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add2\" type=\"text\" class=\"form-control\" value=\""+pg['data'][2]+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',2)\">"+
+                            "</td>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add3\" type=\"date\" class=\"form-control\" value=\""+pg['data'][3]+"\" onchange=\"updateEditPenggajian(\'"+pg['id']+"\',3)\">"+
+                            "</td>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add4\" type=\"text\" class=\"form-control\" value=\""+pg['data'][4]+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',4)\">"+
+                            "</td>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add5\" type=\"text\" class=\"form-control\" value=\""+pg['data'][5]+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',5)\">"+
+                            "</td>"+
+                            "<td>"+
+                                "<input id=\"data"+pg['id']+"add6\" type=\"text\" class=\"form-control\" value=\""+pg['data'][6]+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',6)\">"+
+                            "</td>"+
+                            "<td>"+
+                                "<a onclick=\"deleteEditPenggajian(\'"+pg['id']+"\')\" class=\"btn btn-sm btn-danger\" href=\"javascript:void(0)\" role=\"button\"><i class=\"fa fa-trash\"></i></a>"+
+                            "</td>"+
+                        "</tr>"
+
+  
+                if(tabel!=false){
+                    tabel.append(data)
+                }
+            
+
+            })
+            
+        }
+        
         function countGaji(){
             let other = $('#penggajian-other').val()
-            other = other==''?0:other
+            $('#penggajian-other').val(numberToIDR(other))
+            other =numberToIDR(other)
+            other = IDRToNumber(other)
+       //kuntod
             let subtotal=0,total=0
+            console.log('var createpenggajian',CreatePenggajian)
             CreatePenggajian.forEach(ele=>{
                 if(ele['data'][0]=='absensi'){
-                    subtotal -= ele['data'][6]==''?0:parseInt(ele['data'][6])
+                    console.log('a')
+                    subtotal -= ele['data'][6]==''?0:parseInt(IDRToNumber(ele['data'][6]))
                 }else{
-                    subtotal += ele['data'][6]==''?0:parseInt(ele['data'][6])
+                    console.log('b')
+                    subtotal += ele['data'][6]==''?0:parseInt(IDRToNumber(ele['data'][6]))
                 }
             })
+        
             total = subtotal + parseInt(other)
             CreatePenggajianMain =[]
             CreatePenggajianMain.push(subtotal,total)
             $('#penggajian-subtotal').html('Rp. '+subtotal.toLocaleString('id-ID'))
             $('#penggajian-total').html('Rp. '+parseInt(total).toLocaleString('id-ID'))
+        }
+        function countEditGaji(){
+            let other = $('#edit-penggajian-other').val()
+            $('#edit-penggajian-other').val(numberToIDR(other))
+            other =numberToIDR(other)
+            other = IDRToNumber(other)
+   
+            let subtotal=0,total=0
+
+            EditPenggajian.forEach(ele=>{
+                if(ele['data'][0]=='absensi'){
+                   
+                    subtotal -= ele['data'][6]==''?0:parseInt(IDRToNumber(ele['data'][6]))
+                }else{
+                  
+                    subtotal += ele['data'][6]==''?0:parseInt(IDRToNumber(ele['data'][6]))
+                }
+            })
+        
+            total = subtotal + parseInt(other)
+            EditPenggajianMain[0] = subtotal
+            EditPenggajianMain[1] = total
+            $('#edit-penggajian-subtotal').html('Rp. '+subtotal.toLocaleString('id-ID'))
+            $('#edit-penggajian-total').html('Rp. '+parseInt(total).toLocaleString('id-ID'))
         }
         function storePenggajian(){
             let dataStore = {
@@ -926,7 +1214,7 @@
                 dataStore['dt_data1[]'].push(ele['data'][3])
                 dataStore['dt_data2[]'].push(ele['data'][4])
                 dataStore['dt_data3[]'].push(ele['data'][5])
-                dataStore['dt_nominal[]'].push(ele['data'][6])
+                dataStore['dt_nominal[]'].push(IDRToNumber(ele['data'][6]))
             })
             $.ajax({
                 type: "post",
@@ -939,10 +1227,52 @@
                 }
             });
         }
+
+        function updatePenggajian(){
+            let dataStore = {
+                '_token':token,
+                'IDPenggajian':EditPenggajianMain[2],
+                'NamaKaryawan':Karyawan[0].NamaKaryawan,
+                'IDKaryawan':Karyawan[0].IDKaryawan,
+                'Total':EditPenggajianMain[1],
+                'SubTotal':EditPenggajianMain[0],
+                'dt_jenispendapatan[]':[],
+                'dt_title[]':[],
+                'dt_subtitle[]':[],
+                'dt_data1[]':[],
+                'dt_data2[]':[],
+                'dt_data3[]':[],
+                'dt_nominal[]':[],
+                'dt_id[]':[]
+            }
+            EditPenggajian.filter(ele=>ele['data'][6]!=0)
+            .forEach(ele=>{
+                dataStore['dt_id[]'].push(ele['id'])
+                dataStore['dt_jenispendapatan[]'].push(ele['data'][0])
+                dataStore['dt_title[]'].push(ele['data'][1])
+                dataStore['dt_subtitle[]'].push(ele['data'][2])
+                dataStore['dt_data1[]'].push(ele['data'][3])
+                dataStore['dt_data2[]'].push(ele['data'][4])
+                dataStore['dt_data3[]'].push(ele['data'][5])
+                dataStore['dt_nominal[]'].push(IDRToNumber(ele['data'][6]))
+            })
+            $.ajax({
+                type: "post",
+                url: "/karyawan/owner/penggajian/update",
+                data: dataStore,
+                success: function (response) {
+                    $('#modal-edit-penggajian').modal('hide')
+                    getData()
+                    swal(response)
+                }
+            });
+        }
         //kunai
         function showDetailPenggajian(id){
-           // $('#ddp-display-data').empty()
+            $('#ddp-display-data').empty() 
+           //kunaisss
             let Data = Penggajian.filter(ele=>ele.IDPenggajian==id)[0]
+           appendFooterModalDetail(Data)
             $('#ddp-display-nama').html(Data.NamaKaryawan)
             let Tanggal =Data.Tanggal.split(' ')[0]
             $('#ddp-display-paymenttime').html("PAYMENT "+getNameMonth(new Date(Tanggal).getMonth())+" "+ new Date(Tanggal).getFullYear())
@@ -1080,7 +1410,7 @@
                         "<td >Tanggal</td>"+
                         "<td >Waktu keterlambatan</td>"+
                         "<td >Keterangan</td>"+
-                        "<td>Nominal</td>"+
+                        "<td>Nominal denda</td>"+
                     "</tr>"
                 )
             }
@@ -1163,6 +1493,29 @@
             }else{
                 return new_data
             }
+        }
+        function formatUang(id){
+            
+            let uang = $('#'+id).val()
+            let formated_uang = numberToIDR(uang)
+            $('#'+id).val(formated_uang)
+
+        }
+        function numberToIDR(data){
+            let uang = String(data)
+            uang = uang.replace('Rp. ','').replaceAll('.','')
+            let isnan = isNaN(uang)
+            if(isnan||uang ==''){
+               // console.log(true)
+                uang = '0'
+            }
+            let formated_uang = 'Rp. '+parseInt(uang).toLocaleString('id-ID')
+            return formated_uang
+        }
+        function IDRToNumber(data){
+        //kuntod
+            let real_data = data.replace('Rp. ','').replaceAll('.','')
+            return parseInt(real_data)
         }
     </script>
 

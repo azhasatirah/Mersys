@@ -1331,8 +1331,9 @@
         //kunaiss
         // total pertemuan = jadwal yang belum ada absen dan tanggl nya lebih besar sama dengan sekarang
         let start_date = $('#start_date');
+        console.log('jadwal',jadwal)
         let filtered_jadwal = TypeRemakeJadwal == 1?
-        jadwal.filter(ele=>new Date(ele.Tanggal.split(' ')[0]).getTime() >= new Date(moment(new Date()).format('Y-MM-DD')).getTime()&& ele.StatusMateri!='CLS'):
+        jadwal.filter(ele=> ele.StatusMateri!='CLS'):
         jadwal
         console.log('filtered jadwal',filtered_jadwal,TypeRemakeJadwal)
         // console.log(moment(new Date()).format('Y-MM-DD'))

@@ -21,6 +21,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th>Kategori global</th>
                                 <th>Kategori</th>
                                 <th>Level</th>
                                 <th>Jenis</th>
@@ -53,6 +54,11 @@
             <form id="formdata-create">
                 @csrf
                 <div class="form-group">
+                    <label for="">Kategori global</label>
+                    <select class="custom-select select-kategori-global-program" name="idkategoriglobalprogram">
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="">Kategori</label>
                     <select class="custom-select select-kategori-program" name="idkategoriprogram">
                     </select>
@@ -72,7 +78,7 @@
                 </div>
                 <div class="form-group">
                     <label for="">Pendapatan per pertmuan</label>
-                    <input type="number" class="form-control" name="pendapatan">
+                    <input type="text" onkeyup="formatUang('create-pendapatan')" id="create-pendapatan" class="form-control" name="pendapatan">
                 </div>
             </form>
         </div>
@@ -98,6 +104,11 @@
                 <form id="formdata-edit">
                     @csrf
                     <div class="form-group">
+                        <label for="">Kategori global</label>
+                        <select class="custom-select select-kategori-global-program" name="idkategoriglobalprogram">
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="">Kategori</label>
                         <select id="edit-kategori" class="custom-select select-kategori-program" name="idkategoriprogram">
                         </select>
@@ -117,7 +128,7 @@
                     </div>
                     <div class="form-group">
                         <label for="">Pendapatan per pertmuan</label>
-                        <input id="edit-pendapatan" type="number" class="form-control" name="pendapatan">
+                        <input id="edit-pendapatan" type="text" onkeyup="formatUang('edit-pendapatan')" class="form-control" name="pendapatan">
                     </div>
                 </form>
             </div>
@@ -133,7 +144,7 @@
 @endsection
 @push('scripts')
     <script>
-        let master_penggajian = [],level = [],kategori_program = []
+        let master_penggajian = [],level = [],kategori_program = [],kategori_global_program =[]
         let TabelMasterPenggajian = $('#tabeldata').DataTable()
         $(document).ready(function () {
             getData()
@@ -143,9 +154,17 @@
                 master_penggajian = ele[0]
                 level = ele [1]
                 kategori_program = ele[2]
+                kategori_global_program = ele[3]
+                appendKategoriGlobalOption()
                 appendLevelOption()
                 appendKategoriOption()
                 showData()  
+            })
+        }
+        function appendKategoriGlobalOption(){
+            $('.select-kategori-global-program').empty()
+            kategori_global_program.forEach(ele=>{
+                $('.select-kategori-global-program').append("<option value=\""+ele.IDKategoriGlobalProgram+"\">"+ele.KategoriGlobalProgram+"</option>")
             })
         }
         function appendKategoriOption(){
@@ -169,6 +188,7 @@
                 i++
                 TabelMasterPenggajian.row.add([
                    i,
+                   ele.KategoriGlobalProgram,
                    ele.KategoriProgram,
                    ele.Level,
                    ele.JenisProgram == 'semi'?'Semi Private':'Private',
@@ -195,7 +215,7 @@
             $('#edit-level').val(data[0].IDLevel)
             $('#edit-kategori').val(data[0].IDKategoriProgram)
             $('#edit-jenis').val(data[0].JenisProgram)
-            $('#edit-pendapatan').val(data[0].Pendapatan)
+            $('#edit-pendapatan').val(numberToIDR(data[0].Pendapatan))
             $('#edit-masterpenggajian').val(data[0].IDMasterPenggajian)
         }
         function update(){
@@ -228,6 +248,28 @@
                     swal("Dibatalkan!");
                 }
             })
+        }
+        function formatUang(id){
+            
+            let uang = $('#'+id).val()
+            let formated_uang = numberToIDR(uang)
+            $('#'+id).val(formated_uang)
+
+        }
+        function numberToIDR(data){
+            let uang = String(data)
+            uang = uang.replace('Rp. ','').replaceAll('.','')
+            let isnan = isNaN(uang)
+            if(isnan||uang ==''){
+               // console.log(true)
+                uang = '0'
+            }
+            let formated_uang = 'Rp. '+parseInt(uang).toLocaleString('id-ID')
+            return formated_uang
+        }
+        function IDRToNumber(data){
+            let real_data = data.replace('Rp. ','').replaceAll('.','')
+            return parseInt(real_data)
         }
     </script>
 @endpush
