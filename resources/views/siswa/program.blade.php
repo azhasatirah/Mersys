@@ -114,7 +114,7 @@
                   </li>
                   <hr>
                   <ul class="list-group " style="margin-top:-20px">
-                    <li><i class="fa fa-dollar text-success"></i> <strong>Harga</strong></li>
+                    <li><i class="fa fa-dollar text-success"></i> <strong> Harga</strong></li>
                     <li class="list-group-item d-flex justify-content-between">
                       <div><strong> Lunas</strong>
                         <span class="text-success"
@@ -125,6 +125,7 @@
                      
                       </div>
                       <form method="POST" action="{{url('siswa/transaksi/program')}}">
+                
                         <input type="hidden" id="csrf" name="_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="idcicilan" value="0">
                         <input type="hidden" name="cicilan" value="n">
@@ -166,7 +167,7 @@
 @push('scripts')
 <script>
   let DiskonAktif = [],
-    Siswa = $('#idsiswa').val()
+    Siswa = $('#idsiswa').val(),modalData
   $(document).ready(function () {
 
     $('#tabeldata').DataTable();
@@ -196,6 +197,7 @@
     DisplayDiskon.empty()
 
     $.get('/siswa/jprogram/getDetail/' + id, (data) => {
+      modalData = data
       $('#display-modul').empty();
       $('#diskon').val(0);
       $('#iddiskon').val(0);
@@ -223,10 +225,24 @@
         )
       }
       if (data[0].Tool != false) {
+        let tools=""
+        data[0].Tool.forEach(ele=>{
+          tools+=
+          '<div style=\"margin-left:18px\" class=\"form-check\">'+
+          '<label class=\"form-check-label\">'+
+              '<input type=\"checkbox\" onchange=\"checkTool('+ele.IDTool+')\" class=\"form-check-input\" name=\"take_tool\" id=\"take-tool'+ele.IDTool+'\" checked>'+
+              ele.NamaTool+
+            '</label>'+
+            '</div>'
+        })
         $('#display-tool').append(
-          '<i class="fa fa-check text-success"></i>Mendapatkan Tools'
+          '<i class="fa fa-check text-success"></i> Mendapatkan Tools'+
+      
+            tools
+         
         );
       }
+      
       if (data[0].Modul != false) {
         $('#display-modul').append(
           '<i class="fa fa-check text-success"></i>Mendapatkan <strong>Moduls</strong>'
@@ -260,7 +276,24 @@
       }
     })
   }
-
+  function checkTool(id){
+    let harga_tool = 0
+    if($('#take-tool'+id).prop('checked')){
+      harga_tool = modalData[0].Tool.filter(ele=>ele.IDTool == id)[0].Harga
+    }else{
+      harga_tool = modalData[0].Tool.filter(ele=>ele.IDTool == id)[0].Harga*(-1)
+    }
+    let harga_lunas = $('#hargalunas').val()
+    $('#display-diskon').empty();
+    let harga_diskon = $('#diskon').val()
+    let harga_final =parseInt(harga_lunas)+parseInt(harga_tool)
+    let harga_final_diskon = harga_final - parseInt(harga_diskon)
+    $('#hargalunas').val(harga_final)
+    $('#display-diskon').append(
+      "<span class=\"text-success\" style=\"font-size:18px\">Rp "+harga_final_diskon.toLocaleString('id-ID')+"</span>"
+    )
+    $('#pembayaran-lunas').html('Rp. '+harga_final.toLocaleString('id-ID'))
+  }
   function IDR(number) {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",

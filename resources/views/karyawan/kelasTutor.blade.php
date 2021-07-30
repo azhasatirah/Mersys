@@ -2,56 +2,58 @@
 @section('title','Program Saya')
 @section('kelas','current-page')
 @section('content')
+<div class="table-responsive">
 
-<table id="tabeldata" class="table  table-dark projects">
-    <thead>
-        <tr>
-            <th style="width: 1%">No</th>
-            <th style="width: 10%">Kode Kelas</th>
-            <th style="width: 15%">Nama Kelas</th>
-            <th style="width:15%">Materi</th>
-            <th style="width: 20%">Pertemuan</th>
-            <th style="width: 17%">Status</th>
-            <th style="width: 5%">Opsi</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($Kursus as $item)
-
-        <tr style="font-size:12px" class="bg-dark">
-            <td >{{$loop->iteration}}</td>
-            <td>{{$item['KodeKursus']}}</td>
-            <td>
-                {{$item['NamaProgram']}}
-
-            </td>
-            <td>
-                {{$item['NamaMateri']}}
-            </td>
-            <td class="project_progress">
-                <div class="progress progress_sm">
-                    <div class="progress-bar bg-green" role="progressbar"
-                        data-transitiongoal="{{$item['Pertemuan']*(100/$item['TotalPertemuan'])}}"></div>
-                </div>
-                @if ($item['Pertemuan']==$item['TotalPertemuan'])
-                <p>Selesai ( {{$item['TotalPertemuan']}} Pertemuan )</p>
-                @else
-                <p>pertemuan ke {{$item['Pertemuan']}} dari {{$item['TotalPertemuan']}}</p>
-                @endif
-            </td>
-            <td>
-                <a type="button" class="btn btn-success btn-sm">{{$item['StatusJadwal']}}</a>
-            </td>
-            <td>
-                <a href="{{url('karyawan/tutor/kelas/show')}}/{{$item['UUIDKursus']}}" class="btn btn-primary btn-sm">
-               
-                    Buka
-                </a>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+    <table id="tabeldata" class="table  table-dark projects">
+        <thead>
+            <tr>
+                <th style="width: 1%">No</th>
+                <th style="width: 10%">Kode Kelas</th>
+                <th style="width: 15%">Nama Kelas</th>
+                <th style="width:15%">Materi</th>
+                <th style="width: 20%">Pertemuan</th>
+                <th style="width: 17%">Status</th>
+                <th style="width: 5%">Opsi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($Kursus as $item)
+    
+            <tr style="font-size:12px" class="bg-dark">
+                <td >{{$loop->iteration}}</td>
+                <td>{{$item['KodeKursus']}}</td>
+                <td>
+                    {{$item['NamaProgram']}}
+    
+                </td>
+                <td>
+                    {{$item['NamaMateri']}}
+                </td>
+                <td class="project_progress">
+                    <div class="progress progress_sm">
+                        <div class="progress-bar bg-green" role="progressbar"
+                            data-transitiongoal="{{$item['Pertemuan']*(100/$item['TotalPertemuan'])}}"></div>
+                    </div>
+                    @if ($item['Pertemuan']==$item['TotalPertemuan'])
+                    <p>Selesai ( {{$item['TotalPertemuan']}} Pertemuan )</p>
+                    @else
+                    <p>pertemuan ke {{$item['Pertemuan']}} dari {{$item['TotalPertemuan']}}</p>
+                    @endif
+                </td>
+                <td>
+                    <a type="button" class="btn btn-success btn-sm">{{$item['StatusJadwal']}}</a>
+                </td>
+                <td>
+                    <a href="{{url('karyawan/tutor/kelas/show')}}/{{$item['UUIDKursus']}}" class="btn btn-primary btn-sm">
+                   
+                        Buka
+                    </a>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 
 <!-- {{-- Modal create jadwal --}} -->
     <div class="modal fade" id="modalcreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -16,7 +16,7 @@
             </div>
             <div class="x_content">
                 <div class="table-responsive">
-
+                    
                     <table id="tabeldata" class="table table-hover">
                         <thead>
                             <tr>
