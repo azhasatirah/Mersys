@@ -287,6 +287,7 @@
         );
     }
     function visibleAddJam(id){
+        console.log('jadwal semi',jadwal_semi)
         let start_date = $('#start_date').val();
         let first_day = new Date(start_date).getDay();
         let hari = id == 1?'senin':
@@ -302,13 +303,16 @@
             swal('anda tidak bisa uncheck ini, ganti tanggal mulai')
         }else if($('#'+hari).is(':checked')){
             let now_id = new Date().getTime()
-            jam_maker.push({'day_id':id,'now_id':now_id,'val':''})
+            let val_jam = jadwal_maker==2?jadwal_semi[id][0].Start:''
+            console.log('val jam',val_jam)
+            jam_maker.push({'day_id':id,'now_id':now_id,'val':val_jam})
             $('#btn-add-jam-'+id).show();
             showElementJam()
         }else{
             $('#btn-add-jam-'+id).hide();
             $('#jadwal-jam-'+hari).empty();
         }
+        console.log('jam mkaer',jam_maker)
         cleanNonActiveJam()
     }
     function deleteJam(id,day_id){
@@ -528,7 +532,7 @@
             String(new Date(ele).getDate()).padStart(2, '0')
         );
         //sisa bagi total pertemuan dibagi pertemuan dalam seminggu
-        let a = total_pertemuan.val() % master_jam.length;
+        let a = parseInt(total_pertemuan.val()) % master_jam.length;
         //hasil pembagian total pertemuan tanpa sisa bagi ( max perulangan)
         let c = total_pertemuan.val() % master_jam.length == 0 ? total_pertemuan.val() / master_jam.length : (
             total_pertemuan.val() - (total_pertemuan.val() % master_jam.length)) / master_jam.length;
@@ -537,6 +541,7 @@
 
         //keep it up sware -3-
         // jadwal maker
+        console.log(date,a,c,master_jam)
         for (let i = 0; i < c; i++) {
             for (let j = 0; j < date.length; j++) {
                 let hari = master_jam.filter(ele=>ele.day_id==new Date(date[j]).getDay())
@@ -570,7 +575,7 @@
                 date_increament += 7;
             }
         }
-      
+        console.log('jadwal siswa',jadwal_siswa)
     
         getAndSetNewestJadwalTutor(start_date.val());
         checkJadwalTutor(jadwal_siswa);
@@ -706,34 +711,9 @@
                 "<td scope=\"row\">" + hari[new Date(ele.tanggal).getDay()] + "</td>" +
                 "<td>" + ele.tanggal + "</td>" +
                 
-                "<td style=\"cursor:pointer\">"+
-                    "<div style=\"display:none\" id=\"input-change-jam"+(ite+1)+"\" class=\"form-group\">"+
-                        "<input type=\"time\" id=\"val-change-jam"+(ite+1)+"\" class=\"form-control\">"+
-                    "</div>"+
-                    "<a "+
-                        "id=\"btn-change-jam"+(ite+1)+"\""+
-                        "class=\"btn btn-primary btn-sm text-white\""+
-        
-                        "data-toggle=\"tooltip\" title=\"Ubah jam\""+
-                        ">"+
+                "<td >"+
                         ele.jam+
-                    "</a>" +
-                    "<a "+
-                        "id=\"btn-submit-change-jam"+(ite+1)+"\""+
-                        "style=\"display:none\""+
-                        "class=\"btn btn-primary btn-sm text-white\""+
-                        "onclick=\"updateJam("+(ite+1)+")\"" +
-                        "data-toggle=\"tooltip\" title=\"Ubah jam\""+
-                        ">"+
-                    "Ubah</a>" + 
-                    "<a "+
-                        "id=\"btn-cancel-change-jam"+(ite+1)+"\""+
-                        "style=\"display:none\""+
-                        "class=\"btn btn-danger btn-sm text-white\""+
-                        "onclick=\"changeJam("+(ite+1)+")\"" +
-                        "data-toggle=\"tooltip\" title=\"Ubah jam\""+
-                        ">"+
-                    "Cancel</a>" +                               
+                            
                 "</td>" +
 
                 "<td>" + (ite + 1) + "</td>" +
@@ -895,6 +875,7 @@
         for(let i=0;i<7;i++){
             $('#btn-add-jam-'+i).hide()
         }
+        console.log(total_pertemuan,id_kursus,id_program)
         cleanNonActiveJam()
         showElementJam()
         $('#total_pertemuan').val(total_pertemuan);

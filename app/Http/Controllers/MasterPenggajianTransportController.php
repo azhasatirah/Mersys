@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\DB;
 class MasterPenggajianTransportController extends Controller
 {
     public function index(){
-        return view('karyawan/penggajian/index_master_penggajian_transport');
+        return view('karyawan/kasbank');
     }
     public function getData(){
-        $Data = DB::table('master_penggajian_transport')
+        $Data = DB::table('kas_bank')
         ->where('Status','!=','DEL')->get();
         return response()->json($Data);
     }
@@ -28,7 +28,7 @@ class MasterPenggajianTransportController extends Controller
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
         );
-        DB::table('master_penggajian_transport')->insert($Data);
+        DB::table('kas_bank')->insert($Data);
         return response()->json('Data berhasil ditambahkan');
     }
     public function update(Request $request){
@@ -39,7 +39,7 @@ class MasterPenggajianTransportController extends Controller
             'UserUpd'=>session()->get('Username'),
             'updated_at'=>Carbon::now(),
         );
-        DB::table('master_penggajian_transport')
+        DB::table('kas_bank')
         ->where('IDMasterPenggajianTransport',$request->penggajiantransport)
         ->update($Data);
         return response()->json('Data berhasil diubah');
@@ -50,7 +50,7 @@ class MasterPenggajianTransportController extends Controller
             'UserUpd'=>session()->get('Username'),
             'updated_at'=>Carbon::now(),
         );
-        DB::table('master_penggajian_transport')
+        DB::table('kas_bank')
         ->where('IDMasterPenggajianTransport',$id)
         ->update($Data);
         return response()->json('Data berhasil dihapus');

@@ -81,6 +81,7 @@
                   <li><a href="{{url($DasborLink)}}"><i class="fa fa-square"></i>Beranda</a></li>
                   <!-- Menu Owner -->
                   @if(session()->get('Level')==1)
+                  <li><a href="{{url('karyawan/owner/kasbank')}}"><i class="fa fa-book"></i>Kas Bank</a></li>
                   <li><a><i class="fa fa-dollar"></i> Penggajian <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{url('karyawan/owner/penggajian')}}">Penggajian</a></li>

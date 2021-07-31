@@ -51,6 +51,12 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
  
     //route owner
     Route::group(['middleware'=>['RoleKaryawan:1'],'prefix'=>'owner'],function(){
+        
+        Route::get('kasbank','KasBankController@index');
+        Route::get('kasbank/getdata','KasBankController@getdata');
+        Route::post('kasbank/store','KasBankController@store');
+        Route::post('kasbank/update','KasBankController@update');
+        Route::get('kasbank/delete/{id}','KasBankController@delete');
 
         Route::get('masterpenggajian/gajipokok/','GajiPokokController@indexOwner');
         Route::get('masterpenggajian/gajipokok/getdata','GajiPokokController@getData');
