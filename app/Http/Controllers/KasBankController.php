@@ -16,14 +16,37 @@ class KasBankController extends Controller
         $Data = DB::table('kas_bank')
         ->where('Status','!=','DEL')
         ->orderBy('created_at','desc')->get();
-        return response()->json($Data);
+        $FinalData = [];
+        foreach($Data as $data){
+            $DataA = $Data->toArray();
+            $PrevTotal =0 ;
+            $LatestDate = $data->created_at;
+            //dd($LatestDate);
+            $PrevData = array_filter($DataA,function($dat) use($LatestDate){
+                return $dat->created_at < $LatestDate;
+            });
+            foreach($PrevData as $pd){
+                $PrevTotal += $pd->Total;
+            }
+            array_push($FinalData,array(
+                'IDKasBank'=>$data->IDKasBank,
+                'KodeKasBank'=>$data->KodeKasBank,
+                'Tanggal'=>$data->Tanggal,
+                'Total'=>$data->Total,
+                'PrevTotal'=>$PrevTotal,
+                'Keterangan'=>$data->Keterangan,
+            ));
+        }
+        return response()->json($FinalData);
     }
     public function store(Request $request){
+        $KodeKasBank = "SBK-" . date("myHis");
+        $ChangeKas = $this->idrToInt($request->total);
         $Data = array(
             'KodeKasBank'=>$KodeKasBank,
-            'IDPembayaran'=>$request->idpenbayaran,
-            'Tanggal'=>$request->tanggal,
-            'Total'=>$request->total,
+            'IDPembayaran'=>0,
+            'Tanggal'=>Carbon::now(),
+            'Total'=>$request->typekasbank==1?$ChangeKas*-1:$ChangeKas,
             'Keterangan'=>$request->keterangan,
             'Status'=>'OPN',
             'UserAdd'=>session()->get('Username'),
@@ -35,13 +58,12 @@ class KasBankController extends Controller
         return response()->json('Data berhasil ditambahkan');
     }
     public function update(Request $request){
+        $ChangeKas = $this->idrToInt($request->total);
         $Data = array(
-            'IDPembayaran'=>$request->idpenbayaran,
-            'Tanggal'=>$request->tanggal,
-            'Total'=>$request->total,
+            'Total'=>$request->typekasbank==1?$ChangeKas*-1:$ChangeKas,
             'Keterangan'=>$request->keterangan,
             'UserUpd'=>session()->get('Username'),
-            'updated_at'=>Carbon::now()
+            'updated_at'=>Carbon::now(),
         );
         DB::table('kas_bank')->where('IDKasBank',$request->idkasbank)->update($Data);
         return response()->json('Data berhasil diubah');
@@ -53,7 +75,7 @@ class KasBankController extends Controller
             'updated_at'=>Carbon::now(),
         );
         DB::table('kas_bank')
-        ->where('IDKasBnak',$id)
+        ->where('IDKasBank',$id)
         ->update($Data);
         return response()->json('Data berhasil dihapus');
     }

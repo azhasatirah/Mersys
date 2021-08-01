@@ -89,7 +89,7 @@ class Pembayaran extends Model
             'pembayaran.created_at','metode_pembayaran.MetodePembayaran','rekening.NoRekening','rekening.NamaRekening',
             'bank.NamaBank','transaksi.KodeTransaksi','banksend.NamaBank as BankPengirim',
             'siswa.NamaSiswa','program_studi.NamaProdi')
-            ->where('pembayaran.Status','!=','CLS')
+            //->where('pembayaran.Status','!=','CLS')
             ->where('transaksi.UUID',$Kode)->orderBy('pembayaran.NoUrut','asc')->get();
             return array('Status'=>'success','Pembayaran'=>$Data);
         }catch(QueryException $e){

@@ -107,7 +107,7 @@ class TransaksiController extends Controller
     public function ownerGetTransaksiSelesai(){
         $KasBank = DB::table('kas_bank')->get()->sum('Total');
         $TransaksiSelesai = DB::table('transaksi')->where('Status','CLS')->get();
-        return view('karyawan.transaksi.transaksi',['KasBank'=>$KasBank,'TransaksiSelesai'=>count($TransaksiSelesai)]);
+        return view('karyawan.transaksi.owner.selesai',['KasBank'=>$KasBank,'TransaksiSelesai'=>count($TransaksiSelesai)]);
     }
     //transaksi halaman admin
     public function adminTransaksi(){
