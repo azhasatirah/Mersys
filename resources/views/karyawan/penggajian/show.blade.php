@@ -623,10 +623,9 @@
             $('#modal-footer-detail').append(buttons)
         }
         function appendOptionSelectMonthPenggajian(){
+            $('#penggajian-bulan').empty()
             let month = [0,1,2,3,4,5,6,7,8,9,10,11]
-            console.log('month before filter',month)
             month = month.filter(ele=>Penggajian.some(p=>new Date(p.Tanggal).getMonth()==ele)!=true)
-            console.log('month after filter',month)
             month.forEach(ele=>{
                 $('#penggajian-bulan').append(
                     "<option value=\""+ele+"\">"+getNameMonth(ele)+"</option>"
@@ -1253,8 +1252,11 @@
                 'dt_data3[]':[],
                 'dt_nominal[]':[],
             }
-            CreatePenggajian.filter(ele=>ele['data'][6]!=0)
-            .forEach(ele=>{
+            console.log('CreatePenggajian',CreatePenggajian)
+            CreatePenggajian.forEach(ele=>console.log(ele['data'][6],IDRToNumber(ele['data'][6])!=0))
+            let create_penggajian = CreatePenggajian.filter(ele=>IDRToNumber(ele['data'][6])!=0)
+            console.log('create_penggajian',create_penggajian)
+            create_penggajian.forEach(ele=>{
                 dataStore['dt_jenispendapatan[]'].push(ele['data'][0])
                 dataStore['dt_title[]'].push(ele['data'][1])
                 dataStore['dt_subtitle[]'].push(ele['data'][2])
@@ -1560,9 +1562,14 @@
             return formated_uang
         }
         function IDRToNumber(data){
-        //kuntod
-            let real_data = data.replace('Rp. ','').replaceAll('.','')
-            return parseInt(real_data)
+
+            if(String(data).indexOf('Rp. ')>=0){
+                let real_data = data.replace('Rp. ','').replaceAll('.','')
+                return parseInt(real_data)
+            }else{
+         
+                return data
+            }
         }
     </script>
 
