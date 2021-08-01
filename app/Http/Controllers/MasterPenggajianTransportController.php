@@ -12,13 +12,13 @@ class MasterPenggajianTransportController extends Controller
 {
     public function index(){
         return view('karyawan/kasbank');
-    }
+    } 
     public function getData(){
         $Data = DB::table('kas_bank')
         ->where('Status','!=','DEL')->get();
         return response()->json($Data);
     }
-    public function store(Request $request){
+    public function store(Request $request){ 
         $Data = array(
             'Blok'=>$request->blok,
             'Biaya'=>$request->biaya,

@@ -1,5 +1,5 @@
 @extends('karyawan.layouts.layout')
-@section('title','DasbTuor')
+@section('title','Dasbor')
 
 @section('content')
   <!-- top tiles -->

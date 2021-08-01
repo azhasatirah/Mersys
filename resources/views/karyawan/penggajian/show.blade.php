@@ -24,8 +24,8 @@
 
 
             </p>
-            <a style="display: none" id="btn-create-penggajian" onclick="setDataCreatePenggajian()" data-target="#modal-create-penggajian" data-toggle="modal" class="btn btn-primary btn-sm text-white" href="javascript:void(0)" role="button">
-                Buat penggajian tahun <span id="btn-create-penggajian-tahun"></span> bulan <span id="btn-create-penggajian-bulan"></span>
+            <a id="btn-create-penggajian" data-target="#modal-setmonth-penggajian" data-toggle="modal" class="btn btn-primary btn-sm text-white" href="javascript:void(0)" role="button">
+                Buat penggajian 
             </a>
         </div>
     </div>
@@ -507,6 +507,33 @@
         </div>
     </div>
 </div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal-setmonth-penggajian" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Buat penggajian</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label for="">Bulan</label>
+                    <select class="custom-select" id="penggajian-bulan"></select>
+                </div>
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="setDataCreatePenggajian()" class="btn btn-primary btn-sm">Selanjutnya</button>
+            </div>
+        </div>
+    </div>
+</div>
 <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
 @endsection
 @push('scripts')
@@ -577,6 +604,7 @@
                 if (willDelete) {
                     $('#modal-detail-penggajian').modal('hide')
                     $.get("/karyawan/owner/penggajian/delete/"+id).done(response=>swal(response))
+                    getData()
                 } else {
                     swal("Dibatalkan!");
                 }
@@ -594,7 +622,18 @@
             let buttons = data.Status =='OPN'?btn_tutup+btn_delete+btn_konfirmasi+btn_edit:btn_tutup+btn_download
             $('#modal-footer-detail').append(buttons)
         }
-
+        function appendOptionSelectMonthPenggajian(){
+            let month = [0,1,2,3,4,5,6,7,8,9,10,11]
+            console.log('month before filter',month)
+            month = month.filter(ele=>Penggajian.some(p=>new Date(p.Tanggal).getMonth()==ele)!=true)
+            console.log('month after filter',month)
+            month.forEach(ele=>{
+                $('#penggajian-bulan').append(
+                    "<option value=\""+ele+"\">"+getNameMonth(ele)+"</option>"
+                )
+            })
+         
+        }
         //kunaisss
         function editPenggajian(id){
             EditPenggajianMain = []
@@ -683,8 +722,8 @@
                 addRowTablePenggajian()
                 showDataKaryawan()
                 appendOptionGajiPokok()
-                initButtonCreatePenggajian()
-                
+                //initButtonCreatePenggajian()
+                appendOptionSelectMonthPenggajian()  
             })
         }
         function showDataKaryawan(){
@@ -733,6 +772,10 @@
         function setDataCreatePenggajian(){
             //nkelas = kelas bulan ini yang sudah selesai
             //penaltyk = keterlambatan memulai kelas 
+            $('#modal-setmonth-penggajian').modal('hide')
+            $('#modal-create-penggajian').modal('show')
+            NMonth = $('#penggajian-bulan').val()
+            console.log('penggajian bulan',NMonth)
             CreatePenggajian = []
             let NKelas =KelasTutor.filter(ele=>new Date(ele.Tanggal).getMonth()==NMonth && ele.Kelas==true)
             let penaltyk = NKelas.filter(ele=>{
