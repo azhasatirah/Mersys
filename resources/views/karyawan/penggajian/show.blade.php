@@ -866,6 +866,9 @@
                         "<td>"+
                             "<input id=\"data"+ele['id']+"add6\" type=\"text\" class=\"form-control\" value=\""+numberToIDR(ele['data'][6])+"\" onkeyup=\"updateCreatePenggajian(\'"+ele['id']+"\',6)\">"+
                         "</td>"+
+                        "<td>"+
+                                "<a onclick=\"deleteCreatePenggajian(\'"+ele['id']+"\')\" class=\"btn btn-sm btn-danger\" href=\"javascript:void(0)\" role=\"button\"><i class=\"fa fa-trash\"></i></a>"+
+                        "</td>"+
                     "</tr>"
                 )
             })
@@ -937,6 +940,7 @@
         function deleteCreatePenggajian(id){
             CreatePenggajian = CreatePenggajian.filter(ele=>ele['id']!=id)
             countGaji()
+            appendTableCreatePenggajianProgram()
             appendTableCreatePenggajian()
         }
         function deleteEditPenggajian(id){
