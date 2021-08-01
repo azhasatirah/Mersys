@@ -174,7 +174,7 @@ class PenggajianController extends Controller
         $Penggajian = DB::table('penggajian')
         ->where('IDPenggajian',$id)
         ->get();
-        $KodeKasBank = "KBK-" . date("myHis");
+        $KodeKasBank = "OBK-" . date("myHis");
         $KasBank = array(
             'KodeKasBank'=>$KodeKasBank,
             'IDPembayaran'=>$Penggajian[0]->IDPenggajian,
