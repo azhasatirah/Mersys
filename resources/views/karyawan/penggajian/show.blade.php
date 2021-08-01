@@ -1296,6 +1296,8 @@
                 'IDKaryawan':Karyawan[0].IDKaryawan,
                 'Total':CreatePenggajianMain[1],
                 'SubTotal':CreatePenggajianMain[0],
+                'Tahun':NYear,
+                'Bulan':NMonth,
                 'dt_jenispendapatan[]':[],
                 'dt_title[]':[],
                 'dt_subtitle[]':[],
@@ -1314,6 +1316,7 @@
                 dataStore['dt_data3[]'].push(ele['data'][5])
                 dataStore['dt_nominal[]'].push(IDRToNumber(ele['data'][6]))
             })
+
             $.ajax({
                 type: "post",
                 url: "/karyawan/owner/penggajian/store",

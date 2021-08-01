@@ -112,6 +112,8 @@ class PenggajianController extends Controller
 
     public function store(Request $request){
         $TimeData = Carbon::now();
+        $last_day = date('t',strtotime('01-'.$request->Bulan.'-'.$request->Tahun));
+        $TanggalPenggajian = $request->Tahun.'-'.intval($request->Bulan)+1 .'-'.$last_day.' 16:00:00';
         $DataPenggajian = array(
             'Jenis'=>'tutor',
             'IDKaryawan'=>$request->IDKaryawan,
@@ -120,7 +122,7 @@ class PenggajianController extends Controller
             'PPN'=>0,
             'NilaiPPN'=>0,
             'Total'=>$request->Total,
-            'Tanggal'=>$TimeData,
+            'Tanggal'=>$TanggalPenggajian,
             'created_at'=>$TimeData,
             'updated_at'=>$TimeData,
             'UserAdd'=>session()->get('Username'),
@@ -249,7 +251,6 @@ class PenggajianController extends Controller
             'Jenis'=>'tutor',
             'SubTotal'=>$request->SubTotal,
             'Total'=>$request->Total,
-            'Tanggal'=>$TimeData,
             'updated_at'=>$TimeData,
             'UserUpd'=>session()->get('Username'),
         );
