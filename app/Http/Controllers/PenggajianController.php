@@ -189,11 +189,62 @@ class PenggajianController extends Controller
         DB::table('kas_bank')->insert($KasBank);
         return response()->json('Penggajian dikonfirmasi');
     }
+    public function deleteDetailPenggajian($id){
+        DB::table('penggajian_detail')->where('IDPenggajianDetail',$id)->update(array(
+            'Status'=>'DEL',
+            'UserAdd'=>session()->get('Username'),
+            'updated_at'=>Carbon::now()
+        ));
+        return response()->json(true);
+    }
     public function updatePenggajianAddDetail(Request $request){
 
     }
     public function updatePenggajian(Request $request){
+        $Penggajian = DB::table('penggajian')->where('IDPenggajian',$request->IDPenggajian)->get()->toArray();
+        $PenggajianDetail = DB::table('penggajian_detail')->where('IDPenggajian',$request->IDPenggajian)
+        ->where('Status','!=','DEL')->get();
         $TimeData = Carbon::now();
+        //penggajian detail yang dihapus
+        $PenggajianDetailDeleted = [];
+        //penggajian detail baru
+        $PenggajianDetailAdded =[];
+        //dd($request);
+
+        //SET DATA QUERY
+
+        //set data detail penggajian dihapus
+        foreach($PenggajianDetail as $pg){
+            $idpd = $pg->IDPenggajianDetail;
+            $exist_pd = array_reduce($request->dt_id, function ($isExist, $dat) use($idpd) {
+                return $isExist || $dat == $idpd;
+            });
+            if($exist_pd==false){
+                array_push($PenggajianDetailDeleted,$pg);
+            }
+        }
+        //set data detail penggajian baru
+        for($ite =0;count($request->dt_id)>$ite;$ite++){
+            $pd = $PenggajianDetail->toArray();
+            $idpd = $request->dt_id[$ite];
+            $exist_req = array_reduce($pd, function ($isExist, $dat) use($idpd) {
+                return $isExist || $dat->IDPenggajianDetail == $idpd;
+            });
+            if($exist_req==false){
+                $InfoData = $request->dt_jenispendapatan[$ite].'[,]'.$request->dt_title[$ite].'[,]'.$request->dt_subtitle[$ite].'[,]'.$request->dt_data1[$ite].'[,]'.$request->dt_data2[$ite].'[,]'.$request->dt_data3[$ite];
+                array_push($PenggajianDetailAdded,array(
+                    'IDPenggajian'=>$request->IDPenggajian,
+                    'InfoData'=>$InfoData,
+                    'Nominal'=>$request->dt_nominal[$ite],
+                    'created_at'=>$TimeData,
+                    'updated_at'=>$TimeData,
+                    'UserAdd'=>session()->get('Username'),
+                    'UserUpd'=>session()->get('Username'),
+                    'Status'=>'OPN'
+                ));
+            }
+        }
+        //set data penggajian
         $DataPenggajian = array(
             'Jenis'=>'tutor',
             'SubTotal'=>$request->SubTotal,
@@ -202,23 +253,47 @@ class PenggajianController extends Controller
             'updated_at'=>$TimeData,
             'UserUpd'=>session()->get('Username'),
         );
+
+        //dd($PenggajianDetailAdded,$PenggajianDetailDeleted);
+    
         
-      //  dd($DataPenggajian);
+        //EXECUTE DATABASE QUERY
+        //update penggajian
         DB::table('penggajian')->where('IDPenggajian',$request->IDPenggajian)->update($DataPenggajian);
-        $ite = 0;
-        foreach($request->dt_title as $random){
-            $InfoData = $request->dt_jenispendapatan[$ite].'[,]'.$request->dt_title[$ite].'[,]'.$request->dt_subtitle[$ite].'[,]'.$request->dt_data1[$ite].'[,]'.$request->dt_data2[$ite].'[,]'.$request->dt_data3[$ite];
+        //update penggajian detail
+        //set data detail penggajian 
+        for($ite =0;count($request->dt_id)>$ite;$ite++){
+            $pd = $PenggajianDetail->toArray();
+            $idpd = $request->dt_id[$ite];
+            $exist_req = array_reduce($pd, function ($isExist, $dat) use($idpd) {
+                return $isExist || $dat->IDPenggajianDetail == $idpd;
+            });
+            if($exist_req==true){
+                $InfoData = $request->dt_jenispendapatan[$ite].'[,]'.$request->dt_title[$ite].'[,]'.$request->dt_subtitle[$ite].'[,]'.$request->dt_data1[$ite].'[,]'.$request->dt_data2[$ite].'[,]'.$request->dt_data3[$ite];
+                $DataPenggajianDetail=array(
+                    'InfoData'=>$InfoData,
+                    'Nominal'=>$request->dt_nominal[$ite],
+                    'updated_at'=>$TimeData,
+                    'UserUpd'=>session()->get('Username'),
+                );
+                DB::table('penggajian_detail')
+                ->where('IDPenggajianDetail',$request->dt_id[$ite])
+                ->update($DataPenggajianDetail);
+            }
+        }
+        //delete penggajian detail
+        foreach($PenggajianDetailDeleted as $random){
             $DataPenggajianDetail=array(
-                'InfoData'=>$InfoData,
-                'Nominal'=>$request->dt_nominal[$ite],
+                'Status'=>'DEL',
                 'updated_at'=>$TimeData,
                 'UserUpd'=>session()->get('Username'),
             );
             DB::table('penggajian_detail')
-            ->where('IDPenggajianDetail',$request->dt_id[$ite])
+            ->where('IDPenggajianDetail',$random->IDPenggajianDetail)
             ->update($DataPenggajianDetail);
-            $ite++;
         }
+        //add penggajian detail 
+        DB::table('penggajian_detail')->insert($PenggajianDetailAdded);
         return response()->json('Penggajian berhasil di edit');
     }
     public function tutorIndex(){

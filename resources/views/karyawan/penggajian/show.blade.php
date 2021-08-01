@@ -320,7 +320,7 @@
                     </table>
                 </div>
                 <h4>Penilaian Prestasi Kerja</h4>
-                <a onclick="addCreatePenggajian('prestasikerja')" class="btn btn-sm btn-primary" href="javascript:void(0)" role="button"><i class="fa fa-plus"></i></a>
+                <a onclick="addEditPenggajian('prestasikerja')" class="btn btn-sm btn-primary" href="javascript:void(0)" role="button"><i class="fa fa-plus"></i></a>
                 <div class="table-responsive">
 
                     <table class="table">
@@ -342,7 +342,7 @@
                     </table>
                 </div>
                 <h4>Honor Tambahan</h4>
-                <a onclick="addCreatePenggajian('httransport')" class="btn btn-sm btn-primary" href="javascript:void(0)" role="button"><i class="fa fa-plus"></i></a>
+                <a onclick="addEditPenggajian('httransport')" class="btn btn-sm btn-primary" href="javascript:void(0)" role="button"><i class="fa fa-plus"></i></a>
                 <div class="table-responsive">
 
                     <table class="table">
@@ -361,7 +361,7 @@
                         </tbody>
                     </table>
                 </div>
-                <a onclick="addCreatePenggajian('htlain')" class="btn btn-sm btn-primary" href="javascript:void(0)" role="button"><i class="fa fa-plus"></i></a>
+                <a onclick="addEditPenggajian('htlain')" class="btn btn-sm btn-primary" href="javascript:void(0)" role="button"><i class="fa fa-plus"></i></a>
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -380,7 +380,7 @@
                     </table>
                 </div>
                 <h4>Absensi</h4>
-                <a onclick="addCreatePenggajian('absensi')" class="btn btn-sm btn-primary" href="javascript:void(0)" role="button"><i class="fa fa-plus"></i></a>
+                <a onclick="addEditPenggajian('absensi')" class="btn btn-sm btn-primary" href="javascript:void(0)" role="button"><i class="fa fa-plus"></i></a>
                 <div class="table-responsive">
 
                     <table class="table">
@@ -636,6 +636,7 @@
         //kunaisss
         function editPenggajian(id){
             EditPenggajianMain = []
+            EditPenggajian = []
             let Data = Penggajian.filter(ele=>ele.IDPenggajian == id)[0]
             let DetailData = Data.Detail
             EditPenggajianMain.push(Data.SubTotal,Data.Total,Data.IDPenggajian)
@@ -646,7 +647,13 @@
                     'data':[info_data[0],info_data[1],info_data[2],info_data[3],info_data[4],info_data[5],numberToIDR(ele.Nominal)]
                 })
             })
-            console.log('data edit',EditPenggajianMain,EditPenggajian)
+            let isThereGajiPokok = EditPenggajian.some(ele=>ele.data[0]=='gajipokok')
+            if(isThereGajiPokok==false){
+                EditPenggajian.push({
+                    'id':new Date().getTime()+Math.random().toString(16).slice(2),
+                    'data':['gajipokok',null,null,null,null,null,0]
+                })
+            }
             $('#modal-detail-penggajian').modal('hide')
             $('#modal-edit-penggajian').modal('show')            
 
@@ -936,6 +943,47 @@
             }
             appendTableCreatePenggajian()
         }
+        function addEditPenggajian(jenis){
+           // console.log(jenis)
+            switch (jenis) {
+                case 'prestasikerja':
+                    EditPenggajian.push(
+                        {
+                            'id':new Date().getTime()+Math.random().toString(16).slice(2),
+                            'data':[jenis,'',null,null,null,'',0]
+                        }
+                    )
+                    break;
+                case 'httransport':
+                    EditPenggajian.push(
+                        {
+                            'id':new Date().getTime()+Math.random().toString(16).slice(2),
+                            'data':['honortambahan','Tunjangan transport di luar murid','','','',0,0]
+                        }
+                    )
+                    break;
+                case 'htlain':
+                    EditPenggajian.push(
+                        {
+                            'id':new Date().getTime()+Math.random().toString(16).slice(2),
+                            'data':['honortambahan','Lain-lain','','','','',0]
+                        }
+                    )
+                    break;
+                case 'absensi':
+                    EditPenggajian.push(
+                        {
+                            'id':new Date().getTime()+Math.random().toString(16).slice(2),
+                            'data':['absensi','Keterlambatan','','','','',0]
+                        }
+                    )
+                    break;
+                default:
+                    swal('ops ada kesalahan, mohon coba beberapa saat kemudian')
+                    break;
+            }
+            appendTableEditPenggajian()
+        }
         function deleteCreatePenggajian(id){
             CreatePenggajian = CreatePenggajian.filter(ele=>ele['id']!=id)
             countGaji()
@@ -1057,12 +1105,14 @@
         }
         
         function appendTableEditPenggajian(){
+            //kunaisss
            let penggajian = EditPenggajian
            $('#data-edit-penggajian-program').empty()
            $('#data-edit-penggajian-prestasi').empty()
            $('#data-edit-penggajian-transport').empty()
            $('#data-edit-penggajian-lain').empty()
            $('#data-edit-penggajian-absensi').empty()
+           $('#data-edit-penggajian-gajipokok').empty();
             penggajian.forEach(pg=>{
                 let tabel = pg['data'][0]=='gajipokok'? $('#data-edit-penggajian-gajipokok'):
                 pg['data'][0]=='absensi'? $('#data-edit-penggajian-absensi'):
@@ -1092,7 +1142,9 @@
                             "<td>"+
                                 "<input id=\"data"+pg['id']+"add6\" type=\"text\" class=\"form-control\" value=\""+numberToIDR(pg['data'][6])+"\" onkeyup=\"updateEditPenggajian(\'"+pg['id']+"\',6)\">"+
                             "</td>"+
-                            "<td></td>"+
+                            "<td>"+
+                                "<a onclick=\"deleteEditPenggajian(\'"+pg['id']+"\')\" class=\"btn btn-sm btn-danger\" href=\"javascript:void(0)\" role=\"button\"><i class=\"fa fa-trash\"></i></a>"+
+                            "</td>"+
                         "</tr>":
                     pg['data'][0]=='absensi'? 
                 
@@ -1252,10 +1304,7 @@
                 'dt_data3[]':[],
                 'dt_nominal[]':[],
             }
-            console.log('CreatePenggajian',CreatePenggajian)
-            CreatePenggajian.forEach(ele=>console.log(ele['data'][6],IDRToNumber(ele['data'][6])!=0))
             let create_penggajian = CreatePenggajian.filter(ele=>IDRToNumber(ele['data'][6])!=0)
-            console.log('create_penggajian',create_penggajian)
             create_penggajian.forEach(ele=>{
                 dataStore['dt_jenispendapatan[]'].push(ele['data'][0])
                 dataStore['dt_title[]'].push(ele['data'][1])
@@ -1294,8 +1343,8 @@
                 'dt_nominal[]':[],
                 'dt_id[]':[]
             }
-            EditPenggajian.filter(ele=>ele['data'][6]!=0)
-            .forEach(ele=>{
+            let edit_penggajian = EditPenggajian.filter(ele=>IDRToNumber(ele['data'][6])!=0)
+            edit_penggajian.forEach(ele=>{
                 dataStore['dt_id[]'].push(ele['id'])
                 dataStore['dt_jenispendapatan[]'].push(ele['data'][0])
                 dataStore['dt_title[]'].push(ele['data'][1])
@@ -1319,7 +1368,7 @@
         //kunai
         function showDetailPenggajian(id){
             $('#ddp-display-data').empty() 
-           //kunaisss
+   
             let Data = Penggajian.filter(ele=>ele.IDPenggajian==id)[0]
            appendFooterModalDetail(Data)
             $('#ddp-display-nama').html(Data.NamaKaryawan)
