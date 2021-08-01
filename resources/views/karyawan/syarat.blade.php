@@ -23,8 +23,8 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th style="width: 80%"></th>
-                            <th style="width: 15%">Opsi</th>
+                            <th style="width: 60%"></th>
+                            <th style="width: 30%">Opsi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,7 +70,7 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Edit Syarat dan Ketentuan</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Ganti Syarat dan Ketentuan</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -135,24 +135,17 @@ function clearFormCreate(){
 
 
 function showData(){
-    $.get('/karyawan/owner/syarat/getdata',function(Data){
-        $('#datatabel').empty();
-        let a=0;
-        TabelData.clear().draw();
-        Data.forEach((data) =>{
-            a++;
-            let TombolAksi ="<button type=\"button\" class=\"btn btn-primary btn-sm editmodal\""+
-                "data-toggle=\"modal\" data-target=\"#modaledit\" "+
-                "data-id=\""+data.IDSyarat+"\">"+
-                    "<i class=\"fa fa-edit\"></i>"+
+    //karyawan/owner/stream/sk060521022054
+    let btnChange ="<button type=\"button\" class=\"btn btn-primary btn-sm editmodal\""+
+                "data-toggle=\"modal\" data-target=\"#modaledit\">"+
+                    "Ganti <i class=\"fa fa-edit\"></i>"+
                 "</button>";
-            TabelData.row.add([
-                a,
-                'Syarat dan Ketentuan',
-                TombolAksi
-            ]).draw();
-        })
-    })
+    let btnPreview = "<a class=\"btn btn-sm btn-primary\" target=\"blank\" href=\"/karyawan/owner/stream/sk060521022054\" role=\"button\">Lihat</a>"
+    TabelData.row.add([
+        1,
+        'Syarat dan Ketentuan',
+        btnChange+btnPreview
+    ]).draw();
 }
 
 function editData(id){
@@ -160,20 +153,6 @@ function editData(id){
   
         $('#editid').val(data[0].IDSyarat);
         $('#syarat-edit').val(data[0].Content);
-    });
-}
-
-function storeData(){
-
-    $.post('/karyawan/owner/syarat/store',$('#formdata').serialize())
-    .done(function(pesan){
-        showData();
-        swal(pesan);
-        $('#modalcreate').modal('hide');
-        clearFormCreate();
-    }).fail(function(pesan){
-     
-        swal('gagal'+pesan.Pesan);
     });
 }
 
@@ -187,7 +166,7 @@ function updateData(){
         clearFormCreate();
     }).fail(function(pesan){
        
-        swal('gagal'+pesan.Pesan);
+        swal('gagal'+pesan);
     });
 }
 

@@ -107,7 +107,7 @@
                   <li><a href="{{url('karyawan/owner/kursus')}}"><i class="fa fa-book"></i>Daftar kursus</a></li>
                   <li><a href="{{url('karyawan/owner/karyawan')}}"><i class="fa fa-square"></i>Daftar Karyawan</a></li>
                   <li><a href="{{url('karyawan/owner/siswa')}}"><i class="fa fa-square"></i>Daftar Siswa</a></li>
-                  {{-- <li><a href="{{url('karyawan/owner/syarat')}}"><i class="fa fa-square"></i>Syarat dan Ketentuan</a></li> --}}
+                  <li><a href="{{url('karyawan/owner/syarat')}}"><i class="fa fa-book"></i>Syarat dan Ketentuan</a></li>
                   @endif
                   <!-- Menu Admin -->
                   @if(session()->get('Level')==2)   

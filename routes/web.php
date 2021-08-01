@@ -51,7 +51,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
  
     //route owner
     Route::group(['middleware'=>['RoleKaryawan:1'],'prefix'=>'owner'],function(){
-        
+        Route::get('stream/{id}','DocumentController@streamModul');
         Route::get('kasbank','KasBankController@index');
         Route::get('kasbank/getdata','KasBankController@getdata');
         Route::post('kasbank/store','KasBankController@store');
