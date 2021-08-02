@@ -68,6 +68,7 @@ body{
 }
 .form-header{
     margin-top: -5px;
+    width: 27rem;
 }
 .logo{
     width:auto;
