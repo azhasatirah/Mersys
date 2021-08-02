@@ -39,7 +39,17 @@ class AuthController extends Controller
         }else{
             $Status = Auth::loginKaryawan($Data);
             if($Status['Status']=='success'){
-                return redirect('karyawan/dasbor')->withErrors($Status['Pesan']);
+                $Beranda = 'karyawan';
+                if(session()->get('Level')==1){
+                    $Beranda = 'karyawan/dasbor';
+                }
+                if(session()->get('karyawan')==2){
+                    $Beranda = 'karyawan/dasbor';
+                }
+                if(session()->get('Level')==3){
+                    $Beranda = 'karyawan/tutor/dasbor';
+                }
+                return redirect($Beranda)->withErrors($Status['Pesan']);
             }else{
                 return redirect()->back()->withErrors($Status['Pesan'])->withInput();
             }

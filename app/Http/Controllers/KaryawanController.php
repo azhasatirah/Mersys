@@ -25,19 +25,43 @@ class KaryawanController extends Controller
 
     }
     public function dasborTutor(){
-  
-        $Dasbor = [];
-        $Siswa = DB::table('siswa')->where('Status','!=','DEL')->get();
-        $Karyawan = DB::table('karyawan')->where('Status','!=','DEL')->get();
-        $Transaksi = DB::table('transaksi')->where('Status','!=','DEL')->get();
-        $KasBank = DB::table('kas_bank')->get();
-        $Dasbor = array(
-            'JumlahSiswa'=>count($Siswa),
-            'JumlahKaryawan'=>count($Karyawan),
-            'Transaksi'=>count($Transaksi),
-            'Omset'=>$KasBank->sum('Total')
-        );
-        return view('karyawan/tutor',['Dasbor'=>$Dasbor]);
+        return view('karyawan/tutor');
+    }
+    public function dasborTutorGetData(){
+        $jadwal_private = DB::table('jadwal')
+        ->join('kursus_materi','jadwal.IDMateri','=','kursus_materi.IDKursusMateri')
+        ->join('kursus_siswa','kursus_materi.IDKursus','=','kursus_siswa.IDKursusSiswa')
+        ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
+        ->join('siswa','kursus_siswa.IDSiswa','=','siswa.IDSiswa')
+        ->select('kursus_materi.Hari','jadwal.Tanggal','kursus_materi.IDKursusMateri',
+        'program_studi.NamaProdi','kursus_siswa.UUID as KodeKelas','kursus_materi.NoRecord',
+        'kursus_materi.NamaMateri','kursus_siswa.KodeKursus','kursus_materi.Status',
+        'kursus_materi.Homework',
+        'siswa.NamaSiswa','jadwal.IDJadwal','jadwal.IDTutor')
+       // ->where('jadwal.Status','CFM')
+        ->where('jadwal.Jenis','!=','semi')
+        ->where('jadwal.IDTutor',session()->get('IDUser'))
+        ->whereDate('jadwal.Tanggal','=',date('Y-m-d'))
+        ->get();
+        $jadwal_semi = DB::table('jadwal')
+        ->join('kursus_materi','jadwal.IDMateri','=','kursus_materi.IDKursusMateri')
+        ->join('kursus_siswa','kursus_materi.IDKursus','=','kursus_siswa.IDKursusSiswa')
+        ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
+        ->join('siswa','kursus_siswa.IDSiswa','=','siswa.IDSiswa')
+        ->select('kursus_materi.Hari','jadwal.Tanggal','kursus_materi.IDKursusMateri',
+        'program_studi.NamaProdi','kursus_siswa.UUID as KodeKelas','kursus_materi.NoRecord',
+        'kursus_materi.NamaMateri','kursus_siswa.KodeKursus','kursus_materi.Status',
+        'kursus_materi.Homework',
+        'siswa.NamaSiswa','jadwal.IDJadwal','jadwal.IDTutor')
+       // ->where('jadwal.Status','CFM')
+        ->where('jadwal.Jenis','semi')
+        ->where('jadwal.IDTutor',session()->get('IDUser'))
+        ->whereDate('jadwal.Tanggal','=',date('Y-m-d'))
+        ->get()->groupBy('Tanggal');
+        return response()->json([
+            $jadwal_private,
+            $jadwal_semi
+        ]);
     }
     public function getDataTutor(){
         $Tutor = DB::table('karyawan')

@@ -274,6 +274,51 @@ class JadwalController extends Controller
         //broadcast(new \App\Events\NotifEvent($DataTutor[0]->UIDSiswa));
         return response()->json('Kelas dimulai');
     }
+    public function startKursusSemi(Request $request){
+        $ite =0;
+        foreach($request->idjadwal as $random){
+            DB::table('kursus_materi')->where('IDKursusMateri',$request->idkursusmateri[$ite])
+            ->update([
+                'IDKaryawan'=>$request->karyawan,
+                'Status'=>'CFM',
+                'Start'=>Carbon::now()
+            ]);
+            DB::table('absen_tutor')->insert([
+                'IDJadwal'=>$request->idjadwal[$ite],
+                'IDTutor'=>session()->get('IDUser'),
+                'Start'=>Carbon::now()->toTimeString(),
+                'End'=>Carbon::now()->toTimeString(),
+                'created_at'=>Carbon::now(),
+                'updated_at'=>Carbon::now(),
+                'UserAdd'=>session()->get('Username'),
+                'UserUpd'=>session()->get('Username'),
+            ]);
+            $DataNotif = DB::table('kursus_materi as km')
+            ->join('kursus_siswa as ks','km.IDKursus','=','ks.IDKursusSiswa')
+            ->join('siswa as s','ks.IDSiswa','=','s.IDSiswa')
+            ->join('karyawan as k','km.IDKaryawan','=','k.IDKaryawan')
+            ->join('program_studi as ps','km.IDProgram','=','ps.IDProgram')
+            ->where('km.IDKursusMateri',$request->idkursusmateri[$ite])
+            ->select(
+                'ks.UUID as UIDKursus',
+                'k.UUID as UIDKaryawan','s.UUID as UIDSiswa',
+                'k.NamaKaryawan','s.NamaSiswa','ps.NamaProdi'
+            )
+            ->get();
+            DB::table('notif')->insert([
+                'Notif'=> $DataNotif[0]->NamaKaryawan . "memualai kelas (".$DataNotif[0]->NamaProdi.")",
+                'NotifFrom'=> session()->get('UID'),
+                'NotifTo'=>$DataNotif[0]->UIDSiswa,
+                'IsRead'=>false,
+                'Link'=>'/siswa/kursus/show/'.$DataNotif[0]->UIDKursus,
+                'created_at'=>Carbon::now(),
+                'updated_at'=>Carbon::now(),
+            ]);
+            $ite++;
+        }
+        //broadcast(new \App\Events\NotifEvent($DataTutor[0]->UIDSiswa));
+        return response()->json('Kelas dimulai');
+    }
     public function endKursus(Request $request){
         DB::table('kursus_materi')->where('IDKursusMateri',$request->idkursusmateri)
         ->update([

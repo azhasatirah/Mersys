@@ -366,6 +366,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     Route::group(['middleware'=>['RoleKaryawan:3'],'prefix'=>'tutor'],function(){
 
         Route::get('/dasbor','KaryawanController@dasborTutor');
+        Route::get('/dasbor/getdata','KaryawanController@dasborTutorGetData');
         Route::get('/gaji','PenggajianController@tutorIndex');
         Route::get('/gaji/getdata','PenggajianController@tutorGetData');
 
@@ -382,6 +383,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::get('jadwal/getdata', 'JadwalController@getdataTutor');
         Route::get('jadwal/getdetaildata/{id}', 'JadwalController@getDetailDataTutor');
         Route::post('kursus/start', 'JadwalController@startKursus');
+        Route::post('kursus/startsemi', 'JadwalController@startKursusSemi');
         Route::post('kursus/end', 'JadwalController@endKursus');
         Route::get('/kursus/event/{id}', function ($id) {
             broadcast(new App\Events\KelasEvent($id));
