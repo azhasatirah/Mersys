@@ -72,103 +72,113 @@
                 {{-- konten pertemuan dan materi --}}
                 <div style="display: none" id="content-pertemuan" class="row mt-3">
                     <div class="col-md-12 ">
+                        <div class="table-responsive">
 
-                        <table id="tabel-jadwal" class="table table-borderless">
-                            <input type="hidden" id="token" name="_token" value="{{ csrf_token() }}" />
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th  style="width:1%">Pertemuan</th>
-                                    <th  style="width:5%">Hari</th>
-                                    <th  style="width:5%">Jam</th>
-                                    <th  style="width:10%">Tanggal</th>
-                                    <th  style="width:50%">Nama Materi</th>
-                                    <th  style="width:10%">Tutor</th>
-                                    <th  style="width:10%">Status</th>      
-                                    <th  style="width:10%">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="data-table-jadwal"></tbody>
-                        </table>
+                            <table id="tabel-jadwal" class="table table-borderless">
+                                <input type="hidden" id="token" name="_token" value="{{ csrf_token() }}" />
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th  style="width:1%">Pertemuan</th>
+                                        <th  style="width:5%">Hari</th>
+                                        <th  style="width:5%">Jam</th>
+                                        <th  style="width:10%">Tanggal</th>
+                                        <th  style="width:50%">Nama Materi</th>
+                                        <th  style="width:10%">Tutor</th>
+                                        <th  style="width:10%">Status</th>      
+                                        <th  style="width:10%">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="data-table-jadwal"></tbody>
+                            </table>
+                        </div>
                     </div>
 
                 </div>
                 {{-- konten Modul --}}
 
                 <div style="display: none" id="content-modul" class="row mt-3">
-                    <table class="table table-borderless">
-                        <thead>
-                            <tr>
-                                <th style="width: 20%">Nama</th>
-                                <th>Modul</th>
-                             
-                           
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (count($Modul)>0)
-                            @foreach ($Modul as $modul)
+                    <div class="table-responsive">
 
-                            <tr>
-                                <td scope="row">
-                                    <h5>{{$modul->Judul}}</h5>
-                                </td>
-                                <td>
-                                    <a name="" id="" class="btn btn-primary"
-                                        href="{{url('siswa/program/stream/modul')}}/{{explode('.',$modul->Modul)[0]}}"
-                                        target="_blank" role="button">{{$modul->Modul}}</a>
-                                    {{-- <input type="file" class="form-control-file" name="" id="" placeholder="" aria-describedby="fileHelpId">   --}}
-                                </td>
-               
-                            </tr>
-                            @endforeach
-                            @endif
-                        </tbody>
-                    </table>
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%">Nama</th>
+                                    <th>Modul</th>
+                                 
+                               
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (count($Modul)>0)
+                                @foreach ($Modul as $modul)
+    
+                                <tr>
+                                    <td scope="row">
+                                        <h5>{{$modul->Judul}}</h5>
+                                    </td>
+                                    <td>
+                                        <a name="" id="" class="btn btn-primary"
+                                            href="{{url('siswa/program/stream/modul')}}/{{explode('.',$modul->Modul)[0]}}"
+                                            target="_blank" role="button">{{$modul->Modul}}</a>
+                                        {{-- <input type="file" class="form-control-file" name="" id="" placeholder="" aria-describedby="fileHelpId">   --}}
+                                    </td>
+                   
+                                </tr>
+                                @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
   
                 {{-- konten Video --}}
 
                 <div style="display: none" id="content-video" class="row mt-3">
-                    <table class="table table-borderless">
-                        <thead>
-                            <tr>
-                                <th style="width: 40%">Judul</th>
-                                <th>Video</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($Video as $video)
-                            <tr>
-                                <td scope="row">
-                                    <h5>{{$video->Judul}}</h5>
-                                </td>
-                                <td>
-                                   {!!$video->Link!!} 
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40%">Judul</th>
+                                    <th>Video</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($Video as $video)
+                                <tr>
+                                    <td scope="row">
+                                        <h5>{{$video->Judul}}</h5>
+                                    </td>
+                                    <td>
+                                       {!!$video->Link!!} 
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
                 {{-- konten pertemuan dan materi selesai --}}
                 <div style="display: none" id="content-selesai" class="row mt-3">
                     <div class="col-md-12 ">
-
-                        <table id="tabel-jadwal-selesai" class="table table-borderless">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th  style="width:5%">Pertemuan</th>
-                                    <th  style="width:5%">Hari</th>
-                                    <th  style="width:5%">Jam</th>
-                                    <th  style="width:10%">Tanggal</th>
-                                    <th  style="width:50%">Nama Materi</th>
-                                    <th  style="width:10%">Tutor</th>
-                                </tr>
-                            </thead>
-                            <tbody id="data-table-jadwal-selesai"></tbody>
-                        </table>
+                        <div class="table-responsive">
+                        
+                            <table id="tabel-jadwal-selesai" class="table table-borderless">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th  style="width:5%">Pertemuan</th>
+                                        <th  style="width:5%">Hari</th>
+                                        <th  style="width:5%">Jam</th>
+                                        <th  style="width:10%">Tanggal</th>
+                                        <th  style="width:50%">Nama Materi</th>
+                                        <th  style="width:10%">Tutor</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="data-table-jadwal-selesai"></tbody>
+                            </table>
+                        </div>
                     </div>
 
                 </div>
@@ -270,31 +280,37 @@
                 <div class="row">
                     <div class="col-md-6">
                         <h4>Sebelum</h4>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Pertemuan</th>
-                                    <th>Tanggal</th>
-                                    <th>Jam</th>
-                                    <th>Nama Materi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-warning text-white" id="tbody-jadwal-changes-from"></tbody>
-                        </table>
+                        <div class="table-responsive">
+                        
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Pertemuan</th>
+                                        <th>Tanggal</th>
+                                        <th>Jam</th>
+                                        <th>Nama Materi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-warning text-white" id="tbody-jadwal-changes-from"></tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <h4>Sesudah</h4>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Pertemuan</th>
-                                    <th>Tanggal</th>
-                                    <th>Jam</th>
-                                    <th>Nama Materi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-success text-white" id="tbody-jadwal-changes-to"></tbody>
-                        </table>
+                        <div class="table-responsive">
+                        
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Pertemuan</th>
+                                        <th>Tanggal</th>
+                                        <th>Jam</th>
+                                        <th>Nama Materi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-success text-white" id="tbody-jadwal-changes-to"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
