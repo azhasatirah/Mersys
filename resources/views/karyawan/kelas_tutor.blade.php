@@ -84,116 +84,123 @@
 
                 <div style="display: none" id="content-pertemuan" class="row mt-3">
                     <div class="col-md-12">
-
-                        <table id="table-jadwal" class="table table-borderless">
-                            <thead>
-                                <tr>
-                                    <th>Tanggal</th>
-                                    <th>Jam</th>
-                                    <th>Kelas</th>
-                                    <th>Nama Materi</th>
-                                    <th>Tugas / PR</th>
-                                    <th>Kode Kursus</th>
-                                    <th>Nama Siswa</th>
-                                    <th>Status</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">                     
+                            <table id="table-jadwal" class="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Jam</th>
+                                        <th>Kelas</th>
+                                        <th>Nama Materi</th>
+                                        <th>Tugas / PR</th>
+                                        <th>Kode Kursus</th>
+                                        <th>Nama Siswa</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                 </div>
                 {{-- konten Modul --}}
 
                 <div style="display: none" id="content-modul" class="row mt-3">
-                    <table class="table table-borderless">
-                        <thead>
-                            <tr>
-                                <th style="width: 20%">Nama</th>
-                                <th>Modul</th>
-                             
-                           
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($Modul as $modul)
-
-                            <tr>
-                                <td scope="row">
-                                    <h5>{{$modul->Judul}}</h5>
-                                </td>
-                                <td>
-                                    <a name="" id="" class="btn btn-primary"
-                                        href="{{url('karyawan/tutor/program/stream/modul')}}/{{explode('.',$modul->Modul)[0]}}"
-                                        target="_blank" role="button">{{$modul->Modul}}</a>
-                                    {{-- <input type="file" class="form-control-file" name="" id="" placeholder="" aria-describedby="fileHelpId">   --}}
-                                </td>
-               
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">                     
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%">Nama</th>
+                                    <th>Modul</th>
+                                 
+                               
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($Modul as $modul)
+    
+                                <tr>
+                                    <td scope="row">
+                                        <h5>{{$modul->Judul}}</h5>
+                                    </td>
+                                    <td>
+                                        <a name="" id="" class="btn btn-primary"
+                                            href="{{url('karyawan/tutor/program/stream/modul')}}/{{explode('.',$modul->Modul)[0]}}"
+                                            target="_blank" role="button">{{$modul->Modul}}</a>
+                                        {{-- <input type="file" class="form-control-file" name="" id="" placeholder="" aria-describedby="fileHelpId">   --}}
+                                    </td>
+                   
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
   
                 {{-- konten Video --}}
 
                 <div style="display: none" id="content-video" class="row mt-3">
-                    <table class="table table-borderless">
-                        <thead>
-                            <tr>
-                                <th style="width: 40%">Judul</th>
-                                <th>Video</th>
-                         
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($Video as $video)
-                            <tr>
-                                <td scope="row">
-                                    <h5>{{$video->Judul}}</h5>
-                                </td>
-                                <td>
-                                    {!!$video->Link!!}
-                                </td>
-            
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">                     
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40%">Judul</th>
+                                    <th>Video</th>
+                             
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($Video as $video)
+                                <tr>
+                                    <td scope="row">
+                                        <h5>{{$video->Judul}}</h5>
+                                    </td>
+                                    <td>
+                                        {!!$video->Link!!}
+                                    </td>
+                
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
                 {{-- konten Bahan Tutor --}}
 
                 <div style="display: none" id="content-bahantutor" class="row mt-3">
-                    <table class="table table-borderless">
-                        <thead>
-                            <tr>
-                                <th style="width: 35%">Nama</th>
-                                <th>File</th>
-               
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($BahanTutor as $bahantutor)
-                            <tr>
-                                <td scope="row">
-                                    <h5>{{$bahantutor->NamaBahan}}</h5>
-                                </td>
-                                <td>
-                                    <a name="" id="" class="btn btn-primary"
-                                        href="{{url('karyawan/tutor/program/stream/modul')}}/{{explode('.',$bahantutor->File)[0]}}"
-                                        target="_blank" role="button">{{$bahantutor->File}}</a>
-                                    {{-- <input type="file" class="form-control-file" name="" id="" placeholder="" aria-describedby="fileHelpId">   --}}
-                                </td>
-               
-                            </tr>
-                            @endforeach
-                        </tbody>
-
-                    </table>
+                    <div class="table-responsive">                     
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th style="width: 35%">Nama</th>
+                                    <th>File</th>
+                   
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($BahanTutor as $bahantutor)
+                                <tr>
+                                    <td scope="row">
+                                        <h5>{{$bahantutor->NamaBahan}}</h5>
+                                    </td>
+                                    <td>
+                                        <a name="" id="" class="btn btn-primary"
+                                            href="{{url('karyawan/tutor/program/stream/modul')}}/{{explode('.',$bahantutor->File)[0]}}"
+                                            target="_blank" role="button">{{$bahantutor->File}}</a>
+                                        {{-- <input type="file" class="form-control-file" name="" id="" placeholder="" aria-describedby="fileHelpId">   --}}
+                                    </td>
+                   
+                                </tr>
+                                @endforeach
+                            </tbody>
+    
+                        </table>
+                    </div>
                 </div>
 
                 <div style="display: none" id="content-ubahjadwal" class="row mt-3">
@@ -608,17 +615,21 @@
                         "<div id=\"history-changes-"+ele.IDJadwalChange+"\" class=\"row\" style=\"display: "+disChanges+"\">"+
                             "<div class=\"col-md-6\">"+
                                 "<h4>Sebelum</h4>"+
+                                "<div class=\"table-responsive\">"+
                                 "<table class=\"table\">"+
                                     "<thead><tr><th>Pertemuan</th> <th>Tanggal</th><th>Jam</th><th>Nama Materi</th></tr></thead>"+
                                     "<tbody class=\"bg-warning text-white\" >"+ChangesSebelum+"</tbody>"+
                                 "</table>"+
+                                "</div>"+
                             "</div>"+
                             "<div class=\"col-md-6\">"+
                                 "<h4>Sesudah</h4>"+
+                                "<div class=\"table-responsive\">"+
                                 "<table class=\"table\">"+
                                     "<thead><tr><th>Pertemuan</th> <th>Tanggal</th><th>Jam</th><th>Nama Materi</th></tr></thead>"+
                                     "<tbody class=\"bg-success text-white\" >"+ChangesSesudah+"</tbody>"+
                                 "</table>"+
+                                "</div>"+
                             "</div>"+
                        " </div>"+
                         ChangesButton+
