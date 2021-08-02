@@ -138,8 +138,6 @@
                   <ul class="dropdown-menu list-unstyled msg_list" 
                   id="notif-list"
                   role="menu" aria-labelledby="navbarDropdown1">
-
-
                   </ul>
                 </li>
               </ul>
