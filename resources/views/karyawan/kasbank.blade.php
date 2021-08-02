@@ -205,7 +205,7 @@
                     Total,
                     numberToIDR(ele.PrevTotal+ele.Total),
                     ele.Keterangan,
-                    PrefixKode=='SBK'?btn:''
+                    btn
                 ]).draw()
                 i++
             })
