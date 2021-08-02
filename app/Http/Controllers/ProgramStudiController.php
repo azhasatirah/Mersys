@@ -120,8 +120,11 @@ class ProgramStudiController extends Controller
             ));
         }
     // dd($Data);
-
-        return view('siswa.program',['Program'=>$Data]);
+        if(count($Data)>0){
+            return view('siswa.program',['Program'=>$Data]);
+        }else{
+            return redirect()->back()->withErrors('Progra masih kosong');
+        }
     }
 
     public function showDetail($ID){
