@@ -43,7 +43,7 @@ class AuthController extends Controller
                 if(session()->get('Level')==1){
                     $Beranda = 'karyawan/dasbor';
                 }
-                if(session()->get('karyawan')==2){
+                if(session()->get('Level')==2){
                     $Beranda = 'karyawan/dasbor';
                 }
                 if(session()->get('Level')==3){
