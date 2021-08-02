@@ -1188,17 +1188,21 @@
                         "<div id=\"history-changes-"+ele.IDJadwalChange+"\" class=\"row\" style=\"display: "+disChanges+"\">"+
                             "<div class=\"col-md-6\">"+
                                 "<h4>Sebelum</h4>"+
-                                "<table class=\"table\">"+
-                                    "<thead><tr><th>Pertemuan</th> <th>Tanggal</th><th>Jam</th><th>Nama Materi</th></tr></thead>"+
-                                    "<tbody class=\"bg-warning text-white\" >"+ChangesSebelum+"</tbody>"+
-                                "</table>"+
+                                "<div class=\"table-responsive\">"+
+                                    "<table class=\"table\">"+
+                                        "<thead><tr><th>Pertemuan</th> <th>Tanggal</th><th>Jam</th><th>Nama Materi</th></tr></thead>"+
+                                        "<tbody class=\"bg-warning text-white\" >"+ChangesSebelum+"</tbody>"+
+                                    "</table>"+
+                                "</div>"+
                             "</div>"+
                             "<div class=\"col-md-6\">"+
                                 "<h4>Sesudah</h4>"+
+                                "<div class=\"table-responsive\">"+
                                 "<table class=\"table\">"+
                                     "<thead><tr><th>Pertemuan</th> <th>Tanggal</th><th>Jam</th><th>Nama Materi</th></tr></thead>"+
                                     "<tbody class=\"bg-success text-white\" >"+ChangesSesudah+"</tbody>"+
                                 "</table>"+
+                                "</div>"+
                             "</div>"+
                        " </div>"+
                     "</a>"
