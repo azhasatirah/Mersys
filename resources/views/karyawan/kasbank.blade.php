@@ -205,7 +205,10 @@
                     Total,
                     numberToIDR(ele.PrevTotal+ele.Total),
                     ele.Keterangan,
-                    btn
+                    PrefixKode=='SBK'?btn:
+                    "<button type=\"button\" onclick=\"deleteKasBank("+ele.IDKasBank+")\" class=\"btn btn-primary btn-sm btn-danger\" >"+
+                    "<i class=\"fa fa-trash\"></i>"+
+                    "</button>"+
                 ]).draw()
                 i++
             })
