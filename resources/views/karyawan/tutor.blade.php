@@ -53,7 +53,6 @@
         $.get('/karyawan/tutor/dasbor/getdata',function(Data){
             JadwalPrivate = Data[0]
             JadwalSemi = Data[1]
-            console.log(Data)
             appendRowTablePrivate()
             appendRowTableSemi()
         })
@@ -65,7 +64,7 @@
         var now = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
         var jam = String(today.getHours()).padStart(2,'0')+':'+String(today.getMinutes()).padStart(2,'0')+':'+today.getMilliseconds();
 
-        //TableJadwal.empty()
+        TableJadwal.empty()
         JadwalPrivate.forEach((data) =>{
 
             var b_mulai = "<form id=\"formstart"+data.IDKursusMateri+"\">"+

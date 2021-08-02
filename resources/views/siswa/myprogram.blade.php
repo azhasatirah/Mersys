@@ -1,87 +1,89 @@
 @extends('siswa.layouts.layout')
 @section('title','Program Saya')
 @section('content')
+<div class="table-responsive">
 
-<table id="tabeldata" class="table  table-dark projects">
-    <thead>
-        <tr>
-            <th style="width: 1%">No</th>
-            <th style="width: 20%">Nama Program</th>
-            <th>Materi</th>
-            <th style="width: 30%">Pertemuan</th>
-            <th>Status</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($Kursus as $item)
-
-        <tr class="bg-dark"  style="font-size:14px">
-            <td>{{$loop->iteration}}</td>
-            <td>
-                <h6>{{$item['NamaProgram']}}</h6>
-
-            </td>
-            <td>
-                <h6> {{$item['NamaMateri']}}</h6>
-            </td>
-            <td class="project_progress">
-                <div class="progress progress_sm">
-                    <div class="progress-bar bg-green" role="progressbar"
-                        data-transitiongoal="{{$item['Pertemuan']*(100/$item['TotalPertemuan'])}}"></div>
-                </div>
-                @if ($item['NamaMateri']!='Kelas selesai')
+    <table id="tabeldata" class="table  table-dark projects">
+        <thead>
+            <tr>
+                <th style="width: 1%">No</th>
+                <th style="width: 20%">Nama Program</th>
+                <th>Materi</th>
+                <th style="width: 30%">Pertemuan</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($Kursus as $item)
+    
+            <tr class="bg-dark"  style="font-size:14px">
+                <td>{{$loop->iteration}}</td>
+                <td>
+                    <h6>{{$item['NamaProgram']}}</h6>
+    
+                </td>
+                <td>
+                    <h6> {{$item['NamaMateri']}}</h6>
+                </td>
+                <td class="project_progress">
+                    <div class="progress progress_sm">
+                        <div class="progress-bar bg-green" role="progressbar"
+                            data-transitiongoal="{{$item['Pertemuan']*(100/$item['TotalPertemuan'])}}"></div>
+                    </div>
+                    @if ($item['NamaMateri']!='Kelas selesai')
+                        
+                    <p>pertemuan ke {{$item['Pertemuan']}} dari {{$item['TotalPertemuan']}}</p>
+                    @else
+                    Selesai ( {{$item['TotalPertemuan']}} Pertemuan )
+                    @endif
+                </td>
+                <td>
+                    <a type="button" class="btn btn-success btn-xs">{{$item['NamaMateri']=='Kelas selesai'?'Selesai':$item['StatusJadwal']}}</a>
+                </td>
+                <td>
+                    @if($item['NamaMateri']=='Kelas selesai'||$item["JadwalExist"])
+                    <a href="{{url('siswa/kursus/show')}}/{{$item['UUIDKursus']}}" class="btn btn-primary btn-xs">
+                        <i class="fa fa-folder"></i>
+                        Buka
+                    </a>
+                    @else
+                    <a href="javascript:void(0)" class="btn btn-primary btn-sm" data-toggle="modal"
+                        data-target="#modaljenis"
+                        onclick="setdata({{$item['TotalPertemuan']}},{{$item['IDKursus']}},{{$item['IDProgram']}})">
+                        <i class="fa fa-edit"></i>
+                        Buat Jadwal
+                    </a>
+                    <!-- Button trigger modal -->
+    
                     
-                <p>pertemuan ke {{$item['Pertemuan']}} dari {{$item['TotalPertemuan']}}</p>
-                @else
-                Selesai ( {{$item['TotalPertemuan']}} Pertemuan )
-                @endif
-            </td>
-            <td>
-                <a type="button" class="btn btn-success btn-xs">{{$item['NamaMateri']=='Kelas selesai'?'Selesai':$item['StatusJadwal']}}</a>
-            </td>
-            <td>
-                @if($item['NamaMateri']=='Kelas selesai'||$item["JadwalExist"])
-                <a href="{{url('siswa/kursus/show')}}/{{$item['UUIDKursus']}}" class="btn btn-primary btn-xs">
-                    <i class="fa fa-folder"></i>
-                    Buka
-                </a>
-                @else
-                <a href="javascript:void(0)" class="btn btn-primary btn-sm" data-toggle="modal"
-                    data-target="#modaljenis"
-                    onclick="setdata({{$item['TotalPertemuan']}},{{$item['IDKursus']}},{{$item['IDProgram']}})">
-                    <i class="fa fa-edit"></i>
-                    Buat Jadwal
-                </a>
-                <!-- Button trigger modal -->
-
-                
-                <!-- Modal -->
-                <div class="modal fade" id="modaljenis" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-body" style="padding: 0px">
-                                <div  class="row text-dark">
-                                    <div onclick="showCreateJadwal(1)" style="background:gray;cursor: pointer;" class="col-md-6 text-white">
-                                        <h2>Private</h2>
-                                        <img src="{{url('images/private.png')}}" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|} mb-5" alt="">
-                                    </div>
-                                    <div onclick="showCreateJadwal(2)" style="background: white;cursor: pointer;" class="col-md-6">
-                                        <h2>Semi Private</h2>
-                                        <img src="{{url('images/semi-private.png')}}" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|} mb-5" alt="">
+                    <!-- Modal -->
+                    <div class="modal fade" id="modaljenis" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body" style="padding: 0px">
+                                    <div  class="row text-dark">
+                                        <div onclick="showCreateJadwal(1)" style="background:gray;cursor: pointer;" class="col-md-6 text-white">
+                                            <h2>Private</h2>
+                                            <img src="{{url('images/private.png')}}" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|} mb-5" alt="">
+                                        </div>
+                                        <div onclick="showCreateJadwal(2)" style="background: white;cursor: pointer;" class="col-md-6">
+                                            <h2>Semi Private</h2>
+                                            <img src="{{url('images/semi-private.png')}}" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|} mb-5" alt="">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                @endif
-
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+                    @endif
+    
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 
 <!-- {{-- Modal create jadwal --}} -->
 <div class="modal fade" id="modalcreate"  style="overflow-y: auto"tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
