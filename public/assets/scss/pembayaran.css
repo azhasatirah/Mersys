@@ -4,12 +4,13 @@ body{
 .board{
     max-width: 30rem;
     text-align:center;
-    padding-left: 5px;
+    padding-left: 20px;
     margin-left: auto;
     margin-right:auto;
 }
 .nav{
     max-width: 30rem;
+    width: 100%;
 }
 .nav-pembayaran{
     background:white;
