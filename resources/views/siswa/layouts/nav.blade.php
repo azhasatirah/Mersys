@@ -17,43 +17,44 @@
   <body>
     <input type="hidden" value="{{session()->get('UID')}}" id="uid-user">
     <navbar class="nav bg-white shadow-sm sticky-top">
-      <div class="d-flex justify-content-between">
-        <a href="" class="navbar-brand">
-          <img src="{{asset('images/icons/merachel.png')}}" height="70px" width="auto" alt="" srcset="">  
-        </a>
-        <button class="btn text-dark" id="nav-icon" type="button" data-bs-toggle="collapse" 
-          data-bs-target="#navbarToggleExternalContent" 
-          aria-controls="navbarToggleExternalContent" aria-expanded="false" 
-          aria-label="Toggle navigation">
-          <i class="fa fa-navicon"></i>
-        </button> 
-      </div>
-      <div class="d-flex justify-content-center">
+      <div class="container" style="width:30rem;background:black">
+        <div class="d-flex justify-content-between">
+          <a href="" class="navbar-brand">
+            <img src="{{asset('images/icons/merachel.png')}}" height="70px" width="auto" alt="" srcset="">  
+          </a>
+          <button class="btn text-dark" id="nav-icon" type="button" data-bs-toggle="collapse" 
+            data-bs-target="#navbarToggleExternalContent" 
+            aria-controls="navbarToggleExternalContent" aria-expanded="false" 
+            aria-label="Toggle navigation">
+            <i class="fa fa-navicon"></i>
+          </button> 
+        </div>
+        <div class="d-flex justify-content-center">
 
-        <div class="collapse" id="navbarToggleExternalContent">
-          <div class="bg-white p-1">
-            <div class="container" style="width:30rem">
-              @if (session()->get('StatusUser')=='CLS')
-      
-              <a href="{{url('siswa/kursus')}}" class="btn nav-collapse mb-1" >
-                Program Saya
-              </a>
-              <a href="{{url('siswa/transaksi')}}" class="btn nav-collapse mb-1" >
-                Riwayat Transaksi
-              </a>
-              <a href="{{url('siswa/program/global')}}" class="btn nav-collapse mb-1" >
-                Transaksi 
-              </a>
-              @endif
-              <form method="POST" id="dataLogout" action="{{url('/auth/logout')}}">@csrf</form>
-              <a href="#" id="btnLogout" class="btn nav-collapse mb-1" >
-                Logout
-              </a>
+          <div class="collapse" id="navbarToggleExternalContent">
+            <div class="bg-white p-1">
+              <div class="container" style="width:30rem">
+                @if (session()->get('StatusUser')=='CLS')
+        
+                <a href="{{url('siswa/kursus')}}" class="btn nav-collapse mb-1" >
+                  Program Saya
+                </a>
+                <a href="{{url('siswa/transaksi')}}" class="btn nav-collapse mb-1" >
+                  Riwayat Transaksi
+                </a>
+                <a href="{{url('siswa/program/global')}}" class="btn nav-collapse mb-1" >
+                  Transaksi 
+                </a>
+                @endif
+                <form method="POST" id="dataLogout" action="{{url('/auth/logout')}}">@csrf</form>
+                <a href="#" id="btnLogout" class="btn nav-collapse mb-1" >
+                  Logout
+                </a>
+              </div>
             </div>
-          </div>
-        </div>  
+          </div>  
+        </div>
       </div>
-    
     </navbar>
 
     <div class="row board">
