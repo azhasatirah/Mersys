@@ -119,8 +119,13 @@
             </p>
             <p style="margin-bottom: 0px" class="title text-left mt-2">EVALUASI FINAL PRESENTASI MURID</p>
             <table>
-                <tr style="text-align: center">
-                    <td style="height: 200px"></td>
+                <tr >
+                    <td style="height: 200px;vertical-align:top">
+                        <span style="margin-left:10px">
+
+                            {{count($FinalEvaluasi)>0?$FinalEvaluasi[0]->EvaluasiFinal:''}}
+                        </span>
+                    </td>
                 </tr>
             </table>
         </div>

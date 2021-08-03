@@ -7,7 +7,7 @@
 @if (count($errors)>0)
     <input type="hidden" value="{{$errors->first('msg')}}" id="errormsg">
 @endif
-
+<input type="hidden" value="{{session()->get('msg')}}" id="msg">
 <div class="x_content">
     
     <a name="" id="" class="btn btn-primary btn-sm" 
@@ -19,6 +19,75 @@
     <a name="" id="" class="btn btn-primary btn-sm" 
     href="{{url('karyawan/tutor/rapor')}}/{{$Kursus[0]->UUID}}" role="button">
     Rapor</a>
+
+    <!-- Button trigger modal -->
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="modal-create-ef" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Evaluasi final</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <form method="POST" action="{{url('karyawan/tutor/nilai/evaluasifinal/store')}}">
+                <div class="modal-body">
+                    @csrf
+                    <input type="hidden" value="{{$Kursus[0]->UUID}}" name="uidkursus">
+                    <input type="hidden" value="{{$Kursus[0]->IDKursusSiswa}}" name="idkursus">
+
+                    <div class="form-group">
+                        <label for="">Evaluasi final</label>
+                        <textarea class="form-control" name="evaluasifinal"  rows="3"></textarea>
+                      </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @if (count($EvaluasiFinal)>0)
+    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-edit-ef">
+        Edit Evaluasi final
+     </button>
+    <div class="modal fade" id="modal-edit-ef" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Evaluasi final</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <form method="POST" action="{{url('karyawan/tutor/nilai/evaluasifinal/update')}}">
+                <div class="modal-body">
+                    @csrf
+                    <input type="hidden" value="{{$Kursus[0]->IDKursusSiswa}}" name="idkursus">
+                    <input type="hidden" value="{{$Kursus[0]->UUID}}" name="uidkursus">
+                    <input type="hidden" value="{{$EvaluasiFinal[0]->IDEvaluasiFinal}}" name="idevaluasifinal">
+
+                    <div class="form-group">
+                      <label for="">Evaluasi final</label>
+                      <textarea class="form-control" name="evaluasifinal"  rows="3">{{$EvaluasiFinal[0]->EvaluasiFinal}}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Edit</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @else
+        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-create-ef">
+        Evaluasi final
+      </button>
+    @endif
     <div class="row grid_slider mt-5">
         <div class="col-md-6 col-sm-6  ">
             <div class="item form-group">
@@ -37,7 +106,14 @@
                     <input type="text" value="{{$Kursus[0]->NamaSiswa}}"  style="width: 340px" name="namanilai" id="first-name" required="required" readonly class="form-control ">
                 </div>
             </div>
-           
+            <small class="text-muted"></small>
+           <div class="form-group">
+             <label class=" col-md-3 col-sm-3 label-align">Evaluasi final</label>
+             <div class="col-md-6 col-sm-6" >
+
+                 <textarea style="width: 21.2rem" readonly class="form-control" rows="4">{{count($EvaluasiFinal)>0?$EvaluasiFinal[0]->EvaluasiFinal:''}}</textarea>
+             </div>
+           </div>
         </div>
         <div class="col-md-6 col-sm-6  ">
             <form id="demo-form2" method="POST" data-parsley-validate 
@@ -126,7 +202,15 @@
         $(document).ready(function () {
             $('#tabeldata').DataTable();
             showError();
+            showMsg()
         });
+        function showMsg(){
+            let msg = $('#msg').val()
+            if(msg.length>0){
+                swal(msg)
+            }
+
+        }
         function showError(){
             let errorMsg = $('#errormsg').val();
             if(errorMsg != undefined){
@@ -137,6 +221,7 @@
                 })
             }
         }
+
         function showData(){
        var Tutor = function(){
            var tmp =null;

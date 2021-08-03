@@ -16,8 +16,8 @@
   </head>
   <body>
     <input type="hidden" value="{{session()->get('UID')}}" id="uid-user">
-    <navbar style="width:30rem" class="nav bg-white shadow-sm sticky-top">
-      <div class="container" style="width:30rem">
+    <navbar  class="nav bg-white shadow-sm sticky-top">
+      <div class="container" >
         <div class="d-flex justify-content-between">
           <a href="" class="navbar-brand">
             <img src="{{asset('images/icons/merachel.png')}}" height="70px" width="auto" alt="" srcset="">  

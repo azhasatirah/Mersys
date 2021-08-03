@@ -515,6 +515,33 @@ class TransaksiController extends Controller
     }
     public function storeTransaksi(Request $request){
        // dd($request);
+        $ProgramStudi = DB::table('program_studi')->where('IDProgram',$request->program)->get();
+        $KeyProgramStudi = $ProgramStudi[0]->IDKategoriGlobalProgram == 2?explode('(Bulanan-',$ProgramStudi[0]->NamaProdi):false;
+        if($ProgramStudi[0]->IDKategoriGlobalProgram==2&&intVal($KeyProgramStudi[1][0])!=1){
+            $isValid = false;
+            $KursusBulananSiswa = DB::table('kursus_siswa as ks')
+            ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
+            ->where('ps.NamaProdi','like',$KeyProgramStudi[0].'(bulanan-%')
+            ->where('ks.IDSiswa',session()->get('IDUser'))
+            ->where('ks.Status','!=','DEL')
+            ->select('ks.*','ps.NamaProdi')
+            ->get();
+           // dd($KursusBulananSiswa->toArray());
+            if(count($KursusBulananSiswa)==0){
+                $isValid== true;
+            }
+            if(count($KursusBulananSiswa)>0){
+                $LastBulanan = intval($KeyProgramStudi[1][0])-1;
+                $isValid = array_reduce($KursusBulananSiswa->toArray(), function($isBigger, $num) use($LastBulanan){
+                    return $isBigger || intval(explode('Bulanan-',$num->NamaProdi)[1][0]) == $LastBulanan;
+                });
+            }
+            if($isValid==false){
+                return redirect()->back()->with('msg','Tidak bisa mengambil program bulanan ini, karena anda belum belajar bulanan ke '.$LastBulanan);
+            }
+            
+        }
+     
         $KodeKursus =str_replace('-','',str::uuid());
         $DataKursusSiswa = array(
             'UUID'=>$KodeKursus,

@@ -1,7 +1,7 @@
 @extends('siswa.layouts.layout')
 @section('title','Program Saya')
 @section('content')
-
+<input type="hidden" value="{{session()->get('msg')}}" id="msg">
 <div class="row">
   <div class="col-md-12">
     <div class="x_panel">
@@ -172,8 +172,16 @@
 
     $('#tabeldata').DataTable();
     getDiskon()
+    showMsg()
   });
+function showMsg(){
+  let msg = $('#msg').val()
+  if(msg.length>0){
 
+  console.log(msg)
+  swal(msg)
+  }
+}
   function getDiskon() {
     Promise.resolve($.get("/siswa/diskon/getdata/" + Siswa)).then((ele) => {
       DiskonAktif = ele

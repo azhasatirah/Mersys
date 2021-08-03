@@ -396,6 +396,8 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::get('nilai/getdata','NilaiController@getData');
         Route::get('nilai/{id}','NilaiController@index');
         Route::post('nilai/store','NilaiController@store');
+        Route::post('nilai/evaluasifinal/store','NilaiController@storeEvaluasiFinal');
+        Route::post('nilai/evaluasifinal/update','NilaiController@updateEvaluasiFinal');
         Route::post('nilai/update','NilaiController@update');
         Route::get('nilai/destroy/{id}','NilaiController@destroy');
 

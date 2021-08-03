@@ -8,7 +8,7 @@ use Illuminate\support\Carbon;
 
 class NilaiController extends Controller
 {
-    public function index($id){
+    public function getIndexData($id){
         $DataNilaiTMP = DB::table('nilai')
         ->join('kursus_siswa','nilai.IDKursus','=','kursus_siswa.IDKursusSiswa')
         ->join('jenis_nilai','nilai.IDJenis','=','jenis_nilai.IDJenisNilai')
@@ -32,9 +32,43 @@ class NilaiController extends Controller
         ->where('kursus_siswa.UUID',$id)
         ->where('jadwal.IDTutor',session()->get('IDUser'))
         ->get();
+        $DataEvalFinal = DB::table('nilai_evaluasi_final')
+        ->where('IDKursus',$DataKursus[0]->IDKursusSiswa)->get();
         $JenisNilai = DB::table('jenis_nilai')->where('Status','OPN')->get();
+        return [$DataNilai,$DataEvalFinal,$DataKursus,$JenisNilai];
+    }
+    public function index($id){
+        $Data =$this->getIndexData($id);
         //dd($DataNilai);
-        return view('karyawan/nilai_tutor_detail',['Nilai'=>$DataNilai,'Kursus'=>$DataKursus,'JenisNilai'=>$JenisNilai]);
+        return view('karyawan/nilai_tutor_detail',['EvaluasiFinal'=>$Data[1],'Nilai'=>$Data[0],'Kursus'=>$Data[2],'JenisNilai'=>$Data[3]]);
+    }
+    public function storeEvaluasiFinal(Request $request){
+        $DataStore = array(
+            'IDKursus'=>$request->idkursus,
+            'EvaluasiFinal'=>$request->evaluasifinal,
+            'Tanggal'=>Carbon::now(),
+            'UserAdd'=>session()->get('Username'),
+            'UserUpd'=>session()->get('Username'),
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now()
+        );
+        DB::table('nilai_evaluasi_final')->insert($DataStore);
+        $Data =$this->getIndexData($request->uidkursus);
+        //dd($DataNilai);
+        return redirect()->back()->with('msg', 'Berhasil ditambahkan');
+    }
+    public function updateEvaluasiFinal(Request $request){
+        $DataStore = array(
+            'EvaluasiFinal'=>$request->evaluasifinal,
+            'Tanggal'=>Carbon::now(),
+            'UserUpd'=>session()->get('Username'),
+            'updated_at'=>Carbon::now()
+        );
+        DB::table('nilai_evaluasi_final')->where('IDEvaluasiFinal',$request->idevaluasifinal)->update($DataStore);
+        $Data = $this->getIndexData($request->uidkursus);
+        //dd($DataNilai);
+        return redirect()->back()->with('msg', 'Berhasil diganti');
+        //return view('karyawan/nilai_tutor_detail',['EvaluasiFinal'=>$Data[1],'Nilai'=>$Data[0],'Kursus'=>$Data[2],'JenisNilai'=>$Data[3]])
     }
     public function indexSiswa($id){
         $DataNilaiTMP = DB::table('nilai')
@@ -172,9 +206,12 @@ class NilaiController extends Controller
         ->join('nilai as n','ks.IDKursusSiswa','=','n.IDKursus')
         ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
         ->where('ks.UUID',$id)
-        ->select('s.NamaSiswa','ps.IDKategoriGlobalProgram','ps.NamaProdi','n.NamaNilai','n.Nilai','n.IDJenis as JenisNilai')
+        ->select('s.NamaSiswa','ks.IDKursusSiswa','ps.IDKategoriGlobalProgram','ps.NamaProdi','n.NamaNilai','n.Nilai','n.IDJenis as JenisNilai')
         ->get();
-
+        $FinalEvaluasi = DB::table('nilai_evaluasi_final')
+        ->where('IDKursus',$Rapor[0]->IDKursusSiswa)
+        ->get();
+        
         $Tutor = DB::table('kursus_siswa as ks')
         ->join('jadwal as j','ks.IDKursusSiswa','=','j.IDKursusSiswa')
         ->join('karyawan as k','j.IDTutor','=','k.IDKaryawan')
@@ -217,9 +254,9 @@ class NilaiController extends Controller
                 ));
                }
            //dd($DataRapor);
-            return view('siswa/nilai/nilai_rapor',['Normal'=>$RaporNormal,'Look'=>$RaporLook]);
+            return view('siswa/nilai/nilai_rapor',['FinalEvaluasi'=>$FinalEvaluasi,'Normal'=>$RaporNormal,'Look'=>$RaporLook]);
         }else{
-            return redirect()->back()->withErrors(['msg'=>'Belum ada nilai'])->withInput();
+            return redirect()->back()->with('msg','Belum ada nilai');
         }
     }
 }
