@@ -231,7 +231,10 @@ class JadwalController extends Controller
                 'UUIDProgram'=>$id
             ));
         }
-        return response()->json($Data);
+
+        $Data1 = DB::table('master_waktu_maksimal_cuti')->get();
+        $Data2 = DB::table('master_waktu_maksimal_sebelum_ganti_jadwal')->get();
+        return response()->json([$Data,$Data1,$Data2]);
     }
     public function startKursus(Request $request){
         DB::table('kursus_materi')->where('IDKursusMateri',$request->idkursusmateri)

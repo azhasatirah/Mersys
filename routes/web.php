@@ -138,6 +138,22 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 
     //route admin
     Route::group(['middleware'=>['RoleKaryawan:2'],'prefix'=>'admin'],function(){
+
+    
+        Route::get('master/dendatelatcicilan','DendaKeterlambatanCicilan@index');
+        Route::get('master/dendatelatcicilan/getdata','DendaKeterlambatanCicilan@getdata');
+        Route::post('master/dendatelatcicilan/store','DendaKeterlambatanCicilan@store');
+        Route::post('master/dendatelatcicilan/update','DendaKeterlambatanCicilan@update');
+        Route::get('master/dendatelatcicilan/delete/{id}','DendaKeterlambatanCicilan@delete');
+
+        Route::get('master/maksimalcuti','BatasMaksimalCuti@index');
+        Route::get('master/maksimalcuti/getdata','BatasMaksimalCuti@getdata');
+        Route::post('master/maksimalcuti/update','BatasMaksimalCuti@update');
+
+        Route::get('master/maksimalchangejadwal','BatasGantiJadwal@index');
+        Route::get('master/maksimalchangejadwal/getdata','BatasGantiJadwal@getdata');
+        Route::post('master/maksimalchangejadwal/update','BatasGantiJadwal@update');
+
         Route::get('kasbank','KasBankController@index');
         Route::get('kasbank/getdata','KasBankController@getdata');
         Route::post('kasbank/store','KasBankController@store');

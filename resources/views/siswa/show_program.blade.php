@@ -232,7 +232,7 @@
                                 <input type="hidden" id="he">
                             </div>
                             
-                            <a id="button-ubah-jadwal" onclick="traceJadwalChange()" class="btn btn-primary" href="javascript:void(0)" role="button">Ubah</a>
+                            <a id="button-ubah-jadwal" onclick="limitChangeTime()" class="btn btn-primary" href="javascript:void(0)" role="button">Ubah</a>
                         </div>
                         <div style="display: none" id="input-ubah-semua-jadwal">
                             <div class="row">
@@ -248,7 +248,7 @@
                                 </div>
                                 <div class="col-md-8"></div>
                             </div>
-                            <a id="button-ubah-jadwal" onclick="freezeJadwal()" class="btn btn-primary" href="javascript:void(0)" role="button">Ubah</a>
+                            <a id="button-ubah-jadwal" onclick="limitFreezeJadwal()" class="btn btn-primary" href="javascript:void(0)" role="button">Ubah</a>
                         </div>
 
                     </div>
@@ -387,7 +387,7 @@
     let jadwal_selesai=[];
     let jadwal = [];
     let ReqJadwalChanges = [];
-    let JadwalChanges = [];
+    let JadwalChanges = [],LimitChangeJadwal=0,MaxCuti=0
 
     const Hari = [
         {'Hari':'Senin','No':1},
@@ -428,6 +428,15 @@
         var today = new Date(this.getFullYear(),this.getMonth(),this.getDate());
         var dayOfYear = ((today - onejan + 86400000)/86400000);
         return Math.ceil(dayOfYear/7)
+    }
+    function limitFreezeJadwal(){
+        let from = new Date($('#input-libur-mulai').val()).getTime()
+        let to = new Date($('#input-libur-sampai').val()).getTime()
+        if((to - from)<=(MaxCuti*86400000)){
+            freezeJadwal()
+        }else{
+            swal('Batas maksimal cuti adalah '+MaxCuti+' hari')
+        }
     }
     function freezeJadwal(){
         let input_freeze_from = $('#input-libur-mulai').val()
@@ -537,11 +546,14 @@
     function showJadwal(){
         // console.log('get req jadwal siswa/jadwal/getdata'+$('#UUIDKelas').val());
         $.get('/siswa/jadwal/getdata/'+$('#UUIDKelas').val(),(data)=>{
-            console.log(data)
+      
             $('#data-table-jadwal').empty();
             $('#data-table-jadwal-selesai').empty();
             TabelJadwal.clear().draw();
-            data.forEach((element) => {
+            LimitChangeJadwal = data[2][0].jam
+            MaxCuti = data[1][0].hari
+
+            data[0].forEach((element) => {
                 let tmp_btn = element['Status']=='Berlangsung'&&element['Absen']=='Belum Absen'?
                     "<button id=\"btnabsen"+element['IDJadwal']+"\" onclick=\"masukKelas("+element['IDJadwal']+")\" class=\"btn btn-sm btn-primary\">Absen</button>"
                     :element['Status']=='Berlangsung'&&element['Absen']=='masuk'?
@@ -793,6 +805,22 @@
            
                 swal('gagal' + pesan.Pesan);
             });
+    }
+    function limitChangeTime(){
+        //kunaiss
+        let now = new Date().getTime()
+        let InputNoRecord = $('#input-ubah-jadwal-select').val()
+        let jadwal_will = jadwal.filter(ele => ele.NoRecord == InputNoRecord)[0]
+
+        let now_will = new Date(jadwal_will.Tanggal+' '+jadwal_will.Jam).getTime()
+        console.log(now,now_will)
+        // time left lower than limit change, cant change jadwal
+        let time_left = now_will - now
+        if(time_left>=(LimitChangeJadwal*3600000)){
+            traceJadwalChange()
+        }else{
+            swal('Anda tidak dapat mengganti jadwal, karena waktu terlalu mepet :v')
+        }
     }
     function traceJadwalChange(){
         let JadwalChanged =[]
