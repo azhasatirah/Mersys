@@ -111,6 +111,7 @@
                   @endif
                   <!-- Menu Admin -->
                   @if(session()->get('Level')==2)   
+                  <li><a href="{{url('karyawan/admin/kasbank')}}"><i class="fa fa-book"></i>Kas Bank</a></li>
                   <li><a href="{{url('karyawan/admin/kursus')}}"><i class="fa fa-book"></i>Daftar kursus</a></li>
                   <li><a href="{{url('karyawan/admin/diskon')}}"><i class="fa fa-dollar-sign"></i>Diskon</a></li>       
                   <li><a><i class="fa fa-cog"></i> Transaksi <span class="fa fa-chevron-down"></span></a>

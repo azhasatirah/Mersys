@@ -1,6 +1,7 @@
 @extends('karyawan.layouts.layout')
 @section('title','Kas Bank')
 @section('content')
+<input type="hidden" id="level-user" value="{{session()->get('Level')}}">
 <!-- Modal -->
 <div class="modal fade" id="modal-create-kasbank" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
     <div class="modal-dialog " role="document">
@@ -67,13 +68,16 @@
     <div class="col-md-12">
         <div class="x_panel text-black" style="font-size: 15px;font-color:black">
             <!-- Button trigger modal -->
+            @if (session()->get('Level')==1)
+                
             <button type="button" onclick="setSpecialKasBank(1)" class="btn btn-primary btn-sm btn-danger" data-toggle="modal" data-target="#modal-create-kasbank">
             Tarik Kas Bank
             </button>
+            
+            @endif
             <button type="button" onclick="setSpecialKasBank(2)" class="btn btn-primary btn-sm btn-success" data-toggle="modal" data-target="#modal-create-kasbank">
             Masukan Kas Bank
             </button>
-            
 
             <p id="data-aaa">
 
@@ -119,7 +123,9 @@
         let TabelData = $('#tabeldata').DataTable()
         let KasBank = []
         let typePerubahan 
+        let UrlUser = $('#level-user').val()==1?'/karyawan/owner/':'/karyawan/admin/'
         $(document).ready(function () {
+            console.log(UrlUser)
             getData()
         });
         function deleteKasBank(id){
@@ -132,7 +138,7 @@
             }).then((willDelete) => {
                 if (willDelete) {
                     $('#modal-edit-kasbank').modal('hide')
-                    $.get("/karyawan/owner/kasbank/delete/"+id).done(response=>swal(response))
+                    $.get(UrlUser+"kasbank/delete/"+id).done(response=>swal(response))
                     getData()
                 } else {
                     swal("Dibatalkan!");
@@ -156,7 +162,7 @@
             $('#modal-create-kasbank').modal('hide')
             $.ajax({
                 type: "post",
-                url: "/karyawan/owner/kasbank/store",
+                url: UrlUser+"kasbank/store",
                 data: $('#form-create').serialize(),
                 success: function (response) {
                     getData()
@@ -168,7 +174,7 @@
             $('#modal-edit-kasbank').modal('hide')
             $.ajax({
                 type: "post",
-                url: "/karyawan/owner/kasbank/update",
+                url: UrlUser+"kasbank/update",
                 data: $('#form-edit').serialize(),
                 success: function (response) {
                     getData()
@@ -177,7 +183,7 @@
             });
         }
         function getData(){
-            $.get('/karyawan/owner/kasbank/getdata').done(ele=>{
+            $.get(UrlUser+'kasbank/getdata').done(ele=>{
                 KasBank = ele
        
                 addRowTableKasBank()

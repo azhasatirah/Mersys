@@ -138,6 +138,11 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 
     //route admin
     Route::group(['middleware'=>['RoleKaryawan:2'],'prefix'=>'admin'],function(){
+        Route::get('kasbank','KasBankController@index');
+        Route::get('kasbank/getdata','KasBankController@getdata');
+        Route::post('kasbank/store','KasBankController@store');
+        Route::post('kasbank/update','KasBankController@update');
+        Route::get('kasbank/delete/{id}','KasBankController@delete');
 
         Route::get('jadwal/semiprivate','JadwalSemiPrivateController@index');
         Route::get('jadwal/semiprivate/getdata','JadwalSemiPrivateController@getData');
