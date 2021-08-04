@@ -21,7 +21,7 @@
                     </div>
                     <div class="form-group">
                       <label for="">Keterangan</label>
-                      <input type="text" class="form-control" name="keterangan">
+                      <input type="text" id='create-kasbank-keterangan' class="form-control" name="keterangan">
                     </div>
                 </form>
             </div>
@@ -140,6 +140,7 @@
             })
         }
         function setSpecialKasBank(type){
+            clearFormCreate()
             typePerubahan = type
             console.log(typePerubahan)
             if(typePerubahan==1){
@@ -212,6 +213,11 @@
                 ]).draw()
                 i++
             })
+        }
+        function clearFormCreate(){
+            $('#create-kasbank-total').val('')
+            $('#create-kasbank-keterangan').val('')
+
         }
         function setDataEdit(id){
             let kas = KasBank.filter(ele=>ele.IDKasBank==id)
