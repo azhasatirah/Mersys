@@ -458,6 +458,10 @@ Route::group(['middleware'=>['Role:siswa'],'prefix'=>'siswa'],function(){
 
     //siswa
     Route::get('transaksi','TransaksiController@pembelianSiswa');
+
+    Route::get('transaksi/expired','TransaksiController@transaksiExpired');
+
+
     Route::get('program/global/','ProgramStudiController@global');
     Route::get('program/kategori/{id}','ProgramStudiController@kategoriProgramSiswa');
     // Route::get('program/kategori/{id}/{id}','ProgramStudiController@');

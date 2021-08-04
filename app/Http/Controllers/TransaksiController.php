@@ -733,4 +733,94 @@ class TransaksiController extends Controller
         //dd($Transaksi);
         return view('karyawan.transaksi.detail',['Transaksi'=>$Transaksi]);
     }
+    public function transaksiExpired(){
+        //transactions phase
+        //phase1 transaction opn without payment (expired able)
+        //phase2 transaction opn with payment opn (expired able)
+        //phase3 transaction opn with payment opn with proof of payment opn
+        //phase4 transaction opn with payment opn with proof of payment cfm
+        //phase5 transaction opn with payment opn with proof of payment cls
+        //phase0 transaction opn with some cfm payments
+        //phase00 transaction opn with opn payments with some proof of payment any
+        $TransaksiOPN = DB::table('transaksi')->where('IDSiswa',session()->get('IDUser'))
+        ->where('Status','OPN')->get();
+        //more than 86 400 000 expired
+        $now = strtotime(date('Y-m-d H:m:s'))*1000;
+     //   return response()->json($TransaksiOPN);
+  
+        $expired_tr = array_filter($TransaksiOPN->toArray(),function($var) use($now){
+            $tr_expiredable = false;
+            $pembayaran = DB::table('pembayaran')
+            ->where('Status','!=','DEL')
+            ->where('IDTransaksi',$var->IDTransaksi)->get();
+            //dd($pembayaran);
+            //return response()->json($pembayaran);
+            if(count($pembayaran)>0){
+
+                if(count($pembayaran)==1){
+                    $bukti_p = DB::table('bukti_pembayaran')->where('IDPembayaran',$pembayaran[0]->IDPembayaran)->get();
+                    if(count($bukti_p)>0){
+                        if($bukti_p[0]->Status == 'OPN'){
+                            $tr_expiredable = false;
+                        }
+                        if($bukti_p[0]->Status == 'CFM'){
+                            $tr_expiredable = false;
+                        }
+                        if($bukti_p[0]->Status == 'CLS'){
+                            $tr_expiredable = false;
+                        }
+                    }
+                    if(count($bukti_p)==0){
+                        $tr_expiredable = true;
+                    }
+                }
+                if(count($pembayaran)>1){
+                    $isPhase0 = array_reduce($pembayaran->toArray(), function($isBigger, $phase0){
+                        return $isBigger || $phase0 == 'CFM';
+                    });
+                    //dd($isPhase0);
+                    if($isPhase0==false){
+                        $isPhase00 = array_reduce($pembayaran->toArray(), function($isBigger, $phase00){
+                            $bukti_p00 = DB::table('bukti_pembayaran')->where('IDPembayaran',$phase00->IDPembayaran)->get();
+                          
+                            return $isBigger || count($bukti_p00)>0;
+                        });
+                        if($isPhase00==true){
+                            $tr_expiredable = false;
+                        }
+                        if($isPhase00==false){
+                            $tr_expiredable=true;
+                        }
+
+                    }
+
+                    if($isPhase0==true){
+                        $tr_expiredable = false;
+
+                    }
+                   // var_dump($tr_expiredable);
+
+                }
+            }
+            if(count($pembayaran)==0){
+                $tr_expiredable = true;
+            }
+            $created=  strtotime($var->created_at)*1000;
+            $tr_expired = (($created-$now)*-1)>=86000000;
+           // dd($now,$created,$var->created_at,$tr_expired,(($created-$now)*-1));
+            return $tr_expired && $tr_expiredable;
+        });
+        //dd($debug);
+        foreach($expired_tr as $f){
+            DB::table('transaksi')->where('IDTransaksi',$f->IDTransaksi)->update(array(
+                'Keterangan'=>'Transaksi expired',
+                'UserUpd'=>'system',
+                'updated_at'=>Carbon::now(),
+                'Status'=>'DEL'
+            ));
+        }
+        return response($expired_tr);
+
+
+    }
 }

@@ -274,10 +274,28 @@
       let RoleNotif = [];
       let UserNotif = [];
       let Notif = [];
+      let tranEx = []
       $(document).ready(function () {
         showNotif();
+        initExpiredTr()
         siswaBaru();
       });
+      function initExpiredTr(){
+        $.get('/siswa/transaksi/expired',dat=>tranEx=Object.values(dat)).done(ele=>{
+
+            if(tranEx.length>0){
+              let msg = 'Transaksi '
+              let tr = tranEx.length>1?getAlotMsg(tranEx):tranEx[0].KodeTransaksi
+              msg += tr + 'sudah kadaluarsa'
+              swal(msg)
+            }
+        })
+      }
+      function getAlotMsg(data){
+        dat = ''
+        data.forEach(ele=>dat = dat + ele.KodeTransaksi+' ')
+        return dat
+      }
       function submitPsikologi(){
         $('#form-psikologi').submit();
       }

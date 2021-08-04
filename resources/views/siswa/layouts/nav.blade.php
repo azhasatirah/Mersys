@@ -33,7 +33,7 @@
 
           <div class="collapse" id="navbarToggleExternalContent">
             <div class="bg-white p-1">
-              <div class="container" style="width:30rem">
+              <div class="container" >
                 @if (session()->get('StatusUser')=='CLS')
         
                 <a href="{{url('siswa/kursus')}}" class="btn nav-collapse mb-1" >

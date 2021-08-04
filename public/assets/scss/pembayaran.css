@@ -10,11 +10,13 @@ body{
 }
 .nav{
     max-width: 30rem;
+    margin-left: auto;
+    margin-right:auto;
 }
 .nav-pembayaran{
     background:white;
     z-index: 1;
-
+    max-width: 30rem;
     padding-left: 0px;
     padding-right:0px;
 }
@@ -153,6 +155,7 @@ body{
 }
 .nav-collapse{
     width:100%;
+    max-width: 30rem;
     border: 1px solid pink;
 }
 #nav-icon:active{
