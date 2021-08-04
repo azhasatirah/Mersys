@@ -12,7 +12,7 @@
             Kode Transaksi:
         </span>
         <p class="item-data">
-            {{$Pembayaran['Pembayaran'][0]->KodeTransaksi}}
+            {{$Pembayaran[0]->KodeTransaksi}}
         </p>
     </div>
     <div class="item-info">
@@ -20,17 +20,17 @@
             Total Transaksi:
         </span>
         <p class="item-data">
-            Rp {{number_format($Pembayaran['Pembayaran'][0]->TotalTransaksi)}}
+            Rp {{number_format($Pembayaran[0]->TotalTransaksi)}}
         </p>
     </div>
-    @if ($Pembayaran['Pembayaran'][0]->Hutang=='y')
+    @if ($Pembayaran[0]->Hutang=='y')
         
     <div class="item-info">
         <span class="item-title">
             Cicilan Ke :
         </span>
         <h3 class="item-data">
-            {{$Pembayaran['Pembayaran'][0]->NoUrut}}
+            {{$Pembayaran[0]->NoUrut}}
         </h3>
     </div>
     @endif
@@ -46,7 +46,7 @@
             Nama Rekening:
         </span>
         <p class="item-data">
-            {{$Pembayaran['Pembayaran'][0]->NamaRekening}}
+            {{$Pembayaran[0]->NamaRekening}}
         </p>
     </div>
     <div class="item-info">
@@ -54,7 +54,7 @@
             Nomor Rekening:
         </span>
         <p class="item-data">
-            {{$Pembayaran['Pembayaran'][0]->NoRekening}}
+            {{$Pembayaran[0]->NoRekening}}
         </p>
     </div>
         
@@ -63,7 +63,7 @@
             Batas Waktu:
         </span>
         <p class="item-data">
-            {{$Pembayaran['Pembayaran'][0]->created_at}}
+            {{$Pembayaran[0]->created_at}}
         </p>
     </div>
 
@@ -72,7 +72,7 @@
             Total Pembayaran :
         </span>
         <p class="item-data">
-            Rp {{number_format($Pembayaran['Pembayaran'][0]->Total)}}
+            Rp {{number_format($Pembayaran[0]->Total)}}
         </p>
     </div>
 </div>
@@ -85,15 +85,15 @@
     <div class="card mt-2 item shadow-sm">
         <div class="col-md-12 my-4 " style="width: 80%;margin-left:auto;margin-right:auto"
         id="tabdaftar">
-            <input type="hidden" value="{{$Pembayaran['Pembayaran'][0]->IDPembayaran}}" name="idpembayaran">
+            <input type="hidden" value="{{$Pembayaran[0]->IDPembayaran}}" name="idpembayaran">
             <div class="mb-3">
-                <img src="{{asset('images/BuktiPembayaran')}}/{{$Pembayaran['Pembayaran'][0]->BuktiFoto}}" 
+                <img src="{{asset('images/BuktiPembayaran')}}/{{$Pembayaran[0]->BuktiFoto}}" 
                 style="width:400px;height:100%"
                 alt="" srcset="">
             </div>
             <div class="form-floating ">
                 <input id='inUsernameDaftar' autocomplete="off" type="text" class="form-control form-control-sm ss-input"
-                value="{{$Pembayaran['Pembayaran'][0]->NamaRekeningPengirim}}"
+                value="{{$Pembayaran[0]->NamaRekeningPengirim}}"
                  name="namarekening" placeholder="username" id="floatingInput" readonly>
                 <label for="inUsernameDaftar">
                     Nama Rekening
@@ -101,21 +101,21 @@
             </div>
             <div class="form-floating">
                 <input type="text" class="form-control form-control-sm ss-input"
-                value="{{$Pembayaran['Pembayaran'][0]->NoRekeningPengirim}}"
+                value="{{$Pembayaran[0]->NoRekeningPengirim}}"
                 name="norekening" placeholder="username" 
                 id="inNoHP" readonly>
                 <label for="inNoHP">Nomor Rekening</label>
             </div>
             <div class="form-floating">
                 <input type="text" class="form-control form-control-sm ss-input"
-                value="{{$Pembayaran['Pembayaran'][0]->BankPengirim}}"
+                value="{{$Pembayaran[0]->BankPengirim}}"
                 name="norekening" placeholder="username" 
                 id="inNoHP" readonly>
                 <label for="inNoHP">Bank</label>
             </div>
             <div class="form-floating">
                 <input type="text" class="form-control form-control-sm ss-input"
-                value="Rp {{number_format($Pembayaran['Pembayaran'][0]->JumlahDitransfer)}}"
+                value="Rp {{number_format($Pembayaran[0]->JumlahDitransfer)}}"
                 name="norekening" placeholder="username" 
                 id="inNoHP" readonly>
                 <label for="inNoHP">Jumlah Ditransfer</label>
@@ -124,14 +124,14 @@
         </div>
     </div>
     <div class="card  item mt-2 mb-2 shadow-sm">
-        @if ($Pembayaran['Pembayaran'][0]->StatusPembayaran == 'CFM')  
+        @if ($Pembayaran[0]->StatusPembayaran == 'CFM')  
         <a onclick="confirmTransaksi()"  class="btn btn-sm btn-block mt-3 mb-1  btn-success ">
             Konfirmasi
         </a>
         <form id="form-konfirmasi" action="{{url('karyawan/owner/transaksi/konfirmasi')}}" 
         method="post">
         @csrf
-            <input type="hidden" name="pembayaran" value="{{$Pembayaran['Pembayaran'][0]->KodePembayaran}}">
+            <input type="hidden" name="pembayaran" value="{{$Pembayaran[0]->KodePembayaran}}">
         </form>
         @endif
         <a type="submit" href="{{url('karyawan/owner/transaksi')}}" class="btn mb-3 btn-sm   btn-primary ">

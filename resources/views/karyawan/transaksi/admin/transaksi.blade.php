@@ -194,7 +194,7 @@
                             data.Hutang=='y'?'Ya':'Tidak',
                             data.created_at,
 
-                            data.KodeStatus=='waitForAdmin'?TombolVerif:
+                            data.KodeStatus=='waitForAdmin'?TombolVerif+TombolDetail:
                             data.Hutang=='y'&&data.Cicilan>0?'Cicilan ke '+data.Cicilan+TombolDetail:
 
                             data.KodeStatus == 'waitForPayment'?TombolDelete+TombolEdit:
@@ -236,7 +236,7 @@
             const element = (data)=>{
                 let elements = ''
                 let dibayar =data.BuktiPembayaran.length>0?"Tanggal dibayar : "+data.BuktiPembayaran[0].created_at+" <br>":''
-                let btn_change_tanggal =data.Status =='OPN'?"<a onclick=\"changeTanggalHarusBayar("+data.IDTransaksi+","+data.IDPembayaran+")\"  class=\"btn btn-primary mt-2 btn-sm\" href=\"javascript:void(0)\" >ganti tanggal harus bayar</a>":''
+                let btn_change_tanggal =data.Status =='OPN'&&data.BuktiPembayaran.length==0?"<a onclick=\"changeTanggalHarusBayar("+data.IDTransaksi+","+data.IDPembayaran+")\"  class=\"btn btn-primary mt-2 btn-sm\" href=\"javascript:void(0)\" >ganti tanggal harus bayar</a>":''
                 let status =data.Status == 'OPN'&&data.BuktiPembayaran.length>0?'Belum dikonfirmasi':
                 data.Status == 'OPN'&&data.BuktiPembayaran.length==0?'Belum bayar':
                 data.Status == 'CFM'?'Belum dikonfirmasi':'Selesai'

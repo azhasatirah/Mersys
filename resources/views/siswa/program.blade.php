@@ -238,7 +238,7 @@ function showMsg(){
           tools+=
           '<div style=\"margin-left:18px\" class=\"form-check\">'+
           '<label class=\"form-check-label\">'+
-              '<input type=\"checkbox\" onchange=\"checkTool('+ele.IDTool+')\" class=\"form-check-input\" name=\"take_tool\" id=\"take-tool'+ele.IDTool+'\" checked>'+
+              '<input type=\"checkbox\" onchange=\"checkTool('+ele.IDTool+')\" class=\"form-check-input\" name=\"take_tool\" id=\"take-tool'+ele.IDTool+'\" >'+
               ele.NamaTool+
             '</label>'+
             '</div>'
@@ -297,9 +297,13 @@ function showMsg(){
     let harga_final =parseInt(harga_lunas)+parseInt(harga_tool)
     let harga_final_diskon = harga_final - parseInt(harga_diskon)
     $('#hargalunas').val(harga_final)
+ //   console.log(harga_diskon)
+    if(harga_diskon!=0){
+
     $('#display-diskon').append(
       "<span class=\"text-success\" style=\"font-size:18px\">Rp "+harga_final_diskon.toLocaleString('id-ID')+"</span>"
     )
+    }
     $('#pembayaran-lunas').html('Rp. '+harga_final.toLocaleString('id-ID'))
   }
   function IDR(number) {

@@ -45,9 +45,10 @@
         <p class="item-data">
             {{
                 date('d M Y, h:m',strtotime(
-                    '+1 day',strtotime( $Pembayaran['Pembayaran'][0]->created_at)
+                    '+'.$MasterDenda[0]->range_from.' days',strtotime( $Pembayaran['Pembayaran'][0]->created_at)
                 ))
             }}
+           
         </p>
     </div>
 

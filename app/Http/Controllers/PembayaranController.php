@@ -134,11 +134,50 @@ class PembayaranController extends Controller
         return response()->json($Status);
     }
     public function createMetodeBank($UUID){
+//kunai
+        $IsPendaftaran = DB::table('pembayaran as p')
+        ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
+        ->join('kursus_siswa as ks','t.IDKursusSiswa','ks.IDKursusSiswa')
+        ->join('siswa as s','t.IDSiswa','=','s.IDSiswa')
+        ->select('t.IDTransaksi','t.Total as TotalTr','ks.IDProgram','p.Total as TotalPay','p.created_at as TanggalHarus','s.UUID as UIDSiswa','t.Hutang')
+        ->where('p.UUID',$UUID)->get();
+        //dd($IsPendaftaran);
+        $DendanTelatCicilan = DB::table('master_denda_keterlambatan_cicilan')
+        ->where('Status','!=','DEL')
+        ->orderBy('range_from')->get();
+        //dd($DendanTelatCicilan);
+        $tglharus = date(
+            'Y-M-d H:i:s',
+            strtotime('+'.$DendanTelatCicilan[0]->range_from.' days',
+            strtotime($IsPendaftaran[0]->TanggalHarus))
+        );
+        $Denda=[];
 
+        $Timepay = (strtotime(date('Y-m-d H:i:s'))*1000) - (strtotime(date('Y-M-d H:i:s'))*1000) ;
+        if($IsPendaftaran[0]->Hutang=='y'&&$Timepay>=(86000000*$DendanTelatCicilan[0]->range_from)){
+            //dd('kei');
+            $Denda = array_filter($DendanTelatCicilan->toArray(),function($dat) use($Timepay){
+                return ($dat->range_from*86000000)<=$Timepay && ($dat->range_to*86000000)>=$Timepay;
+            // return true;
+            });
+            if(count($Denda)>0){
+                $old_total = $IsPendaftaran[0]->TotalPay;
+                $denda = ($old_total *$Denda[0]->denda/100);
+                DB::table('pembayaran')->where('UUID',$UUID)->update([
+                    'Total'=>$denda+$old_total,
+                    'UserUpd'=>'system denda cicilan'
+                ]);
+                DB::table('transaksi')->where('IDTransaksi',$IsPendaftaran[0]->IDTransaksi)->update([
+                    'Total'=>$IsPendaftaran[0]->TotalTr+$denda,
+                    'UserUpd'=>'system denda cicilan'
+                ]);
+            }
+        }
         $Pembayaran = Pembayaran::getDetailPembayaran($UUID);
         $Bank = Bank::getAllBank();
         //dd($Pembayaran);
         return view('siswa.pembayaran.metode_bank',[
+            'MasterDenda'=>$DendanTelatCicilan,
             'Pembayaran'=>$Pembayaran,
             'Bank'=>$Bank['Bank'],
         ]);
@@ -195,12 +234,19 @@ class PembayaranController extends Controller
     }
     public function storeBuktiPembayaran(Request $request){
         //kunai
+        date_default_timezone_set('Asia/Jakarta');
         $IsPendaftaran = DB::table('pembayaran as p')
         ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
         ->join('kursus_siswa as ks','t.IDKursusSiswa','ks.IDKursusSiswa')
         ->join('siswa as s','t.IDSiswa','=','s.IDSiswa')
-        ->select('ks.IDProgram','s.UUID as UIDSiswa')
+        ->select('t.IDTransaksi','t.Total as TotalTr','ks.IDProgram','p.Total as TotalPay','p.created_at as TanggalHarus','s.UUID as UIDSiswa','t.Hutang')
         ->where('p.IDPembayaran',$request->idpembayaran)->get();
+        $DendanTelatCicilan = DB::table('master_denda_keterlambatan_cicilan')
+        ->where('Status','!=','DEL')
+        ->orderBy('range_from')->get();
+       // dd($DendanTelatCicilan[0]->range_from,$IsPendaftaran[0]->TanggalHarus);
+
+
        // dd($IsPendaftaran);
         $File = $request->file('file');
         $FormatFile = $File->getClientOriginalExtension();
@@ -382,7 +428,14 @@ class PembayaranController extends Controller
     public function adminDetailPembayaran($ID)
     {
         $Pembayaran = Pembayaran::getDetailBuktiPembayaran($ID);
-       //dd($Pembayaran['Pembayaran']);
+       // dump($Pembayaran);
+        $Pembayaran = array_filter($Pembayaran['Pembayaran']->toArray(),function($var){
+            return $var->StatusPembayaran =='OPN';
+        });
+        foreach($Pembayaran as $k){
+            $Pembayaran[0] =$k;
+        }
+     //   dd($Pembayaran);
         return view('karyawan.transaksi.admin.rincian',['Pembayaran'=>$Pembayaran]);
     }
 
@@ -418,6 +471,14 @@ class PembayaranController extends Controller
     {
         $Pembayaran = Pembayaran::getDetailBuktiPembayaran($ID);
         //dd($Pembayaran['Pembayaran']);
+        $Pembayaran = Pembayaran::getDetailBuktiPembayaran($ID);
+        // dump($Pembayaran);
+         $Pembayaran = array_filter($Pembayaran['Pembayaran']->toArray(),function($var){
+             return $var->StatusPembayaran =='CFM';
+         });
+         foreach($Pembayaran as $k){
+             $Pembayaran[0] =$k;
+         }
         return view('karyawan.transaksi.owner.rincian',['Pembayaran'=>$Pembayaran]);
     }
 

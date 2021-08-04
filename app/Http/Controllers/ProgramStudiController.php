@@ -112,14 +112,14 @@ class ProgramStudiController extends Controller
                 'IDProgram'=>$Prodi->IDProgram,
                 'NamaProdi'=>$Prodi->NamaProdi,
                 'TotalPertemuan'=>$Prodi->TotalPertemuan,
-                'HargaLunas'=>$Prodi->Harga + $Tools->sum('Harga')+$Moduls->sum('Harga'),
+                'HargaLunas'=>$Prodi->Harga +$Moduls->sum('Harga'),
                 'Diskon'=>array_filter($Diskon->toArray(),function($dat) use ($IDProgram){return $dat->IDProgram == $IDProgram; }),
                 'Tool'=>count($Tools)>0?$Tools:false,
                 'Modul'=>count($Moduls)>0?$Moduls:false,
                 'Cicilan'=>count($Cicilan)>0?$Cicilan:false
             ));
         }
-    // dd($Data);
+   // dd($Data);
         if(count($Data)>0){
             return view('siswa.program',['Program'=>$Data]);
         }else{
@@ -148,7 +148,7 @@ class ProgramStudiController extends Controller
                 'IDProgram'=>$Prodi->IDProgram,
                 'NamaProdi'=>$Prodi->NamaProdi,
                 'TotalPertemuan'=>$Prodi->TotalPertemuan,
-                'HargaLunas'=>$Prodi->Harga + $Tools->sum('Harga')+$Moduls->sum('Harga'),
+                'HargaLunas'=>$Prodi->Harga +$Moduls->sum('Harga'),
                 'Tool'=>count($Tools)>0?$Tools:false,
                 'Modul'=>count($Moduls)>0?$Moduls:false,
                 'Diskon'=>array_filter($Diskon->toArray(),function($dat) use ($IDProgram){return $dat->IDProgram == $IDProgram; }),
