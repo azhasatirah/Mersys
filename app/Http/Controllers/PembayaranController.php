@@ -157,6 +157,7 @@ class PembayaranController extends Controller
             $UUIDPembayaranPertama=str_replace('-','',str::uuid());
             //dd($Cicilan,$UUIDPembayaranPertama,$Transaksi['Transaksi'][0]->IDTransaksi);
             for($i =0;$i < $Cicilan[0]->Cicilan;$i++){
+                $tang = $i==0? date('Y-m-d H:i') : date('Y-m-d H:i',strtotime('+'.($i*14).' days'));
                 $Data = array(
                     'UUID'=>$i==0?$UUIDPembayaranPertama:str_replace('-','',str::uuid()),
                     'KodePembayaran'=>"PAY-" . date("mHis").$i,
@@ -164,7 +165,7 @@ class PembayaranController extends Controller
                     'IDMetodePembayaran'=>$request->metode,
                     'Total'=>$Cicilan[0]->Harga / $Cicilan[0]->Cicilan,
                     'NoUrut'=>$i+1,
-                    'created_at'=>Carbon::now(),
+                    'created_at'=>$tang,
                     'updated_at'=>Carbon::now(),
                     'UserAdd'=>session()->get('Username'),
                     'UserUpd'=>session()->get('Username'),

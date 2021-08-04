@@ -335,6 +335,24 @@ class TransaksiController extends Controller
             ->select('pembayaran.*')
             ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
             ->get();
+            $pembayaran_withno_proof_tmp = DB::table('pembayaran')
+            ->select('pembayaran.*')
+            ->where('pembayaran.IDTransaksi','=',$Transaksi[$i]->IDTransaksi)
+            ->get();
+            $pembayaran_withno_proof = [];
+            foreach($pembayaran_withno_proof_tmp as $pw){
+                $bukti_pembayaran = DB::table('bukti_pembayaran')->where('IDPembayaran',$pw->IDPembayaran)->get();
+                array_push($pembayaran_withno_proof,array(
+                    'IDPembayaran'=>$pw->IDPembayaran,
+                    'KodePembayaran'=>$pw->KodePembayaran,
+                    'NoUrut'=>$pw->NoUrut,
+                    'Status'=>$pw->Status,
+                    'Total'=>$pw->Total,
+                    'IDTransaksi'=>$pw->IDTransaksi,
+                    'created_at'=>$pw->created_at,
+                    'BuktiPembayaran'=>$bukti_pembayaran
+                ));
+            }
             $Pembayaran = DB::table('pembayaran')
             ->join('bukti_pembayaran','pembayaran.IDPembayaran','=','bukti_pembayaran.IDPembayaran')
             ->select('pembayaran.*')
@@ -399,7 +417,8 @@ class TransaksiController extends Controller
                     'ppn'=>$Transaksi[$i]->PPN,
                     'Status'=> $Transaksi[$i]->Hutang=='y'?$FinalStatusCicilan :$EndStatus,
                     'Cicilan'=>count($CicilanCLS),
-                    'KodeKursus'=>$Transaksi[$i]->KodeKursus
+                    'KodeKursus'=>$Transaksi[$i]->KodeKursus,
+                    'Pembayaran'=>$pembayaran_withno_proof
                 )
             );
         }
@@ -408,6 +427,16 @@ class TransaksiController extends Controller
         //dd($DataTransaksi);
         return response()->json([$DataTransaksi,$ProgramStudi,$Cicilan]);
 
+    }
+    public function updateTanggalPembayaran(Request $request){
+       // dd($request);
+        $tanggal = str_replace('T',' ',$request->tanggal);
+        DB::table('pembayaran')->where('IDPembayaran',$request->idpembayaran)->update(array(
+            'created_at'=>$tanggal,
+            'UserUpd'=>session()->get('Username'),
+            'updated_at'=>Carbon::now()
+        ));
+        return response()->json('berhasil di update');
     }
     public function adminUpdateTransaksi(Request $request){
         $Transaksi = DB::table('transaksi as t')

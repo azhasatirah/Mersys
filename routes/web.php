@@ -223,6 +223,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::get('/pendaftaran/karyawan','PendaftaranController@karyawan');
     
         Route::get('/transaksi','TransaksiController@adminTransaksi');
+        Route::post('/transaksi/pembayaran/update','TransaksiController@updateTanggalPembayaran');
         Route::get('/transaksi/detail/{id}','PembayaranController@adminDetailPembayaran');
         Route::get('/transaksi/getdata','TransaksiController@adminGetTransaksi');
         Route::get('/transaksi/delete/{id}','TransaksiController@adminDeleteTransaksi');
