@@ -496,7 +496,7 @@
                 <p>
                     <span style="font-size:11pt;color:#4f81bd">Please check and confirm the payment to MERACHEL ART & FASHION COURSE</span>  <br>
                     <span style="font-size:11pt;color:black">If you have any questions concerning this payment, use the following contact information:</span>  <br>
-                    <span style="font-size:11pt;color:black">Meriza / Aisha</span>  <br>
+                    <span style="font-size:11pt;color:black">Meriza </span>  <br>
                     <span style="font-size:12pt;color:#4f81bd;font-weight:bold">THANK YOU FOR YOUR COOPERATION!</span> 
                 </p>
             </div>
