@@ -556,8 +556,8 @@
                 ele.Materi,
                 ele.Tutor+btn_change_tutor,
                 ele.KehadiranTutor + (ele.AbsenTutor==true?btn_fill_tutor:''),
-                ele.KehadiranSiswa + (ele.AbsenSiswa==true?btn_fill_siswa:''),
-                btn_dela
+                ele.KehadiranSiswa + (ele.AbsenSiswa==true?btn_fill_siswa:'')
+                // btn_dela
 
             ]).draw()
         })
