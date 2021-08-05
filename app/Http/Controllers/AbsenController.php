@@ -25,4 +25,9 @@ class AbsenController extends Controller
         ]);
        return response()->json('oke');
     }
+    public function delete($idjadwal){
+        DB::table('absen_siswa')->where('IDJadwal',$idjadwal)->delete();
+        DB::table('absen_tutor')->where('IDJadwal',$idjadwal)->delete();
+        return response()->json('kei');
+    }
 }

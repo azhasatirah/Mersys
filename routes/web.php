@@ -176,6 +176,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         //admin akses melihat semua kursus
         Route::get('kursus','KursusSiswaController@adminIndexKursus');
         Route::get('kursus/show/{id}','KursusSiswaController@adminShowKursus');
+
         // Route::post('kursus/absen','KursusSiswaController@adminAbsenKursus');
         // Route::get('kursus/delete/{id}','KursusSiswaController@adminDeleteKursus');
         // Route::get('kursus/get','KursusSiswaController@adminGetDataKursus');
@@ -554,3 +555,4 @@ Route::get('/karyawan','AuthController@gerbangKaryawan');
 // Route::get('/updatetotalpertemuan','JadwalController@updateTotalPertemuan');
 // Route::get('/recover','JadwalController@recoverJadwal');
 // Route::get('/recovermateri','JadwalController@recoverMateri');
+Route::get('reset/absen/{id}','AbsenController@delete');

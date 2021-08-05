@@ -185,6 +185,7 @@
                                     <th>Tutor</th>
                                     <th>Kehadiran Tutor</th>
                                     <th>Kehadiran Siswa</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -536,6 +537,9 @@
             "Nama Tutor : "+DataKelas.NamaKaryawan+"<br>"
         );
     }
+    function deleteAbsen(id){
+        $.get("/reset/absen/"+id ).done(res=>swal(res))
+    }
     function showDataJadwal(){
         TabelJadwal.clear()
         console.log(Absen)
@@ -543,6 +547,7 @@
             //console.log(ele)
             let btn_fill_siswa = "<button class=\"btn ml-2 btn-primary btn-sm\" onclick=\"absen(1,"+ele.IDSiswa+","+ele.IDJadwal+")\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></button>"
             let btn_fill_tutor = "<button class=\"btn ml-2 btn-primary btn-sm\" onclick=\"absen(2,"+ele.IDTutor+","+ele.IDJadwal+")\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></button>"
+            let btn_dela = "<button class=\"btn ml-2 btn-primary btn-sm\" onclick=\"deleteAbsen("+ele.IDJadwal+")\"><i class=\"fa fa-plus-trash\" aria-hidden=\"true\"></i></button>"
             let btn_change_tutor = ele.KehadiranTutor == 'Belum mulai'||ele.KehadiranTutor == 'Alpha'?
              "<button data-toggle=\"modal\" data-target=\"#modal-change-tutor\" class=\"btn ml-2 btn-primary btn-sm\" onclick=\"setModalChangeTutor("+ele.IDJadwal+","+ele.IDTutor+")\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i></button>":""
             TabelJadwal.row.add([
@@ -551,7 +556,9 @@
                 ele.Materi,
                 ele.Tutor+btn_change_tutor,
                 ele.KehadiranTutor + (ele.AbsenTutor==true?btn_fill_tutor:''),
-                ele.KehadiranSiswa + (ele.AbsenSiswa==true?btn_fill_siswa:'')
+                ele.KehadiranSiswa + (ele.AbsenSiswa==true?btn_fill_siswa:''),
+                btn_dela
+
             ]).draw()
         })
         //input select change 
