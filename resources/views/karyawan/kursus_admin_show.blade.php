@@ -1445,7 +1445,7 @@
 
     function jadwalBuiler(changes,data_jadwal){
         //let filtered_jadwal = jadwal
-     
+        console.log('trace one',changes,data_jadwal)
         let newJadwal = []
         let DataChanges={
                 '_token':token,

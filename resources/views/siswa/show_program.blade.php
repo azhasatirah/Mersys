@@ -1248,6 +1248,8 @@
         }
         if(JadwalChanges.some(ele=>ele.Status == 'OPN')){
             $('#select-ubah-jadwal').hide()
+        }else{
+            $('#select-ubah-jadwal').show()
         }
     }
     function showHistoryChanges(id){
