@@ -185,7 +185,6 @@
                                     <th>Tutor</th>
                                     <th>Kehadiran Tutor</th>
                                     <th>Kehadiran Siswa</th>
-                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
