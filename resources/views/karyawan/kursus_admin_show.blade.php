@@ -852,14 +852,21 @@
     }
 
     function freezeJadwal(){
+        //kunai main
         let input_freeze_from = $('#input-libur-mulai').val()
         let input_freeze_to = $('#input-libur-sampai').val()
         let freeze_from = new Date(input_freeze_from).getWeek()
         let freeze_to = new Date(input_freeze_to).getWeek()
         let freeze = ((freeze_to - freeze_from) )*7
         let copyJadwal = jadwal.filter((ele)=>{
-            return new Date(ele.Tanggal.split(' ')[0]).getTime() >= new Date(input_freeze_from).getTime()
+            let time_sch = new Date(ele.Tanggal.split(' ')[0]).getTime()
+            let time_to = new Date(input_freeze_to).getTime() 
+            let time_from = new Date(input_freeze_from).getTime()
+            let incSch = (time_sch >=  time_from)  && (ele.StatusMateri =='OPN')
+            console.log(incSch)
+            return incSch
         })
+     console.log(copyJadwal,jadwal)
         let newJadwal = []
         let DataChanges={
                 '_token':token,
@@ -875,42 +882,44 @@
                 'TanggalTo[]':[]
         };
         copyJadwal.forEach((data)=>{
-            let tmpDate = moment(data.Tanggal).format('yyyy-MM-DD HH:mm:ss')
+            let day = new Date(data.Tanggal).getDay()+' '+new Date(data.Tanggal).getHours()
+            console.log(day)
+            // let tmpDate = moment(data.Tanggal).format('yyyy-MM-DD HH:mm:ss')
          
-            let dateTo = moment(tmpDate).add(freeze,'days').format('yyyy-MM-DD HH:mm:ss')
+            // let dateTo = moment(tmpDate).add(freeze,'days').format('yyyy-MM-DD HH:mm:ss')
  
-            //console.log(tmpDate.getDate(),new Date(tmpDate.setDate(tmpDate.getDate() + freeze)).toString())
-            // let date = new Date( tmpDate.setDate(tmpDate.getDate() + freeze))
-            newJadwal.push({
-                'UIDProgram':data.UUIDProgram,
-                'IDSiswa':data.IDSiswa,
-                'IDTutor':data.IDTutor,
-                'IDJadwal':data.IDJadwal,
-                'IDMateriFrom':data.IDMateri,
-                'IDMateriTo':data.IDMateri,
-                'MateriFrom':data.NamaMateri,
-                'MateriTo':data.NamaMateri,
-                'NoRecordFrom': parseInt(data.NoRecord),
-                'NoRecordTo':parseInt(data.NoRecord),
-                'TanggalFrom': data.Tanggal,
-                'TanggalTo': dateTo
-            })
+            // //console.log(tmpDate.getDate(),new Date(tmpDate.setDate(tmpDate.getDate() + freeze)).toString())
+            // // let date = new Date( tmpDate.setDate(tmpDate.getDate() + freeze))
+            // newJadwal.push({
+            //     'UIDProgram':data.UUIDProgram,
+            //     'IDSiswa':data.IDSiswa,
+            //     'IDTutor':data.IDTutor,
+            //     'IDJadwal':data.IDJadwal,
+            //     'IDMateriFrom':data.IDMateri,
+            //     'IDMateriTo':data.IDMateri,
+            //     'MateriFrom':data.NamaMateri,
+            //     'MateriTo':data.NamaMateri,
+            //     'NoRecordFrom': parseInt(data.NoRecord),
+            //     'NoRecordTo':parseInt(data.NoRecord),
+            //     'TanggalFrom': data.Tanggal,
+            //     'TanggalTo': dateTo
+            // })
 
         })
-        newJadwal.forEach((ele)=>{
-            DataChanges['UIDProgram[]'].push(ele.UIDProgram)
-            DataChanges['IDSiswa[]'].push(ele.IDSiswa)
-            DataChanges['IDTutor[]'].push(ele.IDTutor)
-            DataChanges['IDJadwal[]'].push(ele.IDJadwal)
-            DataChanges['IDMateriFrom[]'].push(ele.IDMateriFrom)
-            DataChanges['IDMateriTo[]'].push(ele.IDMateriTo)
-            DataChanges['NoRecordFrom[]'].push(ele.NoRecordFrom)
-            DataChanges['NoRecordTo[]'].push(ele.NoRecordTo)
-            DataChanges['TanggalFrom[]'].push(ele.TanggalFrom)
-            DataChanges['TanggalTo[]'].push(ele.TanggalTo)
-        })
-        ReqJadwalChanges = DataChanges
-        setAndShowDataModalChanges(newJadwal)
+        // newJadwal.forEach((ele)=>{
+        //     DataChanges['UIDProgram[]'].push(ele.UIDProgram)
+        //     DataChanges['IDSiswa[]'].push(ele.IDSiswa)
+        //     DataChanges['IDTutor[]'].push(ele.IDTutor)
+        //     DataChanges['IDJadwal[]'].push(ele.IDJadwal)
+        //     DataChanges['IDMateriFrom[]'].push(ele.IDMateriFrom)
+        //     DataChanges['IDMateriTo[]'].push(ele.IDMateriTo)
+        //     DataChanges['NoRecordFrom[]'].push(ele.NoRecordFrom)
+        //     DataChanges['NoRecordTo[]'].push(ele.NoRecordTo)
+        //     DataChanges['TanggalFrom[]'].push(ele.TanggalFrom)
+        //     DataChanges['TanggalTo[]'].push(ele.TanggalTo)
+        // })
+        // ReqJadwalChanges = DataChanges
+        // setAndShowDataModalChanges(newJadwal)
     }
     function filterSameDate(jadwal,reqJadwal){
         const dataFilter = (ele) => {
@@ -1341,7 +1350,7 @@
         let filtered_jadwal = TypeRemakeJadwal == 1?
         jadwal.filter(ele=> ele.StatusMateri!='CLS'):
         jadwal
-        console.log('filtered jadwal',filtered_jadwal,TypeRemakeJadwal)
+        console.log(filtered_jadwal)
         // console.log(moment(new Date()).format('Y-MM-DD'))
         let total_pertemuan = filtered_jadwal.length
         let senin = $('#senin');
@@ -1380,8 +1389,9 @@
                 'hari': minggu.val()
             },
         ];
+        // hari setiap minggu
         let meet_in_week = tmp_meet_in_week.filter(ele => ele.aktif == true);
-        // mengatur tanggal awal dari setiap minggu
+        // mengatur tanggal awal dari setiap minggu (waktu awal set tanggal (tanggal + (hari-tanggal)+(hari-tanggal))  )
         let flat_date = meet_in_week.map(ele =>
             new Date(start_date.val()).setDate(
                 new Date(start_date.val()).getDate() +
@@ -1392,13 +1402,15 @@
 
             )
         );
-    
+   // console.log('trace one',meet_in_week,flat_date)
+            //base tanggal 
         let date = flat_date.sort((a, b) => a - b).map(ele =>
             new Date(ele).getFullYear() + '-' + String(new Date(ele).getMonth() + 1).padStart(2, '0') + '-' +
             String(new Date(ele).getDate()).padStart(2, '0')
         );
         //sisa bagi total pertemuan dibagi pertemuan dalam seminggu
         let a = total_pertemuan % jam_maker.length;
+        console.log(a,total_pertemuan,'trace total')
         //hasil pembagian total pertemuan tanpa sisa bagi ( max perulangan)
         let c = total_pertemuan % jam_maker.length == 0 ? total_pertemuan / jam_maker.length : (
             total_pertemuan - (total_pertemuan % jam_maker.length)) / jam_maker.length;
@@ -1422,9 +1434,11 @@
             }
             date_increament += 7;
         }
+
         if (a != 0) {
             let indexDay =0 ;
-            for (let j = 0; j < a; j++) {
+            for (let j = 0; j <= a; j++) {
+                console.log('ite sisa',j)
                 let hari = jam_maker.filter(ele=>ele.day_id==new Date(date[indexDay]).getDay())
                 for(let jam =0;jam<hari.length;jam++){
                     let tmp_date = new Date(new Date(date[indexDay]).setDate(new Date(date[indexDay]).getDate() + date_increament));
@@ -1440,7 +1454,6 @@
                 date_increament += 7;
             }
         }
-
       jadwalBuiler(jadwal_siswa,filtered_jadwal);
       //kunai
     

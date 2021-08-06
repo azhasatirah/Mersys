@@ -561,7 +561,7 @@
         }
         if (a != 0) {
             let indexDay =0 ;
-            for (let j = 0; j < a; j++) {
+            for (let j = 0; j <= a; j++) {
                 let hari = master_jam.filter(ele=>ele.day_id==new Date(date[indexDay]).getDay())
                 for(let jam =0;jam<hari.length;jam++){
                     let tmp_date = new Date(new Date(date[indexDay]).setDate(new Date(date[indexDay]).getDate() + date_increament));
