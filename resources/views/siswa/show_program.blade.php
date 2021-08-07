@@ -970,7 +970,7 @@
         }
         let jadwal_not_changed = jadwal.filter(jwd=>jwd.NoRecord != InputNoRecord).filter(jwd=> jwd.StatusMateri != 'CLS')
        // console.log(jadwal_not_changed)
-        let is_over_date = jadwal_not_changed.some(jnc=>new Date(jnc.Tanggal).getTime() <= new Date(reqTanggal).getTime() )
+        let is_over_date = jadwal_not_changed.some(jnc=>new Date(jnc.Tanggal).getTime() <= new Date(reqTanggal+' '+reqJam).getTime() )
         if(is_over_date){
             swal('Tidak bisa mengganti ke tanggal ini, coba ganti ke tanggal lebih kecil')
         }
