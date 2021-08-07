@@ -853,21 +853,27 @@
 
     function freezeJadwal(){
         //kunai main
+        //!! pola adalah pertemuan setiap minggu
+        //freeze jadwal / cuti
+        // ambil jadwal yang diatas tanggal awal cuti yang materinya belum selesai 
+        // jadwal diganti dari tanggal masuk dengan pola sebelumnya
+        // cari pertemuan pertama yang dekat dengan tanggal masuk berdasarkan pola
+        // buat flat date / tanggal awal berdasarkan pola
+        // buat jadwal berdasarkan flat date sampai pertemuan terakhir
         let input_freeze_from = $('#input-libur-mulai').val()
         let input_freeze_to = $('#input-libur-sampai').val()
-        let freeze_from = new Date(input_freeze_from).getWeek()
-        let freeze_to = new Date(input_freeze_to).getWeek()
-        let freeze = ((freeze_to - freeze_from) )*7
+        //copyjadwal = jadwal di atas tanggal awal cuti yang materi belum selesai
         let copyJadwal = jadwal.filter((ele)=>{
             let time_sch = new Date(ele.Tanggal.split(' ')[0]).getTime()
             let time_to = new Date(input_freeze_to).getTime() 
             let time_from = new Date(input_freeze_from).getTime()
+            //sch that can be edit
             let incSch = (time_sch >=  time_from)  && (ele.StatusMateri =='OPN')
-            console.log(incSch)
             return incSch
         })
-     console.log(copyJadwal,jadwal)
-        let newJadwal = []
+        // newJadwal = jadwal baru yang akan dibuat
+        let new_jadwal = []
+        // data changes = data post
         let DataChanges={
                 '_token':token,
                 'UIDProgram[]':[],
@@ -880,46 +886,120 @@
                 'NoRecordTo[]':[],
                 'TanggalFrom[]': [],
                 'TanggalTo[]':[]
-        };
-        copyJadwal.forEach((data)=>{
-            let day = new Date(data.Tanggal).getDay()+' '+new Date(data.Tanggal).getHours()
-            console.log(day)
-            // let tmpDate = moment(data.Tanggal).format('yyyy-MM-DD HH:mm:ss')
-         
-            // let dateTo = moment(tmpDate).add(freeze,'days').format('yyyy-MM-DD HH:mm:ss')
- 
-            // //console.log(tmpDate.getDate(),new Date(tmpDate.setDate(tmpDate.getDate() + freeze)).toString())
-            // // let date = new Date( tmpDate.setDate(tmpDate.getDate() + freeze))
-            // newJadwal.push({
-            //     'UIDProgram':data.UUIDProgram,
-            //     'IDSiswa':data.IDSiswa,
-            //     'IDTutor':data.IDTutor,
-            //     'IDJadwal':data.IDJadwal,
-            //     'IDMateriFrom':data.IDMateri,
-            //     'IDMateriTo':data.IDMateri,
-            //     'MateriFrom':data.NamaMateri,
-            //     'MateriTo':data.NamaMateri,
-            //     'NoRecordFrom': parseInt(data.NoRecord),
-            //     'NoRecordTo':parseInt(data.NoRecord),
-            //     'TanggalFrom': data.Tanggal,
-            //     'TanggalTo': dateTo
-            // })
+        }
+        //jadwal remaker
+        //keep it up sware -3-
+        //ambil tanggal terdekat dari tanggal masuk yang ada di pola 
+        const twoDigit = (data) =>{
+            return String(data).length==2?data:'0'+data
+        }
+        const patternSch = (sch)=>{
+            let pattern = []
+            // get all pattern from all jadwal
+            sch.forEach(j=>pattern.push(new Date(j.Tanggal).getDay()+' '+twoDigit(new Date(j.Tanggal).getHours())+':'+twoDigit(new Date(j.Tanggal).getMinutes())+':'+twoDigit(new Date(j.Tanggal).getSeconds()) ) )
+            // group the pattern or final pattern
+            let final_pattern = pattern.reduce((final_p,item)=>{
+                let isExist = final_p.some(p=>p==item)
+                if(isExist==false){
+                    final_p.push(item)
+                }
+                return final_p
+            },[])
+            return final_pattern
+        }
+        //get the pattern(pola) of curent sch
+        let pattern = patternSch(copyJadwal)
+        console.log(pattern)
+        //ambil tanggal terdekat dari tanggal masuk yang ada di pola 
+        // sort the pattern
+        let pattern_from = new Date(input_freeze_to).getDay()
+        pattern = pattern.map(p=> [ pattern_from<p.split(' ')[0]?0:1,parseInt(p.split(' ')[0]),p.split(' ')[1] ])
+        .sort((a,b)=>a[0] - b[0]).sort((a,b)=>a[1] - b[2])
+        // get tanggal masuk pertama yang terdekat dengan tanggal libur terakhr
+        let first_day = new Date(input_freeze_to).setDate(
+            new Date(input_freeze_to).getDate()+
+            ((pattern[0][0]*7 + pattern[0][1]) -
+            new Date(input_freeze_to).getDay())
+        )
+        // final pattern format
+        let flat_date = pattern.map(ele =>
+            [new Date(first_day).setDate(
+                new Date(first_day).getDate() +
+                (ele[1] - new Date(first_day).getDay()) +
+                (
+                    ele[1] - new Date(first_day).getDay() < 0 ? 7 : 0
+                )
 
+            ),
+            ele[2]]
+        )
+        //sisa bagi pertemuan dibagi pattern
+        let a = copyJadwal.length % flat_date.length;
+        //hasil pembagian total pertemuan tanpa sisa bagi ( max perulangan)
+        let c = copyJadwal.length % flat_date.length == 0 ? copyJadwal.length / flat_date.length : (
+            copyJadwal.length - (copyJadwal.length % flat_date.length)) / flat_date.length;
+        let date_increament = 0;
+        console.log('trace on',a,c,copyJadwal.length,flat_date,length)
+
+        //keep it up sware -3-
+        // jadwal maker
+        // total pertemuan di bagi pertemuan dalam seminggu
+        // jika tidak ada sisa bagi 
+        // jika hasil bagi ada sisa jadwal di tambah jadwal dibuat dengan sisa pertemuan
+        for (let i = 0; i < c; i++) {
+            flat_date.forEach(date=>{
+                let tmp_date = new Date(new Date(date[0]).setDate(new Date(date[0]).getDate() + date_increament))
+                let tmp_jadwal = tmp_date.getFullYear() + '-' + String(tmp_date.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(tmp_date.getDate()).padStart(2, '0');
+                new_jadwal.push({
+                    'tanggal': tmp_jadwal,
+                    'jam': date[1]
+                });
+            })
+            date_increament += 7;
+        }
+        if (a != 0) {
+            for(let i=0;i<a;i++){
+                let tmp_date = new Date(new Date(flat_date[i][0]).setDate(new Date(flat_date[i][0]).getDate() + date_increament))
+                let tmp_jadwal = tmp_date.getFullYear() + '-' + String(tmp_date.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(tmp_date.getDate()).padStart(2, '0');
+                new_jadwal.push({
+                    'tanggal': tmp_jadwal,
+                    'jam': flat_date[i][1]
+                });
+            }
+        }
+        new_jadwal = new_jadwal.reduce((new_sch,ele,index)=>{
+            new_sch.push({
+                'UIDProgram':copyJadwal[index].UUIDProgram,
+                'IDSiswa':copyJadwal[index].IDSiswa,
+                'IDTutor':copyJadwal[index].IDTutor,
+                'IDJadwal':copyJadwal[index].IDJadwal,
+                'IDMateriFrom':copyJadwal[index].IDMateri,
+                'IDMateriTo':copyJadwal[index].IDMateri,
+                'NoRecordFrom':copyJadwal[index].NoRecord,
+                'NoRecordTo':copyJadwal[index].NoRecord,
+                'TanggalFrom':copyJadwal[index].Tanggal,
+                'TanggalTo':ele.tanggal+' '+ele.jam,
+                'MateriFrom':copyJadwal[index].NamaMateri,
+                'MateriTo':copyJadwal[index].NamaMateri,
+            })
+            return new_sch
+        },[])
+        new_jadwal.forEach((ele)=>{
+            DataChanges['UIDProgram[]'].push(ele.UIDProgram)
+            DataChanges['IDSiswa[]'].push(ele.IDSiswa)
+            DataChanges['IDTutor[]'].push(ele.IDTutor)
+            DataChanges['IDJadwal[]'].push(ele.IDJadwal)
+            DataChanges['IDMateriFrom[]'].push(ele.IDMateriFrom)
+            DataChanges['IDMateriTo[]'].push(ele.IDMateriTo)
+            DataChanges['NoRecordFrom[]'].push(ele.NoRecordFrom)
+            DataChanges['NoRecordTo[]'].push(ele.NoRecordTo)
+            DataChanges['TanggalFrom[]'].push(ele.TanggalFrom)
+            DataChanges['TanggalTo[]'].push(ele.TanggalTo)
         })
-        // newJadwal.forEach((ele)=>{
-        //     DataChanges['UIDProgram[]'].push(ele.UIDProgram)
-        //     DataChanges['IDSiswa[]'].push(ele.IDSiswa)
-        //     DataChanges['IDTutor[]'].push(ele.IDTutor)
-        //     DataChanges['IDJadwal[]'].push(ele.IDJadwal)
-        //     DataChanges['IDMateriFrom[]'].push(ele.IDMateriFrom)
-        //     DataChanges['IDMateriTo[]'].push(ele.IDMateriTo)
-        //     DataChanges['NoRecordFrom[]'].push(ele.NoRecordFrom)
-        //     DataChanges['NoRecordTo[]'].push(ele.NoRecordTo)
-        //     DataChanges['TanggalFrom[]'].push(ele.TanggalFrom)
-        //     DataChanges['TanggalTo[]'].push(ele.TanggalTo)
-        // })
-        // ReqJadwalChanges = DataChanges
-        // setAndShowDataModalChanges(newJadwal)
+        ReqJadwalChanges = DataChanges
+        setAndShowDataModalChanges(new_jadwal)
     }
     function filterSameDate(jadwal,reqJadwal){
         const dataFilter = (ele) => {
@@ -1180,6 +1260,7 @@
 
     }
     function setFirstDay() {
+        jam_maker = []
         let start_date = $('#start_date').val();
         let firs_day = new Date(start_date).getDay();
 
@@ -1343,7 +1424,7 @@
         TypeRemakeJadwal = id
     }
     function reMakeJadwal() {
-        //kunaiss
+        //kunai main
         // total pertemuan = jadwal yang belum ada absen dan tanggl nya lebih besar sama dengan sekarang
         let start_date = $('#start_date');
         console.log('jadwal',jadwal)
@@ -1407,8 +1488,7 @@
         let date = flat_date.sort((a, b) => a - b).map(ele =>
             new Date(ele).getFullYear() + '-' + String(new Date(ele).getMonth() + 1).padStart(2, '0') + '-' +
             String(new Date(ele).getDate()).padStart(2, '0')
-        );
-        console.log('flat date',flat_date,'date',date)
+        )
         //sisa bagi total pertemuan dibagi pertemuan dalam seminggu
         let a = total_pertemuan % jam_maker.length;
         //hasil pembagian total pertemuan tanpa sisa bagi ( max perulangan)
