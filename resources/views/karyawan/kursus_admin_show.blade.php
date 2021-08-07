@@ -1350,7 +1350,7 @@
         let filtered_jadwal = TypeRemakeJadwal == 1?
         jadwal.filter(ele=> ele.StatusMateri!='CLS'):
         jadwal
-        console.log(filtered_jadwal)
+        console.log('filtered jadwal',filtered_jadwal,TypeRemakeJadwal)
         // console.log(moment(new Date()).format('Y-MM-DD'))
         let total_pertemuan = filtered_jadwal.length
         let senin = $('#senin');
@@ -1408,22 +1408,27 @@
             new Date(ele).getFullYear() + '-' + String(new Date(ele).getMonth() + 1).padStart(2, '0') + '-' +
             String(new Date(ele).getDate()).padStart(2, '0')
         );
+        console.log('flat date',flat_date,'date',date)
         //sisa bagi total pertemuan dibagi pertemuan dalam seminggu
         let a = total_pertemuan % jam_maker.length;
-        console.log(a,total_pertemuan,'trace total')
         //hasil pembagian total pertemuan tanpa sisa bagi ( max perulangan)
         let c = total_pertemuan % jam_maker.length == 0 ? total_pertemuan / jam_maker.length : (
             total_pertemuan - (total_pertemuan % jam_maker.length)) / jam_maker.length;
         let jadwal_siswa = [];
         let date_increament = 0;
+        console.log(a,total_pertemuan,c,jam_maker.length,'trace total')
 
         //keep it up sware -3-
         // jadwal maker
+        // total pertemuan di bagi pertemuan dalam seminggu
+        // jika tidak ada sisa bagi 
+        // jika hasil bagi ada sisa jadwal di tambah jadwal dibuat dengan sisa pertemuan
         for (let i = 0; i < c; i++) {
             for (let j = 0; j < date.length; j++) {
                 let hari = jam_maker.filter(ele=>ele.day_id==new Date(date[j]).getDay())
                 for(let jam =0;jam<hari.length;jam++){
                     let tmp_date = new Date(new Date(date[j]).setDate(new Date(date[j]).getDate() + date_increament));
+                    console.log(tmp_date)
                     let tmp_jadwal = tmp_date.getFullYear() + '-' + String(tmp_date.getMonth() + 1).padStart(2, '0') + '-' +
                         String(tmp_date.getDate()).padStart(2, '0');
                     jadwal_siswa.push({
@@ -1434,25 +1439,31 @@
             }
             date_increament += 7;
         }
-
+        let j = 0
         if (a != 0) {
-            let indexDay =0 ;
-            for (let j = 0; j <= a; j++) {
-                console.log('ite sisa',j)
-                let hari = jam_maker.filter(ele=>ele.day_id==new Date(date[indexDay]).getDay())
-                for(let jam =0;jam<hari.length;jam++){
-                    let tmp_date = new Date(new Date(date[indexDay]).setDate(new Date(date[indexDay]).getDate() + date_increament));
-                    let tmp_jadwal = tmp_date.getFullYear() + '-' + String(tmp_date.getMonth() + 1).padStart(2, '0') + '-' +
-                        String(tmp_date.getDate()).padStart(2, '0');
-                    jadwal_siswa.push({
-                        'tanggal': tmp_jadwal,
-                        'jam': hari[jam].val
-                    });
-                    j++
+            do{
+                for (let i = 0; i < date.length; i++) {
+                    if(j==a){
+                        break
+                    }
+                    let hari = jam_maker.filter(ele=>ele.day_id==new Date(date[i]).getDay())
+                    for(let jam =0;jam<hari.length;jam++){
+                        if(j==a){
+                            break
+                        }
+                        console.log('ite sisa',j)
+                        let tmp_date = new Date(new Date(date[i]).setDate(new Date(date[i]).getDate() + date_increament));
+                        let tmp_jadwal = tmp_date.getFullYear() + '-' + String(tmp_date.getMonth() + 1).padStart(2, '0') + '-' +
+                            String(tmp_date.getDate()).padStart(2, '0');
+                        jadwal_siswa.push({
+                            'tanggal': tmp_jadwal,
+                            'jam': hari[jam].val
+                        });
+                        j++
+      
+                    }
                 }
-                indexDay++
-                date_increament += 7;
-            }
+            }while(j!=a)
         }
       jadwalBuiler(jadwal_siswa,filtered_jadwal);
       //kunai

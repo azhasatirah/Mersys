@@ -559,25 +559,31 @@
             }
             date_increament += 7;
         }
+        let j = 0
         if (a != 0) {
-            let indexDay =0 ;
-            for (let j = 0; j <= a; j++) {
-                let hari = master_jam.filter(ele=>ele.day_id==new Date(date[indexDay]).getDay())
-                for(let jam =0;jam<hari.length;jam++){
-                    let tmp_date = new Date(new Date(date[indexDay]).setDate(new Date(date[indexDay]).getDate() + date_increament));
-                    let tmp_jadwal = tmp_date.getFullYear() + '-' + String(tmp_date.getMonth() + 1).padStart(2, '0') + '-' +
-                        String(tmp_date.getDate()).padStart(2, '0');
-                    jadwal_siswa.push({
-                        'tanggal': tmp_jadwal,
-                        'jam': hari[jam].val
-                    });
-                    j++
+            do{
+                for (let i = 0; i < date.length; i++) {
+                    if(j==a){
+                        break
+                    }
+                    let hari = jam_maker.filter(ele=>ele.day_id==new Date(date[i]).getDay())
+                    for(let jam =0;jam<hari.length;jam++){
+                        if(j==a){
+                            break
+                        }
+                        let tmp_date = new Date(new Date(date[i]).setDate(new Date(date[i]).getDate() + date_increament));
+                        let tmp_jadwal = tmp_date.getFullYear() + '-' + String(tmp_date.getMonth() + 1).padStart(2, '0') + '-' +
+                            String(tmp_date.getDate()).padStart(2, '0');
+                        jadwal_siswa.push({
+                            'tanggal': tmp_jadwal,
+                            'jam': hari[jam].val
+                        });
+                        j++
+      
+                    }
                 }
-                indexDay++
-                date_increament += 7;
-            }
+            }while(j!=a)
         }
-        console.log('jadwal siswa',jadwal_siswa)
     
         getAndSetNewestJadwalTutor(start_date.val());
         checkJadwalTutor(jadwal_siswa);
