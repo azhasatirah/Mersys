@@ -547,8 +547,8 @@ Route::prefix('auth')->group(function(){
 });
 
 //gerbang user
-Route::get('/','AuthController@index');
-Route::get('/karyawan','AuthController@gerbangKaryawan');
+Route::get('/','AuthController@index')->middleware('IsLogin');
+Route::get('/karyawan','AuthController@gerbangKaryawan')->middleware('IsLogin');
 
 // Route::get('/updatetutor','JadwalController@updateIDTutor');
 // Route::get('/updatekursusmateri','JadwalController@updateMateriKursus');

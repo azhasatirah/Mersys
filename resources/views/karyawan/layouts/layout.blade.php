@@ -310,8 +310,7 @@
         $('#level-user').val()==2?'admin':
         $('#level-user').val()==3?'tutor':'siswa';
       $(document).ready(function () {
-        showNotif();
-        console.log($('#uid-user').val());
+       getNotif()
       });
       $(function(){
         $(document).on('click','#btnLogout',function(){
@@ -330,84 +329,38 @@
           });
         });
       });
-      function getNotif(){
+      async function getNotif(){
         Notif = [];
-        switch($('#level-user').val()){
-          case '1':
-            $.ajax({
-              type: "get",
-              url: "/karyawan/owner/notif",
-              async: false,
+        let level_user = parseInt($('#level-user').val())
 
-              success: function (response) {
-                console.log('owner',response);
-                RoleNotif = response;
-              }
-            });
-            break;
-          case '2':
-            console.log('admin');
-            $.ajax({
-              type: "get",
-              url: "/karyawan/admin/notif",
-              async: false,
-              success: function (response) {
-                console.log('admin',response);
-                RoleNotif = response;
-              }
-            });
-            break;
-          case '3':
-            
-            $.ajax({
-              type: "get",
-              url: "/karyawan/tutor/notif",
-              async: false,
-
-              success: function (response) {
-                console.log('tutor',response);
-                RoleNotif = response;
-              }
-            });
-            break;
-          case '4':
-            $.ajax({
-              type: "get",
-              url: "/siswa/notif",
-              async: false,
-
-              success: function (response) {
-                console.log('siswa',response);
-                RoleNotif = response;
-              }
-            });
-            break;
+        let UrlGetNotifRole = level_user ===1?
+        '/karyawan/owner/notif':level_user ===2?
+        '/karyawan/admin/notif':level_user ===3?
+        '/karyawan/tutor/notif':level_user ===4?
+        '/siswa/notif': false
+        if(UrlGetNotifRole===false){
+          swal('session anda telah berakhir, mohon untuk melakukan login ulang')
         }
-        $.ajax({
-          type: "get",
-          url: "/notif/user/"+$('#uid-user').val(),
-          async: false,
-          success: function (response) {
-            console.log('user',response);
-            UserNotif = response;
-          }
-        });
-        console.log(RoleNotif);
-        console.log(UserNotif);
-        RoleNotif.forEach(ele=>Notif.push(ele));
-        UserNotif.forEach(ele=>Notif.push(ele));
+        const getRoleNotif = await $.get(UrlGetNotifRole)
+        const getUserNotif = await $.get("/notif/user/"+$('#uid-user').val())
+        Promise.all([getRoleNotif,getUserNotif]).then((data)=>{
+          RoleNotif = data[0]
+          UserNotif = data[1]
+          RoleNotif.forEach(ele=>Notif.push(ele));
+          UserNotif.forEach(ele=>Notif.push(ele));
+          showNotif()
+        })
       //  return Notif;
       }
       function showNotif(){
-        //let Notif = getNotif();
-        getNotif();
-        console.log(Notif);
         $('#notif-list').empty();
         $('#count-notif').html(Notif.length==0?'':Notif.length);
         Notif.forEach((data)=>{
+          //kunaisss
           $('#notif-list').append(
             '<li class=\"nav-item\">'+
               '<a class=\"dropdown-item\" '+
+              'href=\"'+data['Link']+'\" target=\'blank\''+
               'onclick=\"openNotif(\''+data['Link']+'\',\''+data['IDNotif']+'\')\">'+
                 '<span class=\"image\"><img src=\"'+data['NotifFromProfile']+'\" alt=\"Profile Image\" /></span>'+
                 '<span>'+
@@ -428,20 +381,19 @@
           url: "/notif/update/"+idNotif,
           async: false,
           success: function (response) {
-            console.log(response);
+            getNotif()
           }
-        });
-        window.location.replace(link);
+        })
       }
       {{--window.Echo.channel('Notif').listen('.'+MyRole, function (e) {
         console.log(e);
         soundNotif.play();
-        showNotif();
+       getNotif();
       });
       window.Echo.channel('Notif').listen('.'+$('#uid-user').val(), function (e) {
         console.log(e);
         soundNotif.play();
-        showNotif();
+       getNotif();
       });--}}
     </script>
     @stack('scripts')
