@@ -451,11 +451,11 @@
         let input_freeze_to = $('#input-libur-sampai').val()
         //copyjadwal = jadwal di atas tanggal awal cuti yang materi belum selesai
         let copyJadwal = jadwal.filter((ele)=>{
-            let time_sch = new Date(ele.Tanggal.split(' ')[0]).getTime()
+            let time_sch = new Date(ele.Tanggal).getTime()
             let time_to = new Date(input_freeze_to).getTime() 
             let time_from = new Date(input_freeze_from).getTime()
             //sch that can be edit
-            let incSch = (time_sch >=  time_from)  && (ele.StatusMateri =='OPN')
+            let incSch = (time_sch >=  time_from)  
             return incSch
         })
         // newJadwal = jadwal baru yang akan dibuat
