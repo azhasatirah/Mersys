@@ -159,7 +159,7 @@
             });
         }
         function editData(id){
-            let data = master_data.filter(ele=>ele.IDKota==id)
+            let data = master_data.filter(ele=>ele.IDBlok==id)
             $('#medit-kota').val(data[0].IDKota)
             $('#medit-blok').val(data[0].NamaBlok)
             $('#medit-idmaster').val(data[0].IDBlok)
