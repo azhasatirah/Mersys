@@ -515,16 +515,16 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Buat penggajian tahun <span class="tahun-penggajian"></span></h5>
+                <h5 class="modal-title">Buat penggajian</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
             </div>
             <div class="modal-body">
-
                 <div class="form-group">
                     <label for="">Bulan</label>
-                    <select class="custom-select" id="penggajian-bulan"></select>
+                    <input type="month" id="penggajian-bulan" class="form-control">
+                    {{-- <select class="custom-select" id="penggajian-bulan"></select> --}}
                 </div>
                
             </div>
@@ -559,6 +559,8 @@
             getData()
             $('.tahun-penggajian').html(NYear)
         });
+        function formPenggajianTahunOnly(){
+        }
         function downloadPenggajian(){
             $('#table-detail-penggajian').table2excel({
                 'filename':Penggajian[0].NamaKaryawan + Penggajian[0].Tanggal+'.xls',
@@ -624,15 +626,8 @@
             $('#modal-footer-detail').append(buttons)
         }
         function appendOptionSelectMonthPenggajian(){
-            $('#penggajian-bulan').empty()
-            let month = [0,1,2,3,4,5,6,7,8,9,10,11]
-            month = month.filter(ele=>Penggajian.some(p=>new Date(p.Tanggal).getMonth()==ele)!=true)
-            month.forEach(ele=>{
-                $('#penggajian-bulan').append(
-                    "<option value=\""+ele+"\">"+getNameMonth(ele)+"</option>"
-                )
-            })
-         
+            let this_time = new Date()
+            $('#penggajian-bulan').val(this_time.getFullYear()+'-'+String(this_time.getMonth()+1).padStart(2,'0'))
         }
         //kunaisss
         function editPenggajian(id){
@@ -781,10 +776,11 @@
             //penaltyk = keterlambatan memulai kelas 
             $('#modal-setmonth-penggajian').modal('hide')
             $('#modal-create-penggajian').modal('show')
-            NMonth = $('#penggajian-bulan').val()
-            console.log('penggajian bulan',NMonth)
+            let time_penggajian = $('#penggajian-bulan').val().split('-')
+            NMonth = time_penggajian[1]
+            NYear = time_penggajian[0]
             CreatePenggajian = []
-            let NKelas =KelasTutor.filter(ele=>new Date(ele.Tanggal).getMonth()==NMonth && ele.Kelas==true)
+            let NKelas =KelasTutor.filter(ele=>new Date(ele.Tanggal).getMonth()==NMonth && new Date(ele.Tanggal).getFullYear()==NYear && ele.Kelas==true)
             let penaltyk = NKelas.filter(ele=>{
                 let absen = new Date(ele.Tanggal.split(' ')[0]+' '+ele.AbsensiTutor).getTime() - new Date(ele.Tanggal).getTime() 
                 return MasterDendaKeterlambatan.some(dk=>{
