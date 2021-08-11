@@ -417,7 +417,7 @@
         showJadwal();
         getChanges();
     });
-
+    //kunai ws
     // window.Echo.channel('Event'+$('#UUIDKelas').val()).listen('.Kelas', function (e) {
     //     console.log(e);
     //     showJadwal();

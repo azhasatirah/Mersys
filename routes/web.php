@@ -131,7 +131,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::get('siswa','SiswaController@indexSiswa');
         Route::get('karyawan/show/{id}','KaryawanController@showKaryawan');
         Route::get('karyawan','KaryawanController@indexKaryawan');
-
+        Route::post('siswa/resetpassword','SiswaController@resetPassword');
 
 
     });
@@ -139,7 +139,18 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     //route admin
     Route::group(['middleware'=>['RoleKaryawan:2'],'prefix'=>'admin'],function(){
 
-    
+        Route::get('master/kota','Kota@index');
+        Route::get('master/kota/getdata','Kota@getdata');
+        Route::post('master/kota/store','Kota@store');
+        Route::post('master/kota/update','Kota@update');
+        Route::get('master/kota/delete/{id}','Kota@delete');
+
+        Route::get('master/blok','KotaBlok@index');
+        Route::get('master/blok/getdata','KotaBlok@getdata');
+        Route::post('master/blok/store','KotaBlok@store');
+        Route::post('master/blok/update','KotaBlok@update');
+        Route::get('master/blok/delete/{id}','KotaBlok@delete');
+
         Route::get('master/dendatelatcicilan','DendaKeterlambatanCicilan@index');
         Route::get('master/dendatelatcicilan/getdata','DendaKeterlambatanCicilan@getdata');
         Route::post('master/dendatelatcicilan/store','DendaKeterlambatanCicilan@store');

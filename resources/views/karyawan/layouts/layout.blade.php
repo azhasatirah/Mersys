@@ -144,6 +144,8 @@
                   </li>
                   <li><a><i class="fa fa-folder"></i> Master <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
+                      <li><a href="{{url('karyawan/admin/master/kota')}}">Master kota</a></li>   
+                      <li><a href="{{url('karyawan/admin/master/blok')}}">Master blok kota</a></li>
                       <li><a href="{{url('karyawan/admin/master/maksimalcuti')}}">Master batas maksimal cuti</a></li>   
                       <li><a href="{{url('karyawan/admin/master/dendatelatcicilan')}}">Denda keterlambatan cicilan</a></li>
                       <li><a href="{{url('karyawan/admin/master/maksimalchangejadwal')}}">Master batas ganti jadwal</a></li>
