@@ -91,6 +91,9 @@ class ProgramStudiController extends Controller
     }
 
     public function programSiswa($ID,$ID2){
+            return view('siswa.program');
+    }
+    public function siswaGetDataProgram($ID,$ID2){
         $ProgramStudi = ProgramStudi::getProgramStudiByKategori($ID2,$ID);
         $Diskon = DB::table('diskon')->where('Status','OPN')->where('IDSiswa',session()->get('IDUser'))
         ->get();    
@@ -119,12 +122,10 @@ class ProgramStudiController extends Controller
                 'Cicilan'=>count($Cicilan)>0?$Cicilan:false
             ));
         }
-   // dd($Data);
-        if(count($Data)>0){
-            return view('siswa.program',['Program'=>$Data]);
-        }else{
-            return redirect()->back()->withErrors('Progra masih kosong');
-        }
+        $Kota = DB::table('master_kota')->where('Status','!=','DEL')->get();
+        $Blok = DB::table('master_kota_blok')->where('Status','!=','DEL')->get();
+        $Homeclass = DB::table('master_penggajian_transport')->where('Status','!=','DEL')->get();
+        return response()->json([$Data,$Blok,$Kota,$Homeclass]);
     }
 
     public function showDetail($ID){

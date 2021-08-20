@@ -543,8 +543,10 @@ class TransaksiController extends Controller
 
     }
     public function storeTransaksi(Request $request){
-       // dd($request);
-        $ProgramStudi = DB::table('program_studi')->where('IDProgram',$request->program)->get();
+       //dd($request);
+       //return response()->json($request);
+        $ProgramStudi = DB::table('program_studi')->where('IDProgram',$request->idprogram)->get();
+      //  dd($ProgramStudi);
         $KeyProgramStudi = $ProgramStudi[0]->IDKategoriGlobalProgram == 2?explode('(Bulanan-',$ProgramStudi[0]->NamaProdi):false;
         if($ProgramStudi[0]->IDKategoriGlobalProgram==2&&intVal($KeyProgramStudi[1][0])!=1){
             $isValid = false;
@@ -556,17 +558,17 @@ class TransaksiController extends Controller
             ->select('ks.*','ps.NamaProdi')
             ->get();
            // dd($KursusBulananSiswa->toArray());
+           $LastBulanan = intval($KeyProgramStudi[1][0])-1;
             if(count($KursusBulananSiswa)==0){
                 $isValid== true;
             }
             if(count($KursusBulananSiswa)>0){
-                $LastBulanan = intval($KeyProgramStudi[1][0])-1;
                 $isValid = array_reduce($KursusBulananSiswa->toArray(), function($isBigger, $num) use($LastBulanan){
                     return $isBigger || intval(explode('Bulanan-',$num->NamaProdi)[1][0]) == $LastBulanan;
                 });
             }
             if($isValid==false){
-                return redirect()->back()->with('msg','Tidak bisa mengambil program bulanan ini, karena anda belum belajar bulanan ke '.$LastBulanan);
+                return response()->json(['Status'=>'warning','Message'=>'Tidak bisa mengambil program bulanan ini, karena anda belum belajar bulanan ke '.$LastBulanan]);
             }
             
         }
@@ -575,10 +577,11 @@ class TransaksiController extends Controller
         $DataKursusSiswa = array(
             'UUID'=>$KodeKursus,
             'KodeKursus'=>'KSW-'.date('ymHis'),
-            'IDProgram'=>$request->program,
+            'IDProgram'=>$request->idprogram,
             'IDSiswa'=>session()->get('IDUser'),
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
+            'Tempat'=>$request->tempatbelajar,
             'UserAdd'=>session()->get('Username'),
             'UserUpd'=>session()->get('Username'),
             'Status'=>'OPN'
@@ -589,7 +592,7 @@ class TransaksiController extends Controller
         //dd($KursusSiswa,$KodeKursus);
         $IDKursusSiswa = $KursusSiswa['KursusSiswa'][0]->IDKursusSiswa;
         $CountTransaksi = Transaksi::getAllTransaksi();
-        $Prefix = $request->cicilan=='y'?"TRH-":"TRX-";
+        $Prefix = $request->hutang=='y'?"TRH-":"TRX-";
         if(strlen((string)count($CountTransaksi['Transaksi']))==1){
             $Urut = '00'.(count($CountTransaksi['Transaksi'])+1);
         }elseif(strlen((string)count($CountTransaksi['Transaksi']))==2){
@@ -608,13 +611,13 @@ class TransaksiController extends Controller
             'Tanggal'=>Carbon::now(),
             'Status'=>'OPN',
             'Diskon'=>$request->diskon,
-            'SubTotal'=>$request->harga,
-            'Total'=>$request->harga - $request->diskon,
+            'SubTotal'=>$request->subtotal,
+            'Total'=>$request->total,
             'Keterangan'=>'',
             'DiskonPersen'=>0,
             'PPN'=>'n',
             'NilaiPPN'=>0,
-            'Hutang'=>$request->cicilan,
+            'Hutang'=>$request->hutang,
             'created_at'=>Carbon::now(),
             'updated_at'=>Carbon::now(),
             'UserAdd'=>session()->get('Username'),
@@ -622,6 +625,24 @@ class TransaksiController extends Controller
             'Status'=>'OPN'
         );
         $StatusTransaksi = Transaksi::storeTransaksi($DataTransaksi);
+        $DataTransaksi = DB::table('transaksi')->where('UUID',$UUIDTransaksi)->get();
+        //dd($DataTransaksi);
+        if(isset($request->tt_kode)){
+            for($i=0;$i<count($request->tt_kode);$i++){
+                $DataTT = array(
+                    'IDTransaksi'=>$DataTransaksi[0]->IDTransaksi,
+                    'Kode'=>$request->tt_kode[$i],
+                    'Keterangan'=>$request->tt_keterangan[$i],
+                    'Total'=>$request->tt_total[$i],
+                    'created_at'=>Carbon::now(),
+                    'updated_at'=>Carbon::now(),
+                    'UserAdd'=>session()->get('Username'),
+                    'UserUpd'=>session()->get('Username'),
+                    'Status'=>'OPN'
+                );
+                DB::table('transaksi_tambahan')->insert($DataTT);
+            }
+        }
         DB::table('notif')->insert([
             'Notif'=> session()->get('NamaUser'). " membuat transaksi ".$KodeTransaksi,
             'NotifFrom'=> session()->get('UID'),
@@ -656,7 +677,7 @@ class TransaksiController extends Controller
             ]);
         }
         if($StatusTransaksi['Status']=='success'){
-            return redirect('/siswa/pembayaran/info/'.$UUIDTransaksi);
+            return response()->json(['Status'=>'success','Message'=>'Transaksi berhasil dibuat','Uid'=>$UUIDTransaksi]);
         }
 
     }

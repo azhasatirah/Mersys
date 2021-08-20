@@ -500,6 +500,7 @@ Route::group(['middleware'=>['Role:siswa'],'prefix'=>'siswa'],function(){
     Route::get('program/kategori/{id}','ProgramStudiController@kategoriProgramSiswa');
     // Route::get('program/kategori/{id}/{id}','ProgramStudiController@');
     Route::get('program/{id}/{id2}','ProgramStudiController@programSiswa');
+    Route::get('program/get/{id}/{id2}','ProgramStudiController@siswaGetDataProgram');
     Route::get('program/harga/{id}','ProgramStudiController@getHargaByIDProgram');
     Route::get('jprogram/getDetail/{id}','ProgramStudiController@showDetail');
 

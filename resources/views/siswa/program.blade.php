@@ -1,6 +1,7 @@
 @extends('siswa.layouts.layout')
 @section('title','Program Saya')
 @section('content')
+
 <input type="hidden" value="{{session()->get('msg')}}" id="msg">
 <div class="row">
   <div class="col-md-12">
@@ -34,51 +35,6 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($Program as $item)
-  
-              <tr>
-                <td>{{$loop->iteration}}</td>
-                <td>
-                  <a>{{$item['NamaProdi']}}</a>
-                  <br />
-                  <small></small>
-                </td>
-                <td>
-                  {{$item['TotalPertemuan']}} Pertemuan
-                </td>
-                <input type="hidden" id="IDProgram{{$item['IDProgram']}}" value="{{$item['Tool']}}">
-                <td>
-                  <h4 style="font-size:18px;" class=" text-white">
-                    <div class="row">
-                      <div class="col-md-9">
-                        <span class="
-                              @if (count($item['Diskon'])>0)       
-                              bg-dark
-                              @else
-                              bg-success
-                              @endif
-                              
-                              " @if (count($item['Diskon'])>0)
-  
-                          style="text-decoration: line-through"
-                          @endif
-                          >Rp. {{number_format($item['HargaLunas'])}}</span> <br>
-                        @if (count($item['Diskon'])>0)
-                        <span class="bg-success">Rp.
-                          {{number_format($item['HargaLunas'] -  $item['Diskon'][0]->Nilai)}}</span>
-                        @endif
-                      </div>
-                    </div>
-                    </p>
-                </td>
-                <td>
-                  <a href="#" onclick="getDetail({{$item['IDProgram']}})" data-toggle="modal" data-target="#modaldetail"
-                    class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detail </a>
-                </td>
-              </tr>
-              @endforeach
-  
-  
             </tbody>
           </table>
         </div>
@@ -88,66 +44,70 @@
     </div>
   </div>
 </div>
+
 <input type="hidden" id="diskon-value"
-  value="@if(count($Program[0]['Diskon'])>0){{$Program[0]['Diskon'][0]->Nilai}}@else 0 @endif">
+  value="
+  {{-- @if(count($Program[0]['Diskon'])>0){{$Program[0]['Diskon'][0]->Nilai}}@else 0 @endif --}}
+  ">
 <div class="modal fade" id="modaldetail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-
+      {{-- kunai --}}
+      
       <div class=" ">
         <div class="pricing">
           <div class="title bg-primary">
-            <h2 id="display-nama-prodi"> </h2>
-            <h1 id="display-harga-lunas">Rp. 500.000</h1>
-            <span id="display-pertemuan">30 Pertemuan</span>
+            <h2 >Nama Program</h2>
+            <h1 id="display-nama-prodi"></h1>
+            <span id="display-pertemuan"></span>
           </div>
           <div class="x_content">
             <div class="">
-              <div class="pricing_features">
+              <div id="create-first" class="pricing_features">
                 <ul class="list-unstyled text-left">
-                  <li id="display-tool">
-
-                  </li>
-                  <li id="display-modul">
-
-                  </li>
-                  <hr>
-                  <ul class="list-group " style="margin-top:-20px">
-                    <li><i class="fa fa-dollar text-success"></i> <strong> Harga</strong></li>
-                    <li class="list-group-item d-flex justify-content-between">
-                      <div><strong> Lunas</strong>
-                        <span class="text-success"
-                          style="font-size:18px;"
-                          id="pembayaran-lunas"></span>
-                          <section id="display-diskon"></section>
-
-                     
-                      </div>
-                      <form method="POST" action="{{url('siswa/transaksi/program')}}">
-                
-                        <input type="hidden" id="csrf" name="_token" value="{{ csrf_token() }}">
-                        <input type="hidden" name="idcicilan" value="0">
-                        <input type="hidden" name="cicilan" value="n">
-                        <input type="hidden" id="hargalunas" name="harga">
-                        <input type="hidden" name="diskon" value="0" id="diskon">
-                        <input type="hidden" name="iddiskon" value="0" id="iddiskon">
-                        <input type="hidden" class="program" name="program">
-                        <button type="submit" class="btn btn-sm btn-primary">Pilih</button>
-                      </form>
-                    </li>
-                    <div id="display-cicilan">
-
-                    </div>
+                  <ul class="list-group" style="margin-top:-20px">
+                    <li style="list-style-type: none"><i class="fa fa-dollar text-success"></i> <strong> Harga</strong></li>
+                    <div id="price-list"></div>
                   </ul>
-
-
                 </ul>
+              </div>
+              <div id="create-sec" style="display: none" class="pricing_features">
+                <ul class="list-unstyled text-left">
+                  <section id="pembayaran-info"></section>
+                  <li id="display-modul"></li>
+                  <li id="display-tool"></li>
+                  <section id="info-harga-tool"></section>
+                  <div class="form-group mt-3">
+                    <label for="">Tempat belajar</label>
+                    <select class="custom-select" id="study-place">
+                      <option value="studio">Studio</option>
+                      <option value="online">Online</option>
+                      <option value="homeclass">Homeclass</option>
+                    </select>
+                  </div>
+                  <section style="display: none" id="blok-homeclass">
+                    <div class="form-group mt-2">
+                      <label for="">Kota</label>
+                      <select class="custom-select" id="kota"></select>
+                    </div>
+                    <div class="form-group mt-2">
+                      <label for="">Blok</label>
+                      <select class="custom-select" id="blok"></select>
+                    </div>
+                    <section id="info-harga-homeclass"></section>
+                  </section>
+                  <div class="form-group mt-2">
+                    <label style="margin-bottom: 0px">Total</label>
+                    <p><span class="text-success" id="display-subtotal" style="font-size: 20px"></span></p>
+                  </div>
+                </ul>
+                <button type="button" id="btn-store-transaksi" onclick="storeTransaksi()" class="btn btn-primary btn-sm">Buat transaksi</button>
               </div>
             </div>
             <div class="pricing_footer">
               <a href="javascript:void(0);" data-dismiss="modal" class="btn btn-success btn-block"
-                role="button">Kembali</a>
+                role="button">Batal</a>
 
             </div>
           </div>
@@ -158,6 +118,7 @@
     </div>
   </div>
 </div>
+<input type="hidden" name="_token" id="csrf" value="{{ csrf_token() }}" />
 <input type="hidden" id="idsiswa" value="{{session()->get('IDUser')}}">
 
 
@@ -166,22 +127,55 @@
 @endsection
 @push('scripts')
 <script>
+
   let DiskonAktif = [],
     Siswa = $('#idsiswa').val(),modalData
+  let url_data = window.location.href.split('/')
+  let id1 = url_data[5]
+  let id2 = url_data[6]
+  let ProgramStudi = [],Kota=[],Blok=[],Homeclass=[]
+  // active program / selected program
+  let programa = []
+  let post_data = {'_token':$('#csrf').val()}
+  let tmp_tools = [],tmp_homeclass=0
+  let table_data = $('#tabeldata').DataTable()
   $(document).ready(function () {
-
-    $('#tabeldata').DataTable();
     getDiskon()
-    showMsg()
+    getData()
   });
-function showMsg(){
-  let msg = $('#msg').val()
-  if(msg.length>0){
-
-  console.log(msg)
-  swal(msg)
+  $('#kota').on('change',()=>{
+    filterBlokByKota()
+    setAndShowHomeclass()
+  })
+  $('#blok').on('change',()=>{
+    setAndShowHomeclass()
+  })
+  $('#study-place').on('change',()=>{
+    if($('#study-place').val()==='homeclass'){
+      setAndShowHomeclass()
+    }else{
+      tmp_homeclass = 0
+      let total_tool = tmp_tools.reduce((acc,ele)=>{
+        return acc +parseInt(ele.Harga)
+      },0)
+      let total = total_tool + post_data.subtotal 
+      $('#display-subtotal').html(numberToIDR(parseInt(total)))
+      $('#blok-homeclass').hide()
+    }
+  })
+  //kunaiz
+  function setAndShowHomeclass(){
+      tmp_homeclass = countHomeclass()
+      let total_tool = tmp_tools.reduce((acc,ele)=>{
+        return acc +parseInt(ele.Harga)
+      },0)
+      let diskon_val = programa.Diskon.length>0?programa.Diskon[0].Nilai:0
+      let total = total_tool + post_data.subtotal + countHomeclass()
+      $('#info-harga-homeclass').empty()
+      $('#study-place').val()==='homeclass'&&$('#info-harga-homeclass').append('<li>Total homeclass <span class="text-success text-lg">'+numberToIDR(tmp_homeclass)+'</span></li>')
+      $('#display-subtotal').html(numberToIDR(total-diskon_val))
+      $('#blok-homeclass').show()
   }
-}
   function getDiskon() {
     Promise.resolve($.get("/siswa/diskon/getdata/" + Siswa)).then((ele) => {
       DiskonAktif = ele
@@ -200,117 +194,233 @@ function showMsg(){
     }
   }
 
+
+  function getData(){
+    $.get("/siswa/program/get/"+id1+"/"+id2).done(data=>{
+      ProgramStudi = data[0]
+      Blok = data[1]
+      Kota = data[2]
+      Homeclass = data[3]
+      Blok = Blok.filter(ele=>{
+        return Homeclass.some(hc=>hc.IDBlok === ele.IDBlok && hc.IDKota === ele.IDKota)
+      })
+      Kota = Kota.filter(ele=>Homeclass.some(hc=>hc.IDKota===ele.IDKota))
+      appendAddRowTableData()
+      appendOptionKota()
+      appendOptionBlok()
+      filterBlokByKota()
+    })
+  }
+  function appendOptionKota(){
+    $('#kota').empty()
+    Kota.forEach(ele=>{
+      $('#kota').append('<option value=\''+ele.IDKota+'\'>'+ele.NamaKota+'</option>')
+    })
+  }
+  function appendOptionBlok(){
+    $('#blok').empty()
+    Blok.forEach(ele=>{
+      $('#blok').append('<option value=\''+ele.IDBlok+'\'>'+ele.NamaBlok+'</option>')
+    })
+  }
+  function filterBlokByKota(){
+    let kota = parseInt($('#kota').val())
+    $('#blok').empty()
+    Blok.filter(ele=>ele.IDKota === kota).forEach(ele=>{
+      $('#blok').append('<option value=\''+ele.IDBlok+'\'>'+ele.NamaBlok+'</option>')
+    })
+  }
+  function countHomeclass(){
+    let pertemuan = programa.TotalPertemuan
+    let kota = $('#kota').val()
+    let blok = $('#blok').val()
+    let homeclass_price = Homeclass.filter(ele=>ele.IDKota === parseInt(kota) && ele.IDBlok === parseInt(blok))[0].Biaya
+    let total = parseInt(homeclass_price)*parseInt(pertemuan) 
+    total = $('#study-place').val()!=='homeclass'?0:total
+    return total
+  }
+  function appendAddRowTableData(){
+    table_data.clear().draw()
+    let ite = 0 
+    ProgramStudi.forEach(ele=>{
+      let b_detail = "<a href=\"javascript:void(0)\" onclick=\"getDetail("+ele.IDProgram+")\" data-toggle=\"modal\" data-target=\"#modaldetail\""+
+                      "class=\"btn btn-primary btn-sm\"><i class=\"fa fa-folder\"></i> Detail </a>"
+      ite++
+      table_data.row.add([
+        ite,
+        ele.NamaProdi,
+        ele.TotalPertemuan+' Pertemuan',
+        numberToIDR(ele.HargaLunas),
+        b_detail
+      ]).draw()
+    })
+  }
+  //create transaksi 
+  //total = Harga lunas + diskon 
+  //subtotal = total + tool + homeclass
+  function storeTransaksi(){
+    $('#btn-store-transaksi').prop('disabled',true)
+    post_data['tt_kode[]']=[]
+    post_data['tt_keterangan[]']=[]
+    post_data['tt_total[]']=[]
+    if(tmp_homeclass!==0){
+      let uniq_code = String(Math.random()).slice(2,6)+String(new Date().getTime()).slice(9,13)
+      post_data['tt_kode[]'].push('tth-'+uniq_code)
+      post_data['tt_keterangan[]'].push('Biaya homeclass')
+      post_data['tt_total[]'].push(tmp_homeclass)
+    }
+    tmp_tools.length>0&&tmp_tools.forEach(ele=>{
+      let uniq_code = String(Math.random()).slice(2,6)+String(new Date().getTime()).slice(9,13)
+      post_data['tt_kode[]'].push('ttt-'+uniq_code)
+      post_data['tt_keterangan[]'].push(ele.Nama)
+      post_data['tt_total[]'].push(ele.Harga)
+    })
+    if(post_data['tt_kode[]'].length>0){
+      let total_tt = post_data['tt_total[]'].reduce((total,item)=>{
+        return total + item
+      },0)
+      post_data.total=parseInt(post_data.subtotal)+parseInt(total_tt)
+    }
+    post_data.iddiskon = 0
+    if(programa.Diskon.length>0){
+      post_data.diskon=programa.Diskon[0].Nilai
+      post_data.total = post_data.total - programa.Diskon[0].Nilai
+      post_data.iddiskon = programa.Diskon[0].IDDiskon
+    }
+    post_data.tempatbelajar = $('#study-place').val()
+    $.ajax({
+      type: "post",
+      url: "/siswa/transaksi/program",
+      data: post_data,
+      success: function (response) {
+        $('#btn-store-transaksi').prop('disabled',false)
+        $('#modaldetail').modal('hide')
+        swal(response.Status, response.Message, response.Status)
+        getData()
+        if(response.Status==='success'){
+          setTimeout(function(){
+            window.open('/siswa/pembayaran/detail/'+response.Uid)
+          },1500)
+        }
+     //   console.log('congrats',response)
+      }
+    });
+
+  }
+  function createTransaksi(id){
+    $('#create-first').hide()
+    $('#create-sec').show()
+    let cicilan = id!==0?programa.Cicilan.filter(ele=>ele.IDCicilan===id)[0]:0
+    let pembayaran_info_title = parseInt(id)===0&&cicilan===0?'Harga lunas':cicilan!==0?'Harga cicilan '+cicilan.Cicilan+'x':''
+    let harga = parseInt(id)===0?programa.HargaLunas:cicilan.Harga
+    $('#pembayaran-info').append('<li>'+pembayaran_info_title+' <span class="text-success text-lg">'+numberToIDR(harga)+'</span></li>')
+    let diskon_val = programa.Diskon.length>0?programa.Diskon[0].Nilai:0
+    $('#display-subtotal').html(numberToIDR(harga - diskon_val))
+    post_data.hutang = parseInt(id)===0?'n':'y'
+    post_data.idcicilan = parseInt(id)
+    post_data.idprogram = programa.IDProgram
+    post_data.total = harga
+    post_data.subtotal = harga
+    //ttkode ttc = homeclass , ttt = tools
+  }
   function getDetail(id) {
+    $('#create-sec').hide()
+    $('#create-first').show()
+    $('#pembayaran-info').empty()
+    $('#info-harga-tool').empty()
+    $('#info-harga-homeclass').empty()
+    tmp_tools = []
+    tmp_homeclass =0
+    $('#study-place').val('studio')
+    $('#blok-homeclass').hide()
     let DisplayDiskon = $('#display-diskon')
     DisplayDiskon.empty()
+    programa = ProgramStudi.filter(ele=>ele.IDProgram===id)[0]
+    console.log('trace ',programa)
 
-    $.get('/siswa/jprogram/getDetail/' + id, (data) => {
-      modalData = data
-      $('#display-modul').empty();
-      $('#diskon').val(0);
-      $('#iddiskon').val(0);
-      $('#pembayaran-lunas').css('text-decoration','none');
-      $('#pembayaran-lunas').addClass('text-success');
-      $('#pembayaran-lunas').removeClass('text-grey');
-      $('#display-tool').empty();
-      $('#display-cicilan').empty();
-      $('#display-nama-prodi').html(data[0].NamaProdi);
-      $('#display-harga-lunas').html(IDR(data[0].HargaLunas));
-      $('#display-pertemuan').html(data[0].TotalPertemuan + ' Pertemuan');
-      //show harga lunas
-      $('#pembayaran-lunas').html('(' + IDR(data[0].HargaLunas) + ')');
-      //input harga lunas
-      $('#hargalunas').val(data[0].HargaLunas);
-      $('.program').val(data[0].IDProgram);
-      if(data[0].Diskon.length>0){
-        $('#diskon').val(data[0].Diskon[0].Nilai);
-        $('#iddiskon').val(data[0].Diskon[0].IDDiskon);
-        $('#pembayaran-lunas').addClass('text-grey');
-        $('#pembayaran-lunas').removeClass('text-success');
-        $('#pembayaran-lunas').css('text-decoration','line-through');
-        DisplayDiskon.append(
-          "<span class=\"text-success\" style=\"font-size:18px\">Rp "+(data[0].HargaLunas - data[0].Diskon[0].Nilai).toLocaleString('id-ID')+"</span>"
-        )
-      }
-      if (data[0].Tool != false) {
-        let tools=""
-        data[0].Tool.forEach(ele=>{
+    $('#display-nama-prodi').html(programa.NamaProdi)
+    $('#display-pertemuan').html(programa.TotalPertemuan+' Pertemuan')
+    const getListHarga = (id,harga,title) =>{
+      //diskon
+      //normal
+      let show_price = programa.Diskon.length>0?
+      "<span class=\"text-grey\" style=\"font-size: 18px; text-decoration: line-through;\" >("+numberToIDR(harga)+")</span>"+
+      "<section><span class=\"text-success\" style=\"font-size:18px\">"+numberToIDR(harga-programa.Diskon[0].Nilai)+"</span></section>":
+      "<span class=\"text-success\"style=\"font-size:18px\">"+numberToIDR(harga)+"</span></p>"
+      return "<li class=\"list-group-item d-flex justify-content-between\">"+
+          "<p><strong>"+title+" </strong>"+
+            show_price+
+          "<button type=\"button\" onclick=\"createTransaksi("+parseInt(id)+")\" class=\"btn btn-sm btn-primary\">Pilih</button>"+
+      "</li>"
+    }
+    $('#price-list').empty()
+    $('#price-list').append(getListHarga(0,programa.HargaLunas,'Lunas'))
+    programa.Cicilan.length > 0 && programa.Cicilan.forEach(ele=>$('#price-list').append(getListHarga(ele.IDCicilan,ele.Harga,'Dicicil '+ele.Cicilan+'x')))
+    $('#display-modul').empty()
+    programa.Modul.length>0&& $('#display-modul').append('<i class="fa fa-check text-success"></i>Mendapatkan <strong>Moduls</strong>')
+    if(programa.Tool.length>0){
+      $('#display-tool').empty()
+      let tools=''
+      programa.Tool.forEach(ele=>{
           tools+=
           '<div style=\"margin-left:18px\" class=\"form-check\">'+
           '<label class=\"form-check-label\">'+
-              '<input type=\"checkbox\" onchange=\"checkTool('+ele.IDTool+')\" class=\"form-check-input\" name=\"take_tool\" id=\"take-tool'+ele.IDTool+'\" >'+
-              ele.NamaTool+
-            '</label>'+
-            '</div>'
-        })
-        $('#display-tool').append(
-          '<i class="fa fa-check text-success"></i> Mendapatkan Tools'+
-      
-            tools
-         
-        );
-      }
-      
-      if (data[0].Modul != false) {
-        $('#display-modul').append(
-          '<i class="fa fa-check text-success"></i>Mendapatkan <strong>Moduls</strong>'
-        );
-      }
-      if (data[0].Cicil == 'y') {
+            '<input type=\"checkbox\" onchange=\"checkTool('+ele.IDTool+')\" class=\"form-check-input\" name=\"take_tool\" id=\"take-tool'+ele.IDTool+'\" >'+
+            ele.NamaTool+'  <span class=\"text-success\">('+numberToIDR(ele.Harga)+')</span>'+
+          '</label>'+
+          '</div>'
+      }) 
+      $('#display-tool').append(
+        '<i class="fa fa-check text-success"></i> Mendapatkan Tools'+
+          tools
+      );
+    }
 
-        data[0].Cicilan.forEach((cicil) => {
-         
-          $('#display-cicilan').append(
-            '<li style=\"margin-top:0px\" class="list-group-item d-flex justify-content-between">' +
-            '<div>' +
-            '<strong> Cicilan ' + cicil.Cicilan + 'x </strong> ' +
-            '<span class=\"text-success\" style=\"font-size:18px\" >' +
-            '(' + IDR(cicil.Harga) + ')' +
-            '</span>' +
-            '</div>' +
-            '<form method=\"POST\" action=\"/siswa/transaksi/program\" >' +
-            '<input type=\"hidden\"  name=\"_token\" value=\"' + $("#csrf").val() + '\">' +
-            '<input type=\"hidden\" name=\"idcicilan\" value=\"' + cicil.IDCicilan + '\">' +
-            '<input type=\"hidden\" name=\"cicilan\" value=\"y\">' +
-            '<input type=\"hidden\" name=\"diskon\" value=\"0\">' +
-            '<input type=\"hidden\" name=\"iddiskon\" value=\"0\">' +
-            '<input type=\"hidden\"  name=\"harga\" value=\"' + cicil.Harga + '\">' +
-            '<input type=\"hidden\" value=\"' + cicil.IDProgram + '\" class=\"program\" name=\"program\">' +
-            '<button type=\"submit\" class=\"btn btn-sm btn-primary\">Pilih</button>' +
-            '</form>' +
-            '</li>'
-          );
-        });
-      }
-    })
+
   }
   function checkTool(id){
-    let harga_tool = 0
-    if($('#take-tool'+id).prop('checked')){
-      harga_tool = modalData[0].Tool.filter(ele=>ele.IDTool == id)[0].Harga
+    if(tmp_tools.some(ele=>ele.id===id)){
+      tmp_tools = tmp_tools.filter(ele=>ele.id!==id)
     }else{
-      harga_tool = modalData[0].Tool.filter(ele=>ele.IDTool == id)[0].Harga*(-1)
+      let tool = programa.Tool.filter(ele=>ele.IDTool === id)[0]
+      tmp_tools.push({'id':tool.IDTool,'Harga':tool.Harga,'Nama':tool.NamaTool})
     }
-    let harga_lunas = $('#hargalunas').val()
-    $('#display-diskon').empty();
-    let harga_diskon = $('#diskon').val()
-    let harga_final =parseInt(harga_lunas)+parseInt(harga_tool)
-    let harga_final_diskon = harga_final - parseInt(harga_diskon)
-    $('#hargalunas').val(harga_final)
- //   console.log(harga_diskon)
-    if(harga_diskon!=0){
-
-    $('#display-diskon').append(
-      "<span class=\"text-success\" style=\"font-size:18px\">Rp "+harga_final_diskon.toLocaleString('id-ID')+"</span>"
-    )
-    }
-    $('#pembayaran-lunas').html('Rp. '+harga_final.toLocaleString('id-ID'))
+    let total_tool = tmp_tools.reduce((acc,ele)=>{
+      return acc +parseInt(ele.Harga)
+    },0)
+    $('#info-harga-tool').empty()
+    let diskon_val = programa.Diskon.length>0?programa.Diskon[0].Nilai:0
+    tmp_tools.length>0&&$('#info-harga-tool').append('<li>Total tool <span class="text-success text-lg">'+numberToIDR(total_tool)+'</span></li>')
+    let total = total_tool + post_data.subtotal + countHomeclass()
+    $('#display-subtotal').html(numberToIDR(total-diskon_val))
   }
   function IDR(number) {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR"
     }).format(number);
+  }
+  function formatUang(id){
+            
+      let uang = $('#'+id).val()
+      let formated_uang = numberToIDR(uang)
+      $('#'+id).val(formated_uang)
+
+  }
+  function numberToIDR(data){
+      let uang = String(data)
+      uang = uang.replace('Rp. ','').replaceAll('.','')
+      let isnan = isNaN(uang)
+      if(isnan||uang ==''){
+          // console.log(true)
+          uang = '0'
+      }
+      let formated_uang = 'Rp. '+parseInt(uang).toLocaleString('id-ID')
+      return formated_uang
+  }
+  function IDRToNumber(data){
+      let real_data = data.replace('Rp. ','').replaceAll('.','')
+      return parseInt(real_data)
   }
 </script>
 @endpush
