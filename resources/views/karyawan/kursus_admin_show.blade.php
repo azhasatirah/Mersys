@@ -732,8 +732,10 @@
         console.log('jadwal tidak berubah',jadwal_not_changed)
         let is_over_date = jadwal_not_changed.some(jnc=>{
             let will_change = jadwal.filter(ele=>ele.NoRecord===parseInt(InputNoRecord))
-            return new Date(jnc.Tanggal).getTime() <= new Date(reqTanggal+' '+reqJam).getTime()&&
-            jnc.NoRecord > will_change[0].NoRecord
+            return (new Date(jnc.Tanggal).getTime() <= new Date(reqTanggal+' '+reqJam).getTime()&&
+            jnc.NoRecord > will_change[0].NoRecord)||
+            (new Date(jnc.Tanggal).getTime() >= new Date(reqTanggal+' '+reqJam).getTime()&&
+            jnc.NoRecord < will_change[0].NoRecord)
         })
         if(is_over_date){
             swal('Tidak bisa mengganti ke tanggal ini, coba ganti ke tanggal lebih kecil')
