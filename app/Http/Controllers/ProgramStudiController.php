@@ -41,7 +41,7 @@ class ProgramStudiController extends Controller
         dd($ProgramStudi);
 
     }
-    //
+    //kunai
     public function show($id){
         $Prodi= DB::table('program_studi')->where('UUID',$id)->get();
         $Modul = DB::table('program_studi_modul')->join('program_studi','program_studi_modul.IDProgram','=','program_studi.IDProgram')->where('program_studi.UUID',$id)->get();
@@ -452,9 +452,22 @@ class ProgramStudiController extends Controller
             $BulananKey = explode('(Bulanan',$Prodi[0]->NamaProdi)[0];
             $MainProdi = DB::table('program_studi')->where('NamaProdi','like',$BulananKey.'(Bulanan-1)')
             ->where('Status','OPN')->get();
-     //kunai
-            $Modul = DB::table('program_studi_modul')
-            ->where('IDProgram',$MainProdi[0]->IDProgram)->where('program_studi_modul.Status','OPN')->get();
+            //kunai
+            $NamaProdi = explode('-',$Prodi[0]->NamaProdi)[0];
+            $CurrentBulanan = explode(')',explode('-',$Prodi[0]->NamaProdi)[1])[0];
+            $program_studi = DB::table('program_studi')->where('NamaProdi','like',$NamaProdi.'%')
+            ->where('Status','!=','DEL')->get();
+            $FilteredProdi = array_filter($program_studi->toArray(),function($val) use ($CurrentBulanan){
+                return (explode(')',explode('-',$val->NamaProdi)[1])[0]) <= $CurrentBulanan;
+            });
+            foreach($FilteredProdi as $data){
+                $modul = DB::table('program_studi_modul')->where('Status','OPN')
+                ->where('IDProgram',$data->IDProgram)->get();
+                foreach($modul as $mod){
+                    array_push($Modul,$mod);
+                }
+            }
+            //dd($Modul);
             $Video = DB::table('program_studi_video')
             ->where('IDProgram',$MainProdi[0]->IDProgram)->where('program_studi_video.Status','OPN')->get();
             $BahanTutor = DB::table('program_studi_bahan_tutor')
@@ -667,7 +680,7 @@ class ProgramStudiController extends Controller
         DB::table('program_studi_video')->where('IDVideo',$id)->update(['Status'=>'DEL']);
         return response()->json('Berhasil di hapus');
     }
-    //uuid bulanan d667956724b54f72b57aef27166a92ed
+    //uuid bulanan d667956724b54f72b57aef27166a92ed kunai
     public function pdGetModul($id){
         $Prodi = DB::table('program_studi as ps')
         ->join('kategori_global_program as kgp','ps.IDKategoriGlobalProgram','=','kgp.IDKategoriGlobalProgram')

@@ -83,6 +83,7 @@ class KursusSiswaController extends Controller
             ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
             ->select('kursus_siswa.*','kursus_siswa.UUID as UUIDKelas','program_studi.NamaProdi','program_studi.IDKategoriGlobalProgram')
             ->where('kursus_siswa.UUID',$id)->get();
+            //dd('kontol',$Prodi);
             $Modul = [];
             $Video = [];
             $BahanTutor = [];
@@ -92,8 +93,21 @@ class KursusSiswaController extends Controller
                 // ->where('IDProgram',$Prodi[0]->IDProgram)
                 ->where('Status','OPN')->get();
                  //kunai
-                $Modul = DB::table('program_studi_modul')
-                ->where('IDProgram',$MainProdi[0]->IDProgram)->where('program_studi_modul.Status','OPN')->get();
+                 $NamaProdi = explode('-',$Prodi[0]->NamaProdi)[0];
+                 $CurrentBulanan = explode(')',explode('-',$Prodi[0]->NamaProdi)[1])[0];
+                 $program_studi = DB::table('program_studi')->where('NamaProdi','like',$NamaProdi.'%')
+                 ->where('Status','!=','DEL')->get();
+                 $FilteredProdi = array_filter($program_studi->toArray(),function($val) use ($CurrentBulanan){
+                     return (explode(')',explode('-',$val->NamaProdi)[1])[0]) <= $CurrentBulanan;
+                 });
+                 foreach($FilteredProdi as $data){
+                     $modul = DB::table('program_studi_modul')->where('Status','OPN')
+                     ->where('IDProgram',$data->IDProgram)->get();
+                     foreach($modul as $mod){
+                         array_push($Modul,$mod);
+                     }
+                 }
+ 
                 $Video = DB::table('program_studi_video')
                 ->where('IDProgram',$MainProdi[0]->IDProgram)->where('program_studi_video.Status','OPN')->get();
                 $BahanTutor = DB::table('program_studi_bahan_tutor')
