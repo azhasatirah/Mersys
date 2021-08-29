@@ -439,7 +439,7 @@
         }
     }
     function freezeJadwal(){
- //kunai main
+        //kunai main
         //!! pola adalah pertemuan setiap minggu
         //freeze jadwal / cuti
         // ambil jadwal yang diatas tanggal awal cuti yang materinya belum selesai 
@@ -483,7 +483,9 @@
         const patternSch = (sch)=>{
             let pattern = []
             // get all pattern from all jadwal
-            sch.forEach(j=>pattern.push(new Date(j.Tanggal).getDay()+' '+twoDigit(new Date(j.Tanggal).getHours())+':'+twoDigit(new Date(j.Tanggal).getMinutes())+':'+twoDigit(new Date(j.Tanggal).getSeconds()) ) )
+            sch.forEach(j=>
+                pattern.push(new Date(j.Tanggal).getDay()+' '+j.Jam) 
+            )
             // group the pattern or final pattern
             let final_pattern = pattern.reduce((final_p,item)=>{
                 let isExist = final_p.some(p=>p==item)
@@ -496,7 +498,6 @@
         }
         //get the pattern(pola) of curent sch
         let pattern = patternSch(copyJadwal)
-        console.log(pattern)
         //ambil tanggal terdekat dari tanggal masuk yang ada di pola 
         // sort the pattern
         let pattern_from = new Date(input_freeze_to).getDay()
@@ -526,7 +527,6 @@
         let c = copyJadwal.length % flat_date.length == 0 ? copyJadwal.length / flat_date.length : (
             copyJadwal.length - (copyJadwal.length % flat_date.length)) / flat_date.length;
         let date_increament = 0;
-        console.log('trace on',a,c,copyJadwal.length,flat_date,length)
 
         //keep it up sware -3-
         // jadwal maker
@@ -566,7 +566,7 @@
                 'IDMateriTo':copyJadwal[index].IDMateri,
                 'NoRecordFrom':copyJadwal[index].NoRecord,
                 'NoRecordTo':copyJadwal[index].NoRecord,
-                'TanggalFrom':copyJadwal[index].Tanggal,
+                'TanggalFrom':copyJadwal[index].Tanggal+' '+copyJadwal[index].Jam,
                 'TanggalTo':ele.tanggal+' '+ele.jam,
                 'MateriFrom':copyJadwal[index].NamaMateri,
                 'MateriTo':copyJadwal[index].NamaMateri,
@@ -906,7 +906,7 @@
         if(time_left>=(LimitChangeJadwal*3600000)){
             traceJadwalChange()
         }else{
-            swal('Anda tidak dapat mengganti jadwal, karena waktu terlalu mepet :v')
+            swal('Anda tidak dapat mengganti jadwal, karena waktu terlalu mepet')
         }
     }
     function traceJadwalChange(){
@@ -965,12 +965,18 @@
                 DataChanges['TanggalTo[]'].push(ele.TanggalTo)
             })
             ReqJadwalChanges = DataChanges
-            console.log(DataChanges)
+          //  console.log('changed',JadwalChanged)
             setAndShowDataModalChanges(JadwalChanged)
         }
         let jadwal_not_changed = jadwal.filter(jwd=>jwd.NoRecord != InputNoRecord).filter(jwd=> jwd.StatusMateri != 'CLS')
        // console.log(jadwal_not_changed)
-        let is_over_date = jadwal_not_changed.some(jnc=>new Date(jnc.Tanggal).getTime() <= new Date(reqTanggal+' '+reqJam).getTime() )
+        let is_over_date = jadwal_not_changed.some(jnc=>{
+            let will_change = jadwal.filter(ele=>ele.NoRecord===parseInt(InputNoRecord))
+            return (new Date(jnc.Tanggal).getTime() <= new Date(reqTanggal+' '+reqJam).getTime()&&
+            jnc.NoRecord > will_change[0].NoRecord)||
+            (new Date(jnc.Tanggal).getTime() >= new Date(reqTanggal+' '+reqJam).getTime()&&
+            jnc.NoRecord < will_change[0].NoRecord)
+        })
         if(is_over_date){
             swal('Tidak bisa mengganti ke tanggal ini, coba ganti ke tanggal lebih kecil')
         }
