@@ -24,9 +24,127 @@
         max-width: 40rem;
         background-image: none !important;
     }
+    #modal-jadwal-changes{
+        overflow-y:auto
+    }
 
 </style>
-
+<div class="modal fade" id="modal-buat-ulang-jadwal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Buat Ulang Jadwal</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="formdata" class="mx-5">
+                @csrf
+                <input type="hidden" id="total_pertemuan">
+                <input type="hidden" id="id_kursus_siswa">
+                <input type="hidden" id="id_program">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="date" class="col-form-label">Tanggal mulai:</label>
+                        <input type="date" onchange="setFirstDay()" id="start_date" name="bank" class="form-control">
+                    </div>
+                    {{-- <div class="form-group">
+                        <label for="time" class="col-form-label">Jam:</label>
+                        <input type="time" id="start_time" name="bank" class="form-control">
+                    </div> --}}
+                    <hr>
+                    <p>Mau masuk hari apa aja?</p>
+                    <div class="row ">
+                        <div class="col-md-12 mb-1">
+                            <div class="form-check form-check-inline" id="btn-add-jam-senin">
+                                <input type="checkbox" onchange="visibleAddJam(1)" value="1" id="senin" class="form-check-input">
+                                <label class="form-check-lavel mt-2" for="senin">Senin</label>
+                                <a id="btn-add-jam-1" style="display:none" onclick="addJam(1)"  class="ml-2 btn btn-primary btn-sm" href="javascript:void(0)" role="button">
+                                    tambah jam
+                                </a>
+                            </div>
+                            <div class="row ml-1" id="jadwal-jam-senin">
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-1">
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox" onchange="visibleAddJam(2)" value="2" id="selasa" class="form-check-input">
+                                <label class="form-check-lavel mt-2" for="selasa">Selasa</label>
+                                <a id="btn-add-jam-2" style="display:none" onclick="addJam(2)"  class="ml-2 btn btn-primary btn-sm" href="javascript:void(0)" role="button">
+                                    tambah jam
+                                </a>
+                            </div>
+                            <div class="row ml-1" id="jadwal-jam-selasa">
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-1">
+                            <div class="form-check form-check-inline">
+                                <input value="3" onchange="visibleAddJam(3)" type="checkbox" id="rabu" class="form-check-input">
+                                <label class="form-check-lavel mt-2" for="rabu">Rabu</label>
+                                <a id="btn-add-jam-3" style="display:none" onclick="addJam(3)"  class="ml-2 btn btn-primary btn-sm" href="javascript:void(0)" role="button">
+                                    tambah jam
+                                </a>
+                            </div>
+                            <div class="row ml-1" id="jadwal-jam-rabu">
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-1">
+                            <div class="form-check form-check-inline">
+                                <input value="4" onchange="visibleAddJam(4)" type="checkbox" id="kamis" class="form-check-input">
+                                <label class="form-check-lavel mt-2" for="kamis">Kamis</label>
+                                <a id="btn-add-jam-4" style="display:none" onclick="addJam(4)"  class="ml-2 btn btn-primary btn-sm" href="javascript:void(0)" role="button">
+                                    tambah jam
+                                </a>
+                            </div>
+                            <div class="row ml-1" id="jadwal-jam-kamis">
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-1">
+                            <div class="form-check form-check-inline">
+                                <input value="5" onchange="visibleAddJam(5)" type="checkbox" id="jumat" class="form-check-input">
+                                <label class="form-check-lavel mt-2" for="jumat">Jumat</label>
+                                <a id="btn-add-jam-5" style="display:none" onclick="addJam(5)"  class="ml-2 btn btn-primary btn-sm" href="javascript:void(0)" role="button">
+                                    tambah jam
+                                </a>
+                            </div>
+                            <div class="row ml-1" id="jadwal-jam-jumat">
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-1">
+                            <div class="form-check form-check-inline">
+                                <input value="6" onchange="visibleAddJam(6)" type="checkbox" id="sabtu" class="form-check-input">
+                                <label class="form-check-lavel mt-2" for="sabtu">Sabtu</label>
+                                <a id="btn-add-jam-6" style="display:none" onclick="addJam(6)"  class="ml-2 btn btn-primary btn-sm" href="javascript:void(0)" role="button">
+                                    tambah jam
+                                </a>
+                            </div>
+                            <div class="row ml-1" id="jadwal-jam-sabtu">
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-1">
+                            <div class="form-check form-check-inline">
+                                <input value="0" onchange="visibleAddJam(0)" type="checkbox" id="minggu" class="form-check-input">
+                                <label class="form-check-lavel mt-2" for="minggu">Minggu</label>
+                                <a id="btn-add-jam-0" style="display:none" onclick="addJam(0)"  class="ml-2 btn btn-primary btn-sm" href="javascript:void(0)" role="button">
+                                    tambah jam
+                                </a>
+                            </div>
+                            <div class="row ml-1" id="jadwal-jam-minggu">
+                            </div>
+                        </div>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Tutup</button>
+                    <a id="tombolcreate" onclick="reMakeJadwal()" class="btn text-white btn-sm btn-primary">Buat</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <div class="row bg-white">
 
 
@@ -72,7 +190,8 @@
                 {{-- konten pertemuan dan materi --}}
                 <div style="display: none" id="content-pertemuan" class="row mt-3">
                     <div class="col-md-12 ">
-                        <div class="table-responsive">
+                        <a id="btn-buat-ulang-jadwal" href="javascript:void(0)" class="btn btn-sm btn-primary" role="button">Buat ulang jadwal</a>
+                        <div class="table-responsive mt-3">
 
                             <table id="tabel-jadwal" class="table table-borderless">
                                 <input type="hidden" id="token" name="_token" value="{{ csrf_token() }}" />
@@ -386,6 +505,7 @@
     const URLData = window.location.hash
     let jadwal_selesai=[];
     let jadwal = [];
+    let jam_maker = []
     let ReqJadwalChanges = [];
     let JadwalChanges = [],LimitChangeJadwal=0,MaxCuti=0
 
@@ -417,6 +537,7 @@
         showJadwal();
         getChanges();
     });
+
     //kunai ws
     // window.Echo.channel('Event'+$('#UUIDKelas').val()).listen('.Kelas', function (e) {
     //     console.log(e);
@@ -429,6 +550,350 @@
         var dayOfYear = ((today - onejan + 86400000)/86400000);
         return Math.ceil(dayOfYear/7)
     }
+
+    //start buat ulang jadwal
+    $('#btn-buat-ulang-jadwal').on('click',()=>{
+        $('#modal-buat-ulang-jadwal').modal('show')
+    })
+    function setFirstDay() {
+        jam_maker = []
+        let start_date = $('#start_date').val();
+        let firs_day = new Date(start_date).getDay();
+
+        switch (firs_day) {
+            case 0:
+                $('#minggu').prop('checked', true);
+                $('#senin').prop('checked', false);
+                $('#selasa').prop('checked', false);
+                $('#rabu').prop('checked', false);
+                $('#kamis').prop('checked', false);
+                $('#jumat').prop('checked', false);
+                $('#sabtu').prop('checked', false);
+                break;
+            case 1:
+                $('#senin').prop('checked', true);
+                $('#minggu').prop('checked', false);
+                $('#selasa').prop('checked', false);
+                $('#rabu').prop('checked', false);
+                $('#kamis').prop('checked', false);
+                $('#jumat').prop('checked', false);
+                $('#sabtu').prop('checked', false);
+                break;
+            case 2:
+                $('#selasa').prop('checked', true);
+                $('#minggu').prop('checked', false);
+                $('#senin').prop('checked', false);
+                $('#rabu').prop('checked', false);
+                $('#kamis').prop('checked', false);
+                $('#jumat').prop('checked', false);
+                $('#sabtu').prop('checked', false);
+                break;
+            case 3:
+                $('#rabu').prop('checked', true);
+                $('#minggu').prop('checked', false);
+                $('#senin').prop('checked', false);
+                $('#selasa').prop('checked', false);
+                $('#kamis').prop('checked', false);
+                $('#jumat').prop('checked', false);
+                $('#sabtu').prop('checked', false);
+                break;
+            case 4:
+                $('#kamis').prop('checked', true);
+                $('#minggu').prop('checked', false);
+                $('#senin').prop('checked', false);
+                $('#selasa').prop('checked', false);
+                $('#rabu').prop('checked', false);
+                $('#jumat').prop('checked', false);
+                $('#sabtu').prop('checked', false);
+                break;
+            case 5:
+                $('#jumat').prop('checked', true);
+                $('#minggu').prop('checked', false);
+                $('#senin').prop('checked', false);
+                $('#selasa').prop('checked', false);
+                $('#rabu').prop('checked', false);
+                $('#kamis').prop('checked', false);;
+                $('#sabtu').prop('checked', false);
+                break;
+            case 6:
+                $('#sabtu').prop('checked', true);
+                $('#minggu').prop('checked', false);
+                $('#senin').prop('checked', false);
+                $('#selasa').prop('checked', false);
+                $('#rabu').prop('checked', false);
+                $('#kamis').prop('checked', false);
+                $('#jumat').prop('checked', false);
+                break;
+
+        }
+        for(let i=0;i<7;i++){
+            visibleAddJam(i)
+        }
+
+    }
+    function visibleAddJam(id){
+        let hari = id == 1?'senin':
+        id == 2?'selasa':
+        id == 3?'rabu':
+        id == 4?'kamis':
+        id == 5?'jumat':
+        id == 6?'sabtu':
+        id == 0?'minggu':false
+
+        if($('#'+hari).is(':checked')){
+            let now_id = new Date().getTime()
+            jam_maker.push({'day_id':id,'now_id':now_id,'val':''})
+            $('#btn-add-jam-'+id).show();
+            showElementJam()
+        }else{
+            $('#btn-add-jam-'+id).hide();
+            jam_maker = jam_maker.filter(ele=>ele.day_id!=id)
+            showElementJam()
+        }
+    }
+    function deleteJam(id){
+        jam_maker = jam_maker.filter(ele=>ele.now_id!=id)
+        showElementJam()
+    }
+    function showElementJam(){
+     
+        const jadwal_jam = id => id == 1?$('#jadwal-jam-senin'):
+        id == 2?$('#jadwal-jam-selasa'):
+        id == 3?$('#jadwal-jam-rabu'):
+        id == 4?$('#jadwal-jam-kamis'):
+        id == 5?$('#jadwal-jam-jumat'):
+        id == 6?$('#jadwal-jam-sabtu'):
+        id == 0?$('#jadwal-jam-minggu'):false
+
+        const name_jam = id => id == 1?'jam_senin[]':
+        id == 2?'jam_selasa[]':
+        id == 3?'jam_rabu[]':
+        id == 4?'jam_kamis[]':
+        id == 5?'jam_jumat[]':
+        id == 6?'jam_sabtu[]':
+        id == 0?'jam_minggu[]':false
+        for(let i = 0;i<7;i++){
+            let JadwalJam = jadwal_jam(i)
+            JadwalJam.empty()
+        }
+        let jamke=[1,1,1,1,1,1,1]
+        jam_maker.forEach((ele)=>{
+            let NameJam = name_jam(ele.day_id)
+            let JadwalJam = jadwal_jam(ele.day_id)
+            JadwalJam.append(
+                "<div id=\"jamke"+ele.now_id+"\" class=\"col-md-12 my-1\">"+
+                    "<div class=\"row\">"+
+                        "<div class=\"col-md-3\">"+
+                            "<label for=\"time\" class=\"col-form-label\">Jam ke "+jamke[ele.day_id] +"</label>"+
+                        "</div>"+
+                        "<div class=\"col-md-7\">"+
+                            "<input type=\"time\" value=\""+ele.val+"\" onchange=\"setDataJam("+ele.now_id+")\"  id=\"jamkedata"+ele.now_id+"\" class=\"form-control\">"+
+                        "</div>"+
+                        "<div class=\"col-md-2\">"+
+                            "<a  onclick=\"deleteJam("+ele.now_id+")\" class=\"btn mt-1 text-white btn-danger btn-sm\"><i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></a>"+
+                        "</div>"+
+                    "</div>"+
+                "</div>"
+            )
+            jamke[ele.day_id]++
+        })
+    }
+    function setDataJam(id){
+        let data = $('#jamkedata'+id).val()
+        let indexData = jam_maker.findIndex(ele=> ele.now_id == id)
+        jam_maker[indexData].val = data
+  
+    }
+    function addJam(id){
+
+
+        let now_id = new Date().getTime()
+        jam_maker.push({'day_id':id,'now_id':now_id,'val':''})
+        showElementJam()
+        // if(true){
+
+        // }
+      
+
+    }
+
+    function reMakeJadwal() {
+        $('#modal-buat-ulang-jadwal').modal('hide')
+        //kunai main
+        // total pertemuan = jadwal yang belum ada absen dan tanggl nya lebih besar sama dengan sekarang
+        let start_date = $('#start_date')
+        // console.log(moment(new Date()).format('Y-MM-DD'))
+        let total_pertemuan = jadwal.length
+        let senin = $('#senin');
+        let selasa = $('#selasa');
+        let rabu = $('#rabu');
+        let kamis = $('#kamis');
+        let jumat = $('#jumat');
+        let sabtu = $('#sabtu');
+        let minggu = $('#minggu');
+        let tmp_meet_in_week = [{
+                'aktif': senin.is(':checked'),
+                'hari': senin.val()
+            },
+            {
+                'aktif': selasa.is(':checked'),
+                'hari': selasa.val()
+            },
+            {
+                'aktif': rabu.is(':checked'),
+                'hari': rabu.val()
+            },
+            {
+                'aktif': kamis.is(':checked'),
+                'hari': kamis.val()
+            },
+            {
+                'aktif': jumat.is(':checked'),
+                'hari': jumat.val()
+            },
+            {
+                'aktif': sabtu.is(':checked'),
+                'hari': sabtu.val()
+            },
+            {
+                'aktif': minggu.is(':checked'),
+                'hari': minggu.val()
+            },
+        ];
+        // hari setiap minggu
+        let meet_in_week = tmp_meet_in_week.filter(ele => ele.aktif == true);
+        // mengatur tanggal awal dari setiap minggu (waktu awal set tanggal (tanggal + (hari-tanggal)+(hari-tanggal))  )
+        let flat_date = meet_in_week.map(ele =>
+            new Date(start_date.val()).setDate(
+                new Date(start_date.val()).getDate() +
+                (ele.hari - new Date(start_date.val()).getDay()) +
+                (
+                    ele.hari - new Date(start_date.val()).getDay() < 0 ? 7 : 0
+                )
+
+            )
+        );
+          // console.log('trace one',meet_in_week,flat_date)
+            //base tanggal 
+        let date = flat_date.sort((a, b) => a - b).map(ele =>
+            new Date(ele).getFullYear() + '-' + String(new Date(ele).getMonth() + 1).padStart(2, '0') + '-' +
+            String(new Date(ele).getDate()).padStart(2, '0')
+        )
+        //sisa bagi total pertemuan dibagi pertemuan dalam seminggu
+        let a = total_pertemuan % jam_maker.length;
+        //hasil pembagian total pertemuan tanpa sisa bagi ( max perulangan)
+        let c = total_pertemuan % jam_maker.length == 0 ? total_pertemuan / jam_maker.length : (
+            total_pertemuan - (total_pertemuan % jam_maker.length)) / jam_maker.length;
+        let jadwal_siswa = [];
+        let date_increament = 0;
+        console.log(a,total_pertemuan,c,jam_maker.length,'trace total')
+
+        //keep it up sware -3-
+        // jadwal maker
+        // total pertemuan di bagi pertemuan dalam seminggu
+        // jika tidak ada sisa bagi 
+        // jika hasil bagi ada sisa jadwal di tambah jadwal dibuat dengan sisa pertemuan
+        for (let i = 0; i < c; i++) {
+            for (let j = 0; j < date.length; j++) {
+                let hari = jam_maker.filter(ele=>ele.day_id==new Date(date[j]).getDay())
+                for(let jam =0;jam<hari.length;jam++){
+                    let tmp_date = new Date(new Date(date[j]).setDate(new Date(date[j]).getDate() + date_increament))
+                    let tmp_jadwal = tmp_date.getFullYear() + '-' + String(tmp_date.getMonth() + 1).padStart(2, '0') + '-' +
+                        String(tmp_date.getDate()).padStart(2, '0');
+                    jadwal_siswa.push({
+                        'tanggal': tmp_jadwal,
+                        'jam': hari[jam].val
+                    });
+                }
+            }
+            date_increament += 7;
+        }
+        let j = 0
+        if (a != 0) {
+            do{
+                for (let i = 0; i < date.length; i++) {
+                    if(j==a){
+                        break
+                    }
+                    let hari = jam_maker.filter(ele=>ele.day_id==new Date(date[i]).getDay())
+                    for(let jam =0;jam<hari.length;jam++){
+                        if(j==a){
+                            break
+                        }
+                        console.log('ite sisa',j)
+                        let tmp_date = new Date(new Date(date[i]).setDate(new Date(date[i]).getDate() + date_increament));
+                        let tmp_jadwal = tmp_date.getFullYear() + '-' + String(tmp_date.getMonth() + 1).padStart(2, '0') + '-' +
+                            String(tmp_date.getDate()).padStart(2, '0');
+                        jadwal_siswa.push({
+                            'tanggal': tmp_jadwal,
+                            'jam': hari[jam].val
+                        });
+                        j++
+      
+                    }
+                }
+            }while(j!=a)
+        }
+        jadwalBuiler(jadwal_siswa,jadwal);
+        //kunai
+    
+        //getAndSetNewestJadwalTutor(start_date.val());
+        // checkJadwalTutor(jadwal_siswa);
+
+    }
+    function jadwalBuiler(changes,data_jadwal){
+        //let filtered_jadwal = jadwal
+        let newJadwal = []
+        let DataChanges={
+                '_token':token,
+                'UIDProgram[]':[],
+                'IDSiswa[]':[],
+                'IDTutor[]':[],
+                'IDJadwal[]':[],
+                'IDMateriFrom[]':[],
+                'IDMateriTo[]':[],
+                'NoRecordFrom[]': [],
+                'NoRecordTo[]':[],
+                'TanggalFrom[]': [],
+                'TanggalTo[]':[]
+        };
+        let i=0
+        data_jadwal.forEach((data)=>{
+            //console.log(tmpDate.getDate(),new Date(tmpDate.setDate(tmpDate.getDate() + freeze)).toString())
+            // let date = new Date( tmpDate.setDate(tmpDate.getDate() + freeze))
+            newJadwal.push({
+                'UIDProgram':data.UUIDProgram,
+                'IDSiswa':data.IDSiswa,
+                'IDTutor':data.IDTutor,
+                'IDJadwal':data.IDJadwal,
+                'IDMateriFrom':data.IDMateri,
+                'IDMateriTo':data.IDMateri,
+                'MateriFrom':data.NamaMateri,
+                'MateriTo':data.NamaMateri,
+                'NoRecordFrom': parseInt(data.NoRecord),
+                'NoRecordTo':parseInt(data.NoRecord),
+                'TanggalFrom': data.Tanggal+' '+data.Jam,
+                'TanggalTo': changes[i].tanggal+' '+changes[i].jam
+            })
+            i++
+        })
+        newJadwal.forEach((ele)=>{
+            DataChanges['UIDProgram[]'].push(ele.UIDProgram)
+            DataChanges['IDSiswa[]'].push(ele.IDSiswa)
+            DataChanges['IDTutor[]'].push(ele.IDTutor)
+            DataChanges['IDJadwal[]'].push(ele.IDJadwal)
+            DataChanges['IDMateriFrom[]'].push(ele.IDMateriFrom)
+            DataChanges['IDMateriTo[]'].push(ele.IDMateriTo)
+            DataChanges['NoRecordFrom[]'].push(ele.NoRecordFrom)
+            DataChanges['NoRecordTo[]'].push(ele.NoRecordTo)
+            DataChanges['TanggalFrom[]'].push(ele.TanggalFrom)
+            DataChanges['TanggalTo[]'].push(ele.TanggalTo)
+        })
+        ReqJadwalChanges = DataChanges
+        setAndShowDataModalChanges(newJadwal)
+    }
+    //end buat ulang jadwal
+
     function limitFreezeJadwal(){
         let from = new Date($('#input-libur-mulai').val()).getTime()
         let to = new Date($('#input-libur-sampai').val()).getTime()

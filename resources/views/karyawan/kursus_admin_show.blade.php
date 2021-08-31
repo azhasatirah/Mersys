@@ -1440,7 +1440,6 @@
         let filtered_jadwal = TypeRemakeJadwal == 1?
         jadwal.filter(ele=> ele.StatusMateri!='CLS'):
         jadwal
-        console.log('filtered jadwal',filtered_jadwal,TypeRemakeJadwal)
         // console.log(moment(new Date()).format('Y-MM-DD'))
         let total_pertemuan = filtered_jadwal.length
         let senin = $('#senin');
