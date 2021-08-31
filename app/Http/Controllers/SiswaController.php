@@ -17,7 +17,8 @@ class SiswaController extends Controller
         ]);
     }
     public function indexSiswa(){
-        $Siswa = DB::table('siswa')->get();
+        $Siswa = DB::table('siswa')
+        ->orderBy('NamaSiswa')->get();
         $DataSiswa=[];
         foreach($Siswa as $siswa){
             $Psikologi = DB::table('test_psikologi')
@@ -40,10 +41,11 @@ class SiswaController extends Controller
             ));
         }
       //  dd($DataSiswa);
-        return view('karyawan.show_siswa_owner',['Siswa'=>$DataSiswa]);
+        return view('karyawan.show_siswa_karyawan',['Siswa'=>$DataSiswa]);
     }
     public function indexAdminSiswa(){
-        $Siswa = DB::table('siswa')->get();
+        $Siswa = DB::table('siswa')
+        ->orderBy('NamaSiswa')->get();
         $DataSiswa=[];
         foreach($Siswa as $siswa){
             $Psikologi = DB::table('test_psikologi')
@@ -63,7 +65,7 @@ class SiswaController extends Controller
             ));
         }
       //  dd($DataSiswa);
-        return view('karyawan.show_siswa_admin',['Siswa'=>$DataSiswa]);
+        return view('karyawan.show_siswa_karyawan',['Siswa'=>$DataSiswa]);
     }
     public function resetPassword(Request $request){
         //dd($request);
