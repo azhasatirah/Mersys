@@ -540,8 +540,8 @@
         $.get("/reset/absen/"+id ).done(res=>swal(res))
     }
     function showDataJadwal(){
+     //   console.log('trace on',Absen)
         TabelJadwal.clear()
-        console.log(Absen)
         Absen.forEach((ele)=>{
             //console.log(ele)
             let btn_fill_siswa = "<button class=\"btn ml-2 btn-primary btn-sm\" onclick=\"absen(1,"+ele.IDSiswa+","+ele.IDJadwal+")\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></button>"
@@ -1438,8 +1438,9 @@
         let start_date = $('#start_date');
         console.log('jadwal',jadwal)
         let filtered_jadwal = TypeRemakeJadwal == 1?
-        jadwal.filter(ele=> ele.StatusMateri!='CLS'):
+        jadwal.filter(ele=> ele.StatusMateri!=='CLS').filter(ele=>ele.StatusMateri!=='CFM'):
         jadwal
+        console.log('filtered jadwal',filtered_jadwal)
         // console.log(moment(new Date()).format('Y-MM-DD'))
         let total_pertemuan = filtered_jadwal.length
         let senin = $('#senin');
@@ -1491,7 +1492,7 @@
 
             )
         );
-   // console.log('trace one',meet_in_week,flat_date)
+          // console.log('trace one',meet_in_week,flat_date)
             //base tanggal 
         let date = flat_date.sort((a, b) => a - b).map(ele =>
             new Date(ele).getFullYear() + '-' + String(new Date(ele).getMonth() + 1).padStart(2, '0') + '-' +
@@ -1504,7 +1505,7 @@
             total_pertemuan - (total_pertemuan % jam_maker.length)) / jam_maker.length;
         let jadwal_siswa = [];
         let date_increament = 0;
-        console.log(a,total_pertemuan,c,jam_maker.length,'trace total')
+    //    console.log(a,total_pertemuan,c,jam_maker.length,'trace total')
 
         //keep it up sware -3-
         // jadwal maker

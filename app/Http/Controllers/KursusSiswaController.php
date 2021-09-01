@@ -261,6 +261,7 @@ class KursusSiswaController extends Controller
             ->where('ks.UUID',$id)
             ->select('k.KodeKaryawan','ks.KodeKursus','k.NamaKaryawan','s.NamaSiswa','s.KodeSiswa','ps.NamaProdi')->get();
             foreach($Jadwal as $item){
+                //dd($item);
                 $AbsenSiswa = false ;
                 $AbsenTutor = false ;
                 $a_siswa = DB::table('absen_siswa')->where('IDJadwal',$item->IDJadwal)->get();
@@ -273,10 +274,22 @@ class KursusSiswaController extends Controller
                     $KehadiranTutor='Hari ini';
                 }
                 if(strtotime($item->Tanggal)<strtotime(Carbon::now())){
-                    $KehadiranSiswa=count($a_siswa)>0?$a_siswa[0]->Start.' sampai '.$a_siswa[0]->End:'Alpha';
-                    $KehadiranTutor=count($a_tutor)>0?$a_tutor[0]->Start.' sampai '.$a_tutor[0]->End:'Alpha';
+
+                    $JKursusMateri = DB::table('kursus_materi')->where('IDKursusMateri',$item->IDMateri)->get();
+                    $EndKehadiranSiswa = count($a_siswa)>0?$a_siswa[0]->End:'';
+                    $EndKehadiranTutor = count($a_tutor)>0?$a_tutor[0]->End:'';
+                    if( $JKursusMateri[0]->Status == 'CFM'){
+                        $EndKehadiranSiswa = 'Sekarang';
+                        $EndKehadiranTutor = 'Sekarang';
+                    }
+                    $KehadiranSiswa=count($a_siswa)>0?$a_siswa[0]->Start.' sampai '.$EndKehadiranSiswa:'Alpha';
+                    $KehadiranTutor=count($a_tutor)>0?$a_tutor[0]->Start.' sampai '.$EndKehadiranTutor:'Alpha';
                     $AbsenSiswa =count($a_siswa)>0?false: true;
                     $AbsenTutor =count($a_tutor)>0?false: true;
+                    if(count($a_siswa)==0&&$JKursusMateri[0]->Status == 'CFM'){
+                        $KehadiranSiswa = 'Belum Absen';
+                        $AbsenSiswa = false;
+                    }
                 }else{
                     $KehadiranSiswa='Belum mulai';
                     $KehadiranTutor='Belum mulai';
