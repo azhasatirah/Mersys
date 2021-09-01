@@ -42,6 +42,7 @@
                     <a type="button" class="btn btn-success btn-xs">{{$item['NamaMateri']=='Kelas selesai'?'Selesai':$item['StatusJadwal']}}</a>
                 </td>
                 <td>
+                    
                     @if($item['NamaMateri']=='Kelas selesai'||$item["JadwalExist"])
                     <a href="{{url('siswa/kursus/show')}}/{{$item['UUIDKursus']}}" class="btn btn-primary btn-xs">
                         <i class="fa fa-folder"></i>

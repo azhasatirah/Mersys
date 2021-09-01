@@ -42,6 +42,8 @@ class KursusSiswaController extends Controller
                 $Materi = DB::table('materi_program')->where('IDProgram',$Program[$i]->IDProgram)
                 ->where('NoRecord',count($KursusMateri)+1)
                 ->orderBy('NoRecord','desc')->get();
+                //jadwal di program
+                $sch = DB::table('jadwal')->where('IDKursusSiswa',$Program[$i]->IDKursusSiswa)->get();
                 //jadwal
                 $Jadwal =count($KursusMateriAktif)>0? 
                 DB::table('jadwal')->where('IDMateri',$KursusMateriAktif[0]->IDKursusMateri)->get():false;
@@ -69,7 +71,7 @@ class KursusSiswaController extends Controller
                     'Pertemuan'=>count($KursusMateri)+1,
                     'NamaMateri'=>count($Materi)>0?$Materi[0]->NamaMateri:'Kelas selesai',
                     'NoRecord'=>count($Materi)>0?$Materi[0]->NoRecord:'Kelas Selesai',
-                    'JadwalExist'=>count($KursusMateriAktif)>0?true:false,
+                    'JadwalExist'=>count($sch)>0?true:false,
                     'StatusJadwal'=>count($KursusMateriAktif)>0?$StatusJadwal:'Jadwal belum dibuat',
                     'JadwalTanggal'=>count($KursusMateriAktif)>0?$Jadwal[0]->Tanggal:0,
                     'JadwalJam'=>count($KursusMateriAktif)>0?explode(' ',$Jadwal[0]->Tanggal)[1]:0,
