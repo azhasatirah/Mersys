@@ -328,7 +328,7 @@
       function getNotif(){
         Notif =[];
         $.ajax({
-              type: "get",
+               type: "get",
               url: "/siswa/notif",
               async: false,
               success: function (response) {
