@@ -24,7 +24,16 @@ Route::get('/receiver', function () {
 Route::get('/notif/user/{id}','NotifController@notifUser');
 Route::get('/notif/update/{id}','NotifController@update');
 
-
+// api
+Route::group(['middleware'=>['cors'],'prefix'=>'api'],function () {
+    Route::post('/respondent/store','GformsRespondent@store');
+    Route::get('/hello',function(){
+        return response()->json('oh hi');
+    });
+    Route::get('/token', function () {
+        return csrf_token(); 
+    });
+});
 
 //karyawan
 Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
@@ -455,7 +464,6 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     Route::get('profile/{id}','UserController@profileKaryawan');
     Route::post('profile/update','UserController@profileKaryawanUpdate');
 });
-
 Route::group(['middleware'=>['Role:siswa'],'prefix'=>'siswa'],function(){
 
     Route::get('diskon/getdata/{id}','DiskonController@siswaData');  
@@ -567,4 +575,4 @@ Route::get('/karyawan','AuthController@gerbangKaryawan')->middleware('IsLogin');
 // Route::get('/updatetotalpertemuan','JadwalController@updateTotalPertemuan');
 // Route::get('/recover','JadwalController@recoverJadwal');
 // Route::get('/recovermateri','JadwalController@recoverMateri');
-Route::get('reset/absen/{id}','AbsenController@delete');
+//Route::get('reset/absen/{id}','AbsenController@delete');
