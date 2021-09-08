@@ -27,6 +27,7 @@ Route::get('/notif/update/{id}','NotifController@update');
 // api
 Route::group(['middleware'=>['cors'],'prefix'=>'api'],function () {
     Route::post('/respondent/store','GformsRespondent@store');
+    Route::get('/respondent/get','GformsRespondent@getData');
     Route::get('/hello',function(){
         return response()->json('oh hi');
     });
