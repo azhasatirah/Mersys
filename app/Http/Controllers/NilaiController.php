@@ -9,21 +9,13 @@ use Illuminate\support\Carbon;
 class NilaiController extends Controller
 {
     public function getIndexData($id){
-        $DataNilaiTMP = DB::table('nilai')
+        $DataNilai = DB::table('nilai')
         ->join('kursus_siswa','nilai.IDKursus','=','kursus_siswa.IDKursusSiswa')
         ->join('jenis_nilai','nilai.IDJenis','=','jenis_nilai.IDJenisNilai')
         ->where('nilai.Status','OPN')->where('kursus_siswa.UUID',$id)
         ->select('nilai.*','jenis_nilai.Jenis')
-        ->get()->groupBy('Jenis');
-        $DataNilai = [];
-        foreach($DataNilaiTMP as $Nilai){
-            array_push($DataNilai, array(
-                'Jenis'=>$Nilai[0]->Jenis,
-                'Nilai'=>floor($Nilai->sum('Nilai')/count($Nilai)),
-                'Content'=>$Nilai
-            ));
+        ->get();
 
-        };
         $DataKursus = DB::table('kursus_siswa')
         ->join('siswa','kursus_siswa.IDSiswa','=','siswa.IDSiswa')
         ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
@@ -35,12 +27,11 @@ class NilaiController extends Controller
         $DataEvalFinal = DB::table('nilai_evaluasi_final')
         ->where('IDKursus',$DataKursus[0]->IDKursusSiswa)->get();
         $JenisNilai = DB::table('jenis_nilai')->where('Status','OPN')->get();
-        return [$DataNilai,$DataEvalFinal,$DataKursus,$JenisNilai];
+        return response()->json([$DataNilai,$DataEvalFinal,$DataKursus[0],$JenisNilai]);
     }
+
     public function index($id){
-        $Data =$this->getIndexData($id);
-        //dd($DataNilai);
-        return view('karyawan/nilai_tutor_detail',['EvaluasiFinal'=>$Data[1],'Nilai'=>$Data[0],'Kursus'=>$Data[2],'JenisNilai'=>$Data[3]]);
+        return view('karyawan/nilai_tutor_detail');
     }
     public function storeEvaluasiFinal(Request $request){
         $DataStore = array(
@@ -53,9 +44,7 @@ class NilaiController extends Controller
             'updated_at'=>Carbon::now()
         );
         DB::table('nilai_evaluasi_final')->insert($DataStore);
-        $Data =$this->getIndexData($request->uidkursus);
-        //dd($DataNilai);
-        return redirect()->back()->with('msg', 'Berhasil ditambahkan');
+        return response()->json('Berhasil ditambahkan');
     }
     public function updateEvaluasiFinal(Request $request){
         $DataStore = array(
@@ -65,9 +54,8 @@ class NilaiController extends Controller
             'updated_at'=>Carbon::now()
         );
         DB::table('nilai_evaluasi_final')->where('IDEvaluasiFinal',$request->idevaluasifinal)->update($DataStore);
-        $Data = $this->getIndexData($request->uidkursus);
         //dd($DataNilai);
-        return redirect()->back()->with('msg', 'Berhasil diganti');
+        return response()->json('Data berhasil diedit');
         //return view('karyawan/nilai_tutor_detail',['EvaluasiFinal'=>$Data[1],'Nilai'=>$Data[0],'Kursus'=>$Data[2],'JenisNilai'=>$Data[3]])
     }
     public function indexSiswa($id){
@@ -138,7 +126,8 @@ class NilaiController extends Controller
             'Status'=>'OPN'
         );
         DB::table('nilai')->insert($Data);
-        return redirect()->back();
+
+        return response()->json('data berhasil ditambahkan');
     }
     public function storeNilaiEvaluasi(Request $request){
         //dd($request);
@@ -175,7 +164,7 @@ class NilaiController extends Controller
     public function destroy( $id){
         DB::table('nilai')->where('IDNilai',$id)
         ->update(['Status'=>'DEL']);
-       return redirect()->back()->withInput();;
+       return response()->json('Berhasil dihapus');
     }
     public function grade($Nilai){
         if($Nilai>=95 && $Nilai<=100){

@@ -437,8 +437,10 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::get('kelas/{id}','ProgramStudiController@kelasTutor');
         Route::get('kelas/show/{id}','ProgramStudiController@showKelasTutor');
         //Route::get('nilai','NilaiController@index');
+
         Route::get('nilai/getdata','NilaiController@getData');
         Route::get('nilai/{id}','NilaiController@index');
+        Route::get('nilai/getdata/{id}','NilaiController@getIndexData');
         Route::post('nilai/store','NilaiController@store');
         Route::post('nilai/evaluasifinal/store','NilaiController@storeEvaluasiFinal');
         Route::post('nilai/evaluasifinal/update','NilaiController@updateEvaluasiFinal');
