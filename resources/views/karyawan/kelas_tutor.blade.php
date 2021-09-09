@@ -39,6 +39,9 @@
                 </div>
                 <div class="col-md-4">
                     <ul class="nav navbar-right panel_toolbox">
+                        <section id="tutup-kursus">
+                            <button type="button" id="btn-tutup-kursus" class="btn btn-primary btn-sm">Tutup kursus</button>
+                        </section>
                         <a class="btn btn-sm btn-primary" 
                         href="{{url('karyawan/tutor/nilai')}}/{{$Prodi[0]->UUIDKelas}}" 
                         role="button">
@@ -286,6 +289,7 @@
     const content_bahantutor = $('#content-bahantutor');
     const TabelDataJadwal = $('#table-jadwal').DataTable();
     let JadwalChanges = [];
+    let Jadwal=[],KursusMateri=[],SertifikasiKursus=[]
     const URLData = window.location.hash
     const Hari = [
         {'Hari':'Senin','No':1},
@@ -306,7 +310,7 @@
         let LinkData = URLData.split('#')
         $('#table-jadwal').DataTable();
         showCicilan();
-        showDataJadwal();
+        getData();
         getChanges();
         if(LinkData.length>1){
             active_content = LinkData[1]
@@ -336,71 +340,73 @@
           });
     }
 
-    function showDataJadwal(){
+    function getData(){
         $.get('/karyawan/tutor/jadwal/getdetaildata/'+$('#UUIDKelas').val(),function(Data){
-  
-       
-                $('#datatabel').empty();
-                var a=0;
-                var datenow = new Date().toLocaleString('en-US',{timeZone:'Asia/Bangkok'});
-                var today = Date.parse(datenow);
-        
-                var now = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
-                var jam = String(today.getHours()).padStart(2,'0')+':'+String(today.getMinutes()).padStart(2,'0')+':'+today.getMilliseconds();
-    
-                TabelDataJadwal.clear().draw();
-                Data.forEach((data) =>{
-                    a++;
-          
-                    var b_mulai = "<form id=\"formstart"+data.IDKursusMateri+"\">"+
-                        "<input type=\"hidden\" name=\"_token\" value=\""+$('#csrf').val()+"\">"+
-                    "<input type=\"hidden\" name=\"idkursusmateri\" value=\""+data.IDKursusMateri+"\">"+
-                    "<input type=\"hidden\" name=\"karyawan\" value=\""+data.IDTutor+"\">"+
-                    "<input type=\"hidden\" name=\"idjadwal\" value=\""+data.IDJadwal+"\">"+
-                    "</form>"+
-                    "<button onclick=\"startKelas(\'"+data.IDKursusMateri+"\',\'"+data.KodeKelas+"\')\" id=\"btnstart"+data.IDKursusMateri+"\" class=\"btn text-white btn-small btn-primary\">Mulai</button>"
-                    ;
-                    var b_akhir ="<button id=\"btnend"+data.IDKursusMateri+"\"  onclick=\"dialogEndKelas(\'"+data.NamaProdi+"\',\'"+data.IDKursusMateri+"\',\'"+data.NamaMateri+"\',\'"+data.KodeKelas+"\',\'"+data.NoRecord+"\')\"  class=\"btn text-white btn-small btn-primary\">Akhiri kelas</button>"+
-                    "<form id=\"formend"+data.IDKursusMateri+"\" >"+
-                        "<input type=\"hidden\" name=\"_token\" value=\""+$('#csrf').val()+"\">"+
-                    "<input type=\"hidden\" name=\"idkursusmateri\" value=\""+data.IDKursusMateri+"\">"+
-                    "<input type=\"hidden\" name=\"karyawan\" value=\""+data.IDTutor+"\">"+
-                    "<input type=\"hidden\" name=\"idjadwal\" value=\""+data.IDJadwal+"\">"+
-                    "</form>"
-                    ;
-                    var b_batalkan = "<a class=\"text-white btn btn-small btn-primary\">Batalkan</a>";
-                    TabelDataJadwal.row.add([
-                        
-                        data.Tanggal.split(' ')[0],
-                        data.Tanggal.split(' ')[1],
-                        data.NamaProdi , 
-                        data.NamaMateri,
-                        data.Homework == null ? '':data.Homework,
-                        data.KodeKursus,
-                        data.NamaSiswa,
-                        data.Status == 'CLS'?'Kelas Selesai':
-                        data.Status == 'CFM'?'Sedang berlangsung':
-                        now==data.Tanggal.split(' ')[0]?'Hari ini':
-                        Date.parse(now)>Date.parse(data.Tanggal.split(' ')[0])?'Terlewat':
-                        'Belum Mulai',
-                        data.Status == 'CLS'?'<a class=\"btn text-white btn-success\">Selesai</a>':
-                        data.Status == 'CFM'?b_akhir:
-                        now==data.Tanggal.split(' ')[0]&&
-                        Date.parse(jam)>= Date.parse(data.Tanggal.split(' ')[1])?b_mulai:
-                        Date.parse(now)>Date.parse(data.Tanggal.split(' ')[0])?b_batalkan:
-                        '',
-
-                    ]).draw();
-                });
-
-        
+            Jadwal = Data[0]
+            KursusMateri = Data[1]
+            SertifikasiKursus = Data[2]
+            appendJadwal()
         })
+    }
+    function appendJadwal(){
+        $('#datatabel').empty();
+        var a=0;
+        var datenow = new Date().toLocaleString('en-US',{timeZone:'Asia/Bangkok'});
+        var today = Date.parse(datenow);
+
+        var now = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+        var jam = String(today.getHours()).padStart(2,'0')+':'+String(today.getMinutes()).padStart(2,'0')+':'+today.getMilliseconds();
+
+        TabelDataJadwal.clear().draw();
+        Jadwal.forEach((data) =>{
+            a++;
+    
+            var b_mulai = "<form id=\"formstart"+data.IDKursusMateri+"\">"+
+                "<input type=\"hidden\" name=\"_token\" value=\""+$('#csrf').val()+"\">"+
+            "<input type=\"hidden\" name=\"idkursusmateri\" value=\""+data.IDKursusMateri+"\">"+
+            "<input type=\"hidden\" name=\"karyawan\" value=\""+data.IDTutor+"\">"+
+            "<input type=\"hidden\" name=\"idjadwal\" value=\""+data.IDJadwal+"\">"+
+            "</form>"+
+            "<button onclick=\"startKelas(\'"+data.IDKursusMateri+"\',\'"+data.KodeKelas+"\')\" id=\"btnstart"+data.IDKursusMateri+"\" class=\"btn text-white btn-small btn-primary\">Mulai</button>"
+            ;
+            var b_akhir ="<button id=\"btnend"+data.IDKursusMateri+"\"  onclick=\"dialogEndKelas(\'"+data.NamaProdi+"\',\'"+data.IDKursusMateri+"\',\'"+data.NamaMateri+"\',\'"+data.KodeKelas+"\',\'"+data.NoRecord+"\')\"  class=\"btn text-white btn-small btn-primary\">Akhiri kelas</button>"+
+            "<form id=\"formend"+data.IDKursusMateri+"\" >"+
+                "<input type=\"hidden\" name=\"_token\" value=\""+$('#csrf').val()+"\">"+
+            "<input type=\"hidden\" name=\"idkursusmateri\" value=\""+data.IDKursusMateri+"\">"+
+            "<input type=\"hidden\" name=\"karyawan\" value=\""+data.IDTutor+"\">"+
+            "<input type=\"hidden\" name=\"idjadwal\" value=\""+data.IDJadwal+"\">"+
+            "</form>"
+            ;
+            var b_batalkan = "<a class=\"text-white btn btn-small btn-primary\">Batalkan</a>";
+            TabelDataJadwal.row.add([
+                
+                data.Tanggal.split(' ')[0],
+                data.Tanggal.split(' ')[1],
+                data.NamaProdi , 
+                data.NamaMateri,
+                data.Homework == null ? '':data.Homework,
+                data.KodeKursus,
+                data.NamaSiswa,
+                data.Status == 'CLS'?'Kelas Selesai':
+                data.Status == 'CFM'?'Sedang berlangsung':
+                now==data.Tanggal.split(' ')[0]?'Hari ini':
+                Date.parse(now)>Date.parse(data.Tanggal.split(' ')[0])?'Terlewat':
+                'Belum Mulai',
+                data.Status == 'CLS'?'<a class=\"btn text-white btn-success\">Selesai</a>':
+                data.Status == 'CFM'?b_akhir:
+                now==data.Tanggal.split(' ')[0]&&
+                Date.parse(jam)>= Date.parse(data.Tanggal.split(' ')[1])?b_mulai:
+                Date.parse(now)>Date.parse(data.Tanggal.split(' ')[0])?b_batalkan:
+                '',
+
+            ]).draw();
+        });
     }
     function startKelas(id,KodeKelas,NoRecord,NamaMateri){
         $('#btnstart'+id).attr('disabled',true)
         $.post('/karyawan/tutor/kursus/start',$('#formstart'+id).serialize())
         .done(function(param){
-            showDataJadwal();
+            getData();
             //$.get('/karyawan/tutor/kursus/event/'+ KodeKelas);
             console.log(param);
         }).fail(function(param){
@@ -411,7 +417,7 @@
         $('#btnend'+id).attr('disabled',true);
         $.post('/karyawan/tutor/kursus/end',$('#formend'+id).serialize())
         .done(function(param){
-            showDataJadwal();
+            getData();
             //$.get('/karyawan/tutor/kursus/event/'+ KodeKelas);
             console.log(param);
         }).fail(function(param){

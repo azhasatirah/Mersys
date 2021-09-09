@@ -463,15 +463,18 @@ class ProgramStudiController extends Controller
             foreach($FilteredProdi as $data){
                 $modul = DB::table('program_studi_modul')->where('Status','OPN')
                 ->where('IDProgram',$data->IDProgram)->get();
+                $bahantutor = DB::table('program_studi_bahan_tutor')
+                ->where('IDProgram',$data->IDProgram)->where('program_studi_bahan_tutor.Status','OPN')->get();
                 foreach($modul as $mod){
                     array_push($Modul,$mod);
+                }
+                foreach($bahantutor as $bt){
+                    array_push($BahanTutor,$bt);
                 }
             }
             //dd($Modul);
             $Video = DB::table('program_studi_video')
             ->where('IDProgram',$MainProdi[0]->IDProgram)->where('program_studi_video.Status','OPN')->get();
-            $BahanTutor = DB::table('program_studi_bahan_tutor')
-            ->where('IDProgram',$MainProdi[0]->IDProgram)->where('program_studi_bahan_tutor.Status','OPN')->get();
             //dd($MainProdi,$Video);
         }else{
 

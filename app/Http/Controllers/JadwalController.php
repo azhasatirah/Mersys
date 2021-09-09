@@ -145,7 +145,15 @@ class JadwalController extends Controller
        // ->where('jadwal.Status','CFM')
         ->where('kursus_siswa.UUID',$id)
         ->where('jadwal.IDTutor',session()->get('IDUser'))->get();
-        return response()->json($Jadwal);
+        $KursusMateri = DB::table('kursus_materi as km')
+        ->join('kursus_siswa as ks','km.IDKursus','=','ks.IDKursusSiswa')
+        ->select('km.*')
+        ->where('ks.UUID',$id)->get();
+        $SertifikasiKursus = DB::table('sertifikasi_kursus as sk')
+        ->join('kursus_siswa as ks','sk.IDKursusSiswa','=','ks.IDKursusSiswa')
+        ->select('sk.*')
+        ->where('ks.UUID',$id)->get();
+        return response()->json([$Jadwal,$KursusMateri,$SertifikasiKursus]);
     }
     public function getDataSiswa($id){
 //Goldays Goldeys Goldys
