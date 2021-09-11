@@ -39,9 +39,7 @@
                 </div>
                 <div class="col-md-4">
                     <ul class="nav navbar-right panel_toolbox">
-                        <section id="tutup-kursus">
-                            <button type="button" id="btn-tutup-kursus" class="btn btn-primary btn-sm">Tutup kursus</button>
-                        </section>
+                        <section id="tutup-kursus"></section>
                         <a class="btn btn-sm btn-primary" 
                         href="{{url('karyawan/tutor/nilai')}}/{{$Prodi[0]->UUIDKelas}}" 
                         role="button">
@@ -222,6 +220,31 @@
 </div>
 
 
+<!-- Modal -->
+<div class="modal fade" id="modal-tutup-kursus" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tutup kursus</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                  <label for="">Tanggal</label>
+                  <form id="form-create-tutup-kursus">
+                      @csrf
+                      <input type="date" class="form-control" name="tutupkursustanggal" aria-describedby="helpId" >
+                  </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="storeSertifikasi()" class="btn btn-primary">Konfirmasi</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Button trigger modal -->
 
 
@@ -289,7 +312,7 @@
     const content_bahantutor = $('#content-bahantutor');
     const TabelDataJadwal = $('#table-jadwal').DataTable();
     let JadwalChanges = [];
-    let Jadwal=[],KursusMateri=[],SertifikasiKursus=[]
+    let Jadwal=[],KursusMateri=[],SertifikasiKursus=[],AllProgram = []
     const URLData = window.location.hash
     const Hari = [
         {'Hari':'Senin','No':1},
@@ -339,13 +362,41 @@
               }
           });
     }
-
+    function showModalSertifikasi(){
+        $('#modal-tutup-kursus').modal('show')
+    }
+    function storeSertifikasi(){
+        const getMainProgram = (pss)=>{
+            let main_program = pss.filter(ps=>ps.NamaProdi.match('(Bulanan-1)')!==null)
+            return main_program[0].IDKursusSiswa
+        }
+        let idkursus = AllProgram.length>1?getMainProgram(AllProgram):AllProgram[0].IDKursusSiswa
+        let data_sertifikasi = $('#form-create-tutup-kursus').serialize() +'&idkursus=' +idkursus
+        $.ajax({
+            type: "post",
+            url: "/karyawan/tutor/kelas/sertifikasi/store",
+            data: data_sertifikasi,
+            success: function (response) {
+                $('#modal-tutup-kursus').modal('hide')
+                getData()
+                swal(response)
+            }
+        });
+    }
     function getData(){
         $.get('/karyawan/tutor/jadwal/getdetaildata/'+$('#UUIDKelas').val(),function(Data){
             Jadwal = Data[0]
             KursusMateri = Data[1]
             SertifikasiKursus = Data[2]
+            AllProgram = Data[3]
+            let btn_tutup_kursus = '<button type=\"button\" onclick=\"showModalSertifikasi()\" class=\"btn btn-primary btn-sm\">Tutup kursus</button>'
             appendJadwal()
+            $('#tutup-kursus').empty()
+            let specialConditionBulanan = AllProgram[0].IDKategoriGlobalProgram === 2? AllProgram.length>1:true
+            if(specialConditionBulanan&&KursusMateri.every(km=>km.Status==='CLS')&&SertifikasiKursus.length===0){
+                $('#tutup-kursus').append(btn_tutup_kursus)
+            }
+            
         })
     }
     function appendJadwal(){
@@ -408,7 +459,7 @@
         .done(function(param){
             getData();
             //$.get('/karyawan/tutor/kursus/event/'+ KodeKelas);
-            console.log(param);
+       
         }).fail(function(param){
             console.log('error');
         })
@@ -647,7 +698,6 @@
 
     }
     function showHistoryChanges(id){
-        console.log(id)
         if($('#history-changes-'+id+':hidden').length == 1){
 
         $('#history-changes-'+id).show();

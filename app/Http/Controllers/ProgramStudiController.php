@@ -500,7 +500,18 @@ class ProgramStudiController extends Controller
             'BahanTutor'=>$BahanTutor,
         ]);
     }
-
+    public function storeSertifikasi(Request $request){
+        $Data = array(
+            'IDKursusSiswa'=>$request->idkursus,
+            'Tanggal'=>$request->tutupkursustanggal,
+            'UserAdd'=>session()->get('Username'),
+            'UserUpd'=>session()->get('Username'),
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now()
+        );
+        DB::table('sertifikasi_kursus')->insert($Data);
+        return response()->json('Kursus berhasil ditutup');
+    }
     public function pdGetProdi($id){
     
         $Prodi = DB::table('program_studi')->where('IDProgram',$id)->get();

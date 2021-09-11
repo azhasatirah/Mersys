@@ -145,18 +145,62 @@ class JadwalController extends Controller
        // ->where('jadwal.Status','CFM')
         ->where('kursus_siswa.UUID',$id)
         ->where('jadwal.IDTutor',session()->get('IDUser'))->get();
-        $KursusMateri = DB::table('kursus_materi as km')
-        ->join('kursus_siswa as ks','km.IDKursus','=','ks.IDKursusSiswa')
-        ->select('km.*')
-        ->where('ks.UUID',$id)->get();
-        $SertifikasiKursus = DB::table('sertifikasi_kursus as sk')
-        ->join('kursus_siswa as ks','sk.IDKursusSiswa','=','ks.IDKursusSiswa')
-        ->select('sk.*')
-        ->where('ks.UUID',$id)->get();
-        return response()->json([$Jadwal,$KursusMateri,$SertifikasiKursus]);
+        $Prodi= DB::table('kursus_siswa')
+        ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
+        ->select('kursus_siswa.*','kursus_siswa.UUID as UUIDKelas','program_studi.NamaProdi','program_studi.IDKategoriGlobalProgram')
+        ->where('kursus_siswa.UUID',$id)->get();
+        $KursusMateri = [];
+
+        if($Prodi[0]->IDKategoriGlobalProgram == 2){
+            $BulananKey = explode('(Bulanan',$Prodi[0]->NamaProdi)[0];
+            $MainProdi = DB::table('kursus_siswa as ks')
+            ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
+            ->where('ps.NamaProdi','like',$BulananKey.'(Bulanan-1)')
+            ->where('ks.Status','CLS')
+            ->select('ks.*')
+            ->get();
+            //Nama prodi bulanan
+            $NamaProdi = explode('-',$Prodi[0]->NamaProdi)[0];
+            //Current bulanan
+            $CurrentBulanan = explode(')',explode('-',$Prodi[0]->NamaProdi)[1])[0];
+
+            //all bulanan yang di order
+            $program_studi = DB::table('kursus_siswa as ks')        
+            ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
+            ->select('ks.*','ks.UUID as UUIDKelas','ps.NamaProdi','ps.IDKategoriGlobalProgram')
+            ->where('ps.NamaProdi','like',$NamaProdi.'%')
+            ->where('ks.IDSiswa',$Prodi[0]->IDSiswa)
+            ->where('ks.Status','CLS')->get();
+
+            $SertifikasiKursus =DB::table('sertifikasi_kursus as sk')
+            ->join('kursus_siswa as ks','sk.IDKursusSiswa','=','ks.IDKursusSiswa')
+            ->select('sk.*')
+            ->where('ks.UUID',$MainProdi[0]->UUID)->get();
+
+            $Prodi = $program_studi;
+            foreach($Prodi as $data){
+                $kursusmateri = DB::table('kursus_materi')
+                ->where('IDKursus',$data->IDKursusSiswa)->get();
+                foreach($kursusmateri as $km){
+                    array_push($KursusMateri,$km);
+                }
+            }
+           // dd($Prodi,$NamaProdi,$KursusMateri);
+        }else{
+            $KursusMateri = DB::table('kursus_materi as km')
+            ->join('kursus_siswa as ks','km.IDKursus','=','ks.IDKursusSiswa')
+            ->select('km.*')
+            ->where('ks.UUID',$id)->get();
+            $SertifikasiKursus = DB::table('sertifikasi_kursus as sk')
+            ->join('kursus_siswa as ks','sk.IDKursusSiswa','=','ks.IDKursusSiswa')
+            ->select('sk.*')
+            ->where('ks.UUID',$id)->get();
+        }
+
+
+        return response()->json([$Jadwal,$KursusMateri,$SertifikasiKursus,$Prodi]);
     }
     public function getDataSiswa($id){
-//Goldays Goldeys Goldys
         $Data = [];
         $Program = DB::table('kursus_siswa')
         ->select('program_studi.NamaProdi','program_studi.TotalPertemuan',
@@ -240,9 +284,71 @@ class JadwalController extends Controller
             ));
         }
 
+        //data sertifikasi
+        $Prodi= DB::table('kursus_siswa')
+        ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
+        ->select('kursus_siswa.*','kursus_siswa.UUID as UUIDKelas','program_studi.NamaProdi','program_studi.IDKategoriGlobalProgram')
+        ->where('kursus_siswa.UUID',$id)->get();
+        $KursusMateri = [];
+        $KodeKursus = $Prodi[0]->KodeKursus;
+        if($Prodi[0]->IDKategoriGlobalProgram == 2){
+            $BulananKey = explode('(Bulanan',$Prodi[0]->NamaProdi)[0];
+            $MainProdi = DB::table('kursus_siswa as ks')
+            ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
+            ->where('ps.NamaProdi','like',$BulananKey.'(Bulanan-1)')
+            ->where('ks.Status','CLS')
+            ->select('ks.*')
+            ->get();
+            $KodeKursus = $MainProdi[0]->KodeKursus;
+            //Nama prodi bulanan
+            $NamaProdi = explode('-',$Prodi[0]->NamaProdi)[0];
+            //Current bulanan
+            $CurrentBulanan = explode(')',explode('-',$Prodi[0]->NamaProdi)[1])[0];
+
+            //all bulanan yang di order
+            $program_studi = DB::table('kursus_siswa as ks')        
+            ->join('program_studi as ps','ks.IDProgram','=','ps.IDProgram')
+            ->select('ks.*','ks.UUID as UUIDKelas','ps.NamaProdi','ps.IDKategoriGlobalProgram')
+            ->where('ps.NamaProdi','like',$NamaProdi.'%')
+            ->where('ks.IDSiswa',$Prodi[0]->IDSiswa)
+            ->where('ks.Status','CLS')->get();
+
+            $SertifikasiKursus =DB::table('sertifikasi_kursus as sk')
+            ->join('kursus_siswa as ks','sk.IDKursusSiswa','=','ks.IDKursusSiswa')
+            ->select('sk.*')
+            ->where('ks.UUID',$MainProdi[0]->UUID)->get();
+
+            $Prodi = $program_studi;
+            foreach($Prodi as $data){
+                $kursusmateri = DB::table('kursus_materi')
+                ->where('IDKursus',$data->IDKursusSiswa)->get();
+                foreach($kursusmateri as $km){
+                    array_push($KursusMateri,$km);
+                }
+            }
+           // dd($Prodi,$NamaProdi,$KursusMateri);
+        }else{
+            $KursusMateri = DB::table('kursus_materi as km')
+            ->join('kursus_siswa as ks','km.IDKursus','=','ks.IDKursusSiswa')
+            ->select('km.*')
+            ->where('ks.UUID',$id)->get();
+            $SertifikasiKursus = DB::table('sertifikasi_kursus as sk')
+            ->join('kursus_siswa as ks','sk.IDKursusSiswa','=','ks.IDKursusSiswa')
+            ->select('sk.*')
+            ->where('ks.UUID',$id)->get();
+        }
+        $GformsResponse = DB::table('gforms_respondent')->where('KodeKursus',$KodeKursus)->get();
         $Data1 = DB::table('master_waktu_maksimal_cuti')->get();
         $Data2 = DB::table('master_waktu_maksimal_sebelum_ganti_jadwal')->get();
-        return response()->json([$Data,$Data1,$Data2]);
+        return response()->json([
+            $Data,
+            $Data1,
+            $Data2,
+            $GformsResponse,
+            $KursusMateri,
+            $Prodi,
+            $SertifikasiKursus
+        ]);
     }
     public function startKursus(Request $request){
         DB::table('kursus_materi')->where('IDKursusMateri',$request->idkursusmateri)

@@ -27,7 +27,8 @@ Route::get('/notif/update/{id}','NotifController@update');
 // api
 Route::group(['middleware'=>['cors'],'prefix'=>'api'],function () {
     Route::post('/respondent/store','GformsRespondent@store');
-    Route::get('/respondent/get','GformsRespondent@getData');
+    Route::post('/respondent/update','GformsRespondent@update');
+    Route::get('/respondent/get/{id}','GformsRespondent@getData');
     Route::get('/hello',function(){
         return response()->json('oh hi');
     });
@@ -436,6 +437,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::get('siswa','ProgramStudiController@kelasTutorGroupBySiswa');
         Route::get('kelas/{id}','ProgramStudiController@kelasTutor');
         Route::get('kelas/show/{id}','ProgramStudiController@showKelasTutor');
+        Route::post('kelas/sertifikasi/store','ProgramStudiController@storeSertifikasi');
         //Route::get('nilai','NilaiController@index');
 
         Route::get('nilai/getdata','NilaiController@getData');
