@@ -62,7 +62,7 @@
                     <td colspan="3"></td>
                 </tr>
                 <tr class="table-title">
-                    <td colspan="2">Bulan : {{date('M Y')}}</td>
+                    <td colspan="2">Bulan : {{date('M Y',$Tanggal)}}</td>
                     <td colspan="3"></td>
                 </tr>
                 <tr style="text-align: center">

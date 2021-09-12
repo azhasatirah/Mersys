@@ -123,6 +123,11 @@ class NilaiEvaluasiController extends Controller
         ->select('karyawan.NamaKaryawan','siswa.NamaSiswa','siswa.IDSiswa',
         'program_studi.NamaProdi','program_studi.IDKategoriGlobalProgram as KategoriGlobal')
         ->where('kursus_siswa.UUID',$id)->get();
+        $Sertifikasi = DB::table('sertifikasi_kursus as sk')
+        ->join('kursus_siswa as ks','sk.IDKursusSiswa','=','ks.IDKursusSiswa')
+        ->where('ks.UUID',$id)
+        ->select('sk.Tanggal')
+        ->get();
         if($DataKursus[0]->KategoriGlobal==2){
             $BulananKey = explode(' (Bulanan',$DataKursus[0]->NamaProdi)[0];
             $DataKursusMateri = DB::table('kursus_materi')
@@ -160,6 +165,7 @@ class NilaiEvaluasiController extends Controller
         return view('siswa/nilai/nilai_evaluasi',[
             'NilaiEvaluasi'=>$NilaiEvaluasi,
             'KursusSiswa'=>$DataKursus,
+            'Tanggal'=>strtotime($Sertifikasi[0]->Tanggal)
         ]);
 
     }

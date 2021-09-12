@@ -200,7 +200,11 @@ class NilaiController extends Controller
         $FinalEvaluasi = DB::table('nilai_evaluasi_final')
         ->where('IDKursus',$Rapor[0]->IDKursusSiswa)
         ->get();
-        
+        $Sertifikasi = DB::table('sertifikasi_kursus as sk')
+        ->join('kursus_siswa as ks','sk.IDKursusSiswa','=','ks.IDKursusSiswa')
+        ->where('ks.UUID',$id)
+        ->select('sk.Tanggal')
+        ->get();
         $Tutor = DB::table('kursus_siswa as ks')
         ->join('jadwal as j','ks.IDKursusSiswa','=','j.IDKursusSiswa')
         ->join('karyawan as k','j.IDTutor','=','k.IDKaryawan')
@@ -243,7 +247,13 @@ class NilaiController extends Controller
                 ));
                }
            //dd($DataRapor);
-            return view('siswa/nilai/nilai_rapor',['FinalEvaluasi'=>$FinalEvaluasi,'Normal'=>$RaporNormal,'Look'=>$RaporLook]);
+            return view('siswa/nilai/nilai_rapor',[
+                'FinalEvaluasi'=>$FinalEvaluasi,
+                'Normal'=>$RaporNormal,
+                'Look'=>$RaporLook,
+                'Tanggal'=>strtotime($Sertifikasi[0]->Tanggal)
+            ]
+            );
         }else{
             return redirect()->back()->with('msg','Belum ada nilai');
         }

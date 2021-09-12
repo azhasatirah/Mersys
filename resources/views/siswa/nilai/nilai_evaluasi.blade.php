@@ -43,7 +43,7 @@
                 <p class="title text-center">FORM EVALUASI</p>
                 <div class="row">
                     <div class="col-md-4">
-                        Tanggal :2020-10-23
+                        Tanggal :{{date('Y-m-d',$Tanggal)}}
                     </div>
                     <div class="col-md-4"></div>
                     <div class="col-md-4">

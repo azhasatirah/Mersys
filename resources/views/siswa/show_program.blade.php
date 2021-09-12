@@ -156,6 +156,7 @@
                     <h2 style="color: black"> Kelas {{$Prodi[0]->NamaProdi}} </h2>
                     <input type="hidden" id="UUIDKelas" value="{{$Prodi[0]->UUIDKelas}}">
                     {{-- <small>({{$Prodi[0]->KodeKursus}})</small>**/ --}}
+                    <p id="data-kelas"></p>
                 </div>
                 <div class="col-md-6" id="btn-nilai">
 
@@ -1115,10 +1116,10 @@
             '<a href=\'https://s.id/merachelEval\' class=\'btn btn-sm btn-primary\' target=\'blank\'>Isi form evaluasi kursus</a>'
         }
         if(phase[0]===true&&phase[1]===true&&phase[2]===true){
-            phaseContent = '<a class=\"btn btn-hasil-nilai btn-primary btn-sm\" href=\"siswa/sertifikat/depan/'+Prodi[0].UIDKelas+'\" role=\"button\">Sertifikat depan</a>'+
-                    '<a class=\"btn btn-hasil-nilai btn-primary btn-sm\" href=\"siswa/sertifikat/belakang/'+Prodi[0].UIDKelas+'\" role=\"button\">Sertifikat Belakang</a>'+
-                    '<a class=\"btn btn-hasil-nilai btn-primary btn-sm\" href=\"siswa/rapor/'+Prodi[0].UIDKelas+'\" role=\"button\">Rapor</a>'+
-                    '<a class=\"btn btn-hasil-nilai btn-primary btn-sm\" href=\"siswa/evaluasi/'+Prodi[0].UIDKelas+'\" role=\"button\">Evaluasi</a>'
+            phaseContent = '<a class=\"btn btn-hasil-nilai btn-primary btn-sm\" href=\"/siswa/sertifikat/depan/'+Prodi[0].UUIDKelas+'\" target=\"blank\">Sertifikat depan</a>'+
+                    '<a class=\"btn btn-hasil-nilai btn-primary btn-sm\" href=\"/siswa/sertifikat/belakang/'+Prodi[0].UUIDKelas+'\" target=\"blank\">Sertifikat Belakang</a>'+
+                    '<a class=\"btn btn-hasil-nilai btn-primary btn-sm\" href=\"/siswa/rapor/'+Prodi[0].UUIDKelas+'\" target=\"blank\">Rapor</a>'+
+                    '<a class=\"btn btn-hasil-nilai btn-primary btn-sm\" href=\"/siswa/evaluasi/'+Prodi[0].UUIDKelas+'\" target=\"blank\">Evaluasi</a>'
         }
         phaseElement.append(phaseContent)
 
@@ -1135,8 +1136,8 @@
             KursusMateri = data[4]
             GformsResponse = data[3]
             Prodi = data[5]
-            SertifikasiKursus[6]
-
+            SertifikasiKursus = data[6]
+            showDataKelas()
             data[0].forEach((element) => {
                 let tmp_btn = element['Status']=='Berlangsung'&&element['Absen']=='Belum Absen'?
                     "<button id=\"btnabsen"+element['IDJadwal']+"\" onclick=\"masukKelas("+element['IDJadwal']+")\" class=\"btn btn-sm btn-primary\">Absen</button>"
@@ -1202,6 +1203,12 @@
             })
             statusUbahJadwal()
         });
+    }
+    function showDataKelas(){
+        $('#data-kelas').html(
+            "Kursus : "+Prodi[0].NamaProdi+"<br>"+
+            "Kode Kursus : "+Prodi[0].KodeKursus+"<br>"
+        );
     }
     function masukKelas(id){
         $('#btnabsen'+id).attr('disabled',true)
@@ -1688,15 +1695,17 @@
     }
     //jika aada request jadwal pending tidak boleh membuat request jadwal
     function statusUbahJadwal(){
-        if(jadwal.length ==0){
+        if(jadwal.length === 0){
             $('#select-ubah-jadwal').hide()
-        }else{
+            $('#btn-buat-ulang-jadwal').hide()
+        }
+        if(jadwal.length >0){
             $('#select-ubah-jadwal').show()
+            $('#btn-buat-ulang-jadwal').show()
         }
         if(JadwalChanges.some(ele=>ele.Status == 'OPN')){
             $('#select-ubah-jadwal').hide()
-        }else{
-            $('#select-ubah-jadwal').show()
+            $('#btn-buat-ulang-jadwal').hide()
         }
     }
     function showHistoryChanges(id){

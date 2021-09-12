@@ -545,11 +545,6 @@ Route::group(['middleware'=>['Role:siswa'],'prefix'=>'siswa'],function(){
     
     Route::get('nilaieval/{id}','NilaiEvaluasiController@indexSiswa');
     
-    Route::get('sertifikat/belakang/{id}','SertifikatController@belakang');
-    Route::get('sertifikat/belakang/cetak/{id}','SertifikatController@print');
-    Route::get('sertifikat/depan/{id}','SertifikatController@depan');
-    Route::get('sertifikat/depan/cetak/{id}','SertifikatController@printDepan');
-    
     Route::get('evaluasi/{id}','NilaiEvaluasiController@showEvaluasi');
     Route::get('rapor/{id}','NilaiController@showRapor');
 
