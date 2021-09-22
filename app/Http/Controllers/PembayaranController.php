@@ -56,6 +56,12 @@ class PembayaranController extends Controller
         }
         //phase 1 belum memilih metode pembayaran
         if($phase1){
+            if(count($Transaksi)===0){
+                return view('siswa.pembayaran.rincian',[
+                    'Transaksi'=>$Transaksi,
+                    'Pembayaran'=>$Pembayaran
+                ]);
+            }
             return  redirect('siswa/pembayaran/detail/'.$Transaksi[0]->UUID);
         }
     }

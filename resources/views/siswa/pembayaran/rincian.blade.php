@@ -244,10 +244,10 @@
 @else
 @endif
 @else    
-<div class="title-item text-center mt-2">
+<div class="title-item text-center mt-5">
     <h4 class="text-danger">Transaksi tidak ditemukan</h4>
 </div>
-<a class="btn btn-primary" href="/karyawan/admin/transaksi" role="button">Kembali</a>
+<a class="btn btn-primary" href="/siswa/transaksi" role="button">Kembali</a>
 @endif
 <script src="{{url('assets/js/sweetalert.js')}}"></script>
 <script>
@@ -266,15 +266,15 @@
     //id = IDTransaksi
     function deleteTransaksi(id){
         swal({
-                title: "Are you sure?",
-                text: "Once deleted, you will not be able to recover this imaginary file!",
+                title: "Apakah anda yakin?",
+                text: "Data transaksi ini akan hilang!",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
             })
             .then((willDelete) => {
             if (willDelete) {
-                $.get('/karyawan/admin/transaksi/delete/'+id).done(res=>{
+                $.get('/siswa/transaksi/delete/'+id).done(res=>{
                     swal('Berhasil!','Transaksi berhasil dihapus','success')
                     refresh()
                 })

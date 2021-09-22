@@ -475,7 +475,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 Route::group(['middleware'=>['Role:siswa'],'prefix'=>'siswa'],function(){
 
     Route::get('diskon/getdata/{id}','DiskonController@siswaData');  
-
+    Route::get('/transaksi/delete/{id}','TransaksiController@adminDeleteTransaksi');
     Route::post('jadwalchanges/store','JadwalChangesController@storeChanges');
     Route::get('jadwalchanges/get/{id}','JadwalChangesController@getChanges');
 
