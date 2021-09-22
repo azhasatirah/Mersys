@@ -150,6 +150,9 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     //route admin
     Route::group(['middleware'=>['RoleKaryawan:2'],'prefix'=>'admin'],function(){
 
+        Route::get('pembayaran/confirm/{id}','PembayaranController@adminConfirm');
+        Route::get('pembayaran/reject/{id}','PembayaranController@adminReject');
+
         Route::get('master/kota','Kota@index');
         Route::get('master/kota/getdata','Kota@getdata');
         Route::post('master/kota/store','Kota@store');

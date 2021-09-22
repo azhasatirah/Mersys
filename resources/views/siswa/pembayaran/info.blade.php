@@ -105,7 +105,9 @@
             Pembayaran ke 1
         </span>
         <p class="item-data">
-        Rp. {{number_format($Pembayaran[0]->Total/$Cicilan[0]->Cicilan)}}
+        Rp. {{number_format(
+                $Cicilan[0]->Harga/$Cicilan[0]->Cicilan + ($Pembayaran[0]->Total-$Cicilan[0]->Harga)
+            )}}
         </p>
     </div>
     @else

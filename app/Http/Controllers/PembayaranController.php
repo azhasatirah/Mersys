@@ -20,56 +20,43 @@ class PembayaranController extends Controller
     public function index(){
         return view('siswa.pembayaran.info');
     }
-    //redirect pembayaran sesuai status
+    //redirect pembayaran sesuai phase transaksi
     public function info($Kode){
-        $Transaksi=Transaksi::showTransaksi($Kode);
-        $CekPembayaran = Pembayaran::showPembayaranByKodeTransaksi($Kode);
-        $Bank = Bank::getAllBank();
-        $BuktiPembayaran = BuktiPembayaran::showBuktiPembayaranByKodeTransaksi($Kode);
-        $PembayaranCLSWithnoBukti = DB::table('pembayaran as p')
-        ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
-        ->where('p.status','CLS')
-        ->where('t.UUID',$Kode)->get();
-        $TMPPembayaranOPN = DB::table('pembayaran as p')
-        ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
-        ->select('p.UUID as UIDPembayaran','p.NoUrut','p.IDPembayaran')
-        ->where('p.status','OPN')
-        ->where('t.UUID',$Kode)
-        ->orderBy('p.NoUrut','asc')->get();
-        $PembayaranOPN =[];
-        //dd($Transaksi);
-        foreach($TMPPembayaranOPN as $dat){
-            $bukti = DB::table('bukti_pembayaran')->where('IDPembayaran',$dat->IDPembayaran)->get();
-            if(count($bukti)==0){
-                array_push($PembayaranOPN,$dat);
+
+        $Data = $this->getDetailTransaksi($Kode);
+        $Transaksi = $Data[0];
+        $Pembayaran = $Data[1];
+        //----------- init phase transaksi --------------
+        $phase1 = count($Pembayaran)===0;
+        $phase2 = count($Pembayaran)>0?
+        array_reduce($Pembayaran,function($con,$item){
+            return $con && count($item['BuktiPembayaran'])===0;
+        },true):false;
+        $phase3 = count($Pembayaran)>0?
+        array_reduce($Pembayaran,function($con,$item){
+            return $con || count($item['BuktiPembayaran'])>0;
+        },false):false;
+        //----------------------REDIRECT sesuai phase---------------------------
+        //phase 3 telah melakukan pembayaran pertama
+        if($phase3){
+            return view('siswa.pembayaran.rincian',[
+                'Transaksi'=>$Transaksi,
+                'Pembayaran'=>$Pembayaran
+            ]);
+        }
+        //phase 2 pembayaran peratama
+        if($phase2){
+            $FirstPembayaran = array_filter($Pembayaran,function($item){
+                return $item['NoUrut']===1;
+            });
+            if(count($FirstPembayaran)>0){
+                return redirect('siswa/pembayaran/metode/bank/'.$FirstPembayaran[0]['UUIDPembayaran']);
             }
+            dd("opss! something went wrong x_x");
         }
-        //mengalihkan ke halaman rincian pembayaran
-        if(count($PembayaranCLSWithnoBukti)>0){
-            //dd($Transaksi['Transaksi'],$BuktiPembayaran,$PembayaranCLSWithnoBukti);
-            return view('siswa.pembayaran.rincian',[
-                'Pembayaran'=>$Transaksi['Transaksi'],
-                'Bank'=>$Bank['Bank'],
-                'BuktiPembayaran'=>$BuktiPembayaran,
-                'PembayaranOPN'=>$PembayaranOPN
-            ]);
-        }
-        if(count($BuktiPembayaran)>0){
-           //dd($BuktiPembayaran,$Transaksi);
-            return view('siswa.pembayaran.rincian',[
-                'Pembayaran'=>$Transaksi['Transaksi'],
-                'Bank'=>$Bank['Bank'],
-                'BuktiPembayaran'=>$BuktiPembayaran,
-                'PembayaranOPN'=>$PembayaranOPN
-            ]);
-        //mengalihkan ke halaman upload bukti pembayaran
-        }elseif(count($CekPembayaran)>0){
-            //by id pembayaran
-            return redirect('siswa/pembayaran/metode/bank/'.$PembayaranOPN[0]->UIDPembayaran);
-        // halaman pembayaran selesai
-        }else{
-         //dd($Transaksi['Transaksi']);
-            return  redirect('siswa/pembayaran/detail/'.$Kode);
+        //phase 1 belum memilih metode pembayaran
+        if($phase1){
+            return  redirect('siswa/pembayaran/detail/'.$Transaksi[0]->UUID);
         }
     }
     public function detail($Kode){
@@ -134,7 +121,7 @@ class PembayaranController extends Controller
         return response()->json($Status);
     }
     public function createMetodeBank($UUID){
-//kunai
+        //kunai
         $IsPendaftaran = DB::table('pembayaran as p')
         ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
         ->join('kursus_siswa as ks','t.IDKursusSiswa','ks.IDKursusSiswa')
@@ -192,17 +179,18 @@ class PembayaranController extends Controller
             ->select('cicilan.Cicilan','cicilan.Harga')
             ->where('cicilan.IDCicilan',$Transaksi['Transaksi'][0]->IDCicilan)
             ->get();
-           // dd($Transaksi,$Cicilan);
+            $TransaksiTambahan = $Transaksi['Transaksi'][0]->Total - $Cicilan[0]->Harga;
             $UUIDPembayaranPertama=str_replace('-','',str::uuid());
             //dd($Cicilan,$UUIDPembayaranPertama,$Transaksi['Transaksi'][0]->IDTransaksi);
             for($i =0;$i < $Cicilan[0]->Cicilan;$i++){
+                $Harga = $i === 0 ? $Cicilan[0]->Harga / $Cicilan[0]->Cicilan+$TransaksiTambahan:$Cicilan[0]->Harga / $Cicilan[0]->Cicilan;
                 $tang = $i==0? date('Y-m-d H:i') : date('Y-m-d H:i',strtotime('+'.($i*14).' days'));
                 $Data = array(
                     'UUID'=>$i==0?$UUIDPembayaranPertama:str_replace('-','',str::uuid()),
                     'KodePembayaran'=>"PAY-" . date("mHis").$i,
                     'IDTransaksi'=>$Transaksi['Transaksi'][0]->IDTransaksi,
                     'IDMetodePembayaran'=>$request->metode,
-                    'Total'=>$Cicilan[0]->Harga / $Cicilan[0]->Cicilan,
+                    'Total'=>$Harga,
                     'NoUrut'=>$i+1,
                     'created_at'=>$tang,
                     'updated_at'=>Carbon::now(),
@@ -427,30 +415,27 @@ class PembayaranController extends Controller
     //halaman detail pembayaran di admin
     public function adminDetailPembayaran($ID)
     {
-        $Pembayaran = Pembayaran::getDetailBuktiPembayaran($ID);
-       // dump($Pembayaran);
-        $Pembayaran = array_filter($Pembayaran['Pembayaran']->toArray(),function($var){
-            return $var->StatusPembayaran =='OPN';
-        });
-        foreach($Pembayaran as $k){
-            $Pembayaran[0] =$k;
-        }
-     //   dd($Pembayaran);
-        return view('karyawan.transaksi.admin.rincian',['Pembayaran'=>$Pembayaran]);
+        $Data = $this->getDetailTransaksi($ID);
+        $Transaksi = $Data[0];
+        $Pembayaran = $Data[1];
+        return view('karyawan.transaksi.admin.rincian',[
+            'Transaksi'=>$Transaksi,
+            'Pembayaran'=>$Pembayaran
+        ]);
     }
 
     //konfirmasi pembayaran di admin
-    public function adminKonfirmasi(Request $request){
+    public function adminConfirm($KodePembayaran){
         $Pembayaran = array(
             'Status'=>'CFM',
             'UserUpd'=>session()->get('Username'),
             'updated_at'=>Carbon::now(),
         );
-        Pembayaran::changeStatusByKodePembayaran($request->pembayaran,$Pembayaran);
+        Pembayaran::changeStatusByKodePembayaran($KodePembayaran,$Pembayaran);
         // pembayaran2 for notif data
         $Pembayaran2 = DB::table('pembayaran as p')
         ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
-        ->where('p.KodePembayaran',$request->pembayaran)
+        ->where('p.KodePembayaran',$KodePembayaran)
         ->select('p.KodePembayaran','t.UUID')->get();
         DB::table('notif')->insert([
             'Notif'=> session()->get('Username')." mengkonfirmasi bukti pembayaran untuk pembayaran ".$Pembayaran2[0]->KodePembayaran,
@@ -462,24 +447,80 @@ class PembayaranController extends Controller
             'updated_at'=>Carbon::now(),
         ]);
         //broadcast(new \App\Events\NotifEvent('owner'));
-        return redirect('karyawan/admin/transaksi');
+        return response()->json('oke');
 
     }
-    
+    public function adminReject($IDBuktiPembayaran){
+        $BuktiPembayaran = array(
+            'Status'=>'DEL',
+            'UserUpd'=>session()->get('Username'),
+            'updated_at'=>Carbon::now(),
+        );
+        DB::table('bukti_pembayaran')->where('IDBuktiPembayaran',$IDBuktiPembayaran)->update($BuktiPembayaran);
+        // pembayaran2 for notif data
+        $Pembayaran2 = DB::table('pembayaran as p')
+        ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
+        ->join('bukti_pembayaran as bp','p.IDPembayaran','=','bp.IDPembayaran')
+        ->join('siswa as s','t.IDSiswa','=','s.IDSiswa')
+        ->where('bp.IDBuktiPembayaran',$IDBuktiPembayaran)
+        ->select('p.KodePembayaran','t.UUID','s.UUID as UIDSiswa')->get();
+        DB::table('notif')->insert([
+            'Notif'=> session()->get('Username')." menolak bukti pembayaran untuk pembayaran ".$Pembayaran2[0]->KodePembayaran
+            ." cek kembali pembayaran anda",
+            'NotifFrom'=> session()->get('UID'),
+            'NotifTo'=>$Pembayaran2[0]->UIDSiswa,
+            'IsRead'=>false,
+            'Link'=>'/siswa/pembayaran/info/'.$Pembayaran2[0]->UUID,
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
+        //broadcast(new \App\Events\NotifEvent('owner'));
+        return response()->json('oke');
+
+    }
+    public function getDetailTransaksi($ID){
+        $Transaksi = DB::table('transaksi')
+        ->where('UUID',$ID)
+        ->where('Status','!=','DEL')->get();
+        $Pembayaran = [];
+        $TMPPembayarans = DB::table('pembayaran as p')
+        ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
+        ->join('metode_pembayaran as mp','p.IDMetodePembayaran','=','mp.IDMetodePembayaran')
+        ->join('rekening as r','mp.IDDompet','=','r.IDRekening')
+        ->join('bank as b','r.IDBank','=','b.IDBank')
+        ->select('p.*','mp.MetodePembayaran','b.NamaBank','r.NamaRekening','r.NoRekening')
+        ->where('t.UUID',$ID)
+        ->where('t.Status','!=','DEL')->get();
+        foreach($TMPPembayarans as $TMPPembayaran){
+            $BuktiPembayaran = DB::table('bukti_pembayaran')
+            ->where('IDPembayaran',$TMPPembayaran->IDPembayaran)->get();
+            array_push($Pembayaran,[
+                'IDPembayaran'=>$TMPPembayaran->IDPembayaran,
+                'KodePembayaran'=>$TMPPembayaran->KodePembayaran,
+                'UUIDPembayaran'=>$TMPPembayaran->UUID,
+                'Total'=>$TMPPembayaran->Total,
+                'NoUrut'=>$TMPPembayaran->NoUrut,
+                'Status'=>$TMPPembayaran->Status,
+                'created_at'=>$TMPPembayaran->created_at,
+                'MetodePembayaran'=>$TMPPembayaran->MetodePembayaran,
+                'NamaBank'=>$TMPPembayaran->NamaBank,
+                'NamaRekening'=>$TMPPembayaran->NamaRekening,
+                'NoRekening'=>$TMPPembayaran->NoRekening,
+                'BuktiPembayaran'=>$BuktiPembayaran
+            ]);
+        }
+        return [$Transaksi,$Pembayaran];
+    }
     //halaman detail pembayaran di owner
     public function ownerDetailPembayaran($ID)
     {
-        $Pembayaran = Pembayaran::getDetailBuktiPembayaran($ID);
-        //dd($Pembayaran['Pembayaran']);
-        $Pembayaran = Pembayaran::getDetailBuktiPembayaran($ID);
-        // dump($Pembayaran);
-         $Pembayaran = array_filter($Pembayaran['Pembayaran']->toArray(),function($var){
-             return $var->StatusPembayaran =='CFM';
-         });
-         foreach($Pembayaran as $k){
-             $Pembayaran[0] =$k;
-         }
-        return view('karyawan.transaksi.owner.rincian',['Pembayaran'=>$Pembayaran]);
+        $Data = $this->getDetailTransaksi($ID);
+        $Transaksi = $Data[0];
+        $Pembayaran = $Data[1];
+        return view('karyawan.transaksi.owner.rincian',[
+            'Transaksi'=>$Transaksi,
+            'Pembayaran'=>$Pembayaran
+        ]);
     }
 
     //konfirmasi pembayaran di owner
@@ -587,4 +628,6 @@ class PembayaranController extends Controller
         return redirect('karyawan/owner/transaksi');
 
     }
+
+
 }
