@@ -36,7 +36,7 @@ class KaryawanController extends Controller
         ->select('kursus_materi.Hari','jadwal.Tanggal','kursus_materi.IDKursusMateri',
         'program_studi.NamaProdi','kursus_siswa.UUID as KodeKelas','kursus_materi.NoRecord',
         'kursus_materi.NamaMateri','kursus_siswa.KodeKursus','kursus_materi.Status',
-        'kursus_materi.Homework',
+        'kursus_materi.Homework','kursus_siswa.Tempat',
         'siswa.NamaSiswa','jadwal.IDJadwal','jadwal.IDTutor')
        // ->where('jadwal.Status','CFM')
         ->where('jadwal.Jenis','!=','semi')
@@ -51,7 +51,7 @@ class KaryawanController extends Controller
         ->select('kursus_materi.Hari','jadwal.Tanggal','kursus_materi.IDKursusMateri',
         'program_studi.NamaProdi','kursus_siswa.UUID as KodeKelas','kursus_materi.NoRecord',
         'kursus_materi.NamaMateri','kursus_siswa.KodeKursus','kursus_materi.Status',
-        'kursus_materi.Homework',
+        'kursus_materi.Homework','kursus_siswa.Tempat',
         'siswa.NamaSiswa','jadwal.IDJadwal','jadwal.IDTutor')
        // ->where('jadwal.Status','CFM')
         ->where('jadwal.Jenis','semi')

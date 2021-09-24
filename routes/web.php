@@ -40,7 +40,7 @@ Route::group(['middleware'=>['cors'],'prefix'=>'api'],function () {
 //karyawan
 Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 
-    Route::get('kursus','KursusSiswaController@adminIndexKursus');
+    Route::get('kursus','KursusSiswaController@karyawanIndexKursus');
     Route::get('kursus/show/{id}','KursusSiswaController@adminShowKursus');
     Route::post('kursus/absen','KursusSiswaController@adminAbsenKursus');
     Route::get('kursus/delete/{id}','KursusSiswaController@adminDeleteKursus');
@@ -102,7 +102,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::post('masterpenggajian/update','MasterPenggajianController@update');
         Route::get('masterpenggajian/delete/{id}','MasterPenggajianController@delete');
 
-        Route::get('kursus','KursusSiswaController@adminIndexKursus');
+        Route::get('kursus','KursusSiswaController@karyawanIndexKursus');
         Route::get('kursus/show/{id}','KursusSiswaController@adminShowKursus');
 
         Route::get('/syarat', 'SyaratController@index');
@@ -203,7 +203,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 
 
         //admin akses melihat semua kursus
-        Route::get('kursus','KursusSiswaController@adminIndexKursus');
+        Route::get('kursus','KursusSiswaController@karyawanIndexKursus');
         Route::get('kursus/show/{id}','KursusSiswaController@adminShowKursus');
 
         // Route::post('kursus/absen','KursusSiswaController@adminAbsenKursus');

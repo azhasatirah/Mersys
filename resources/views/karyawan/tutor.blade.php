@@ -24,8 +24,8 @@
                         <tr>
                             <th>Tanggal</th>
                             <th>Jam</th>
+                            <th>Program</th>
                             <th>Kelas</th>
-                          
                             <th>Nama Siswa</th>
                             <th></th>
                         </tr>
@@ -95,6 +95,9 @@
                         data.NamaProdi +
                     "</td>"+
                     "<td>"+
+                        data.Tempat +
+                    "</td>"+
+                    "<td>"+
                         data.NamaSiswa+
                     "</td>"+
                     "<td>"+
@@ -128,8 +131,7 @@
                 "<tr>"+
                     "<td rowspan=\""+(data.length+1)+"\">"+stanggal+"</td>"+
                     "<td rowspan=\""+(data.length+1)+"\">"+sjam+"</td>"+
-                    "<th>Kelas semi private jam "+sjam+"</th>"+
-                    "<th>Siswa semi private jam "+sjam+"</th>"+
+                    "<th colspan=\"3\">Kelas semi private jam "+sjam+"</th>"+
                     "<td "+resRowspan+">"+
                         option+
                     "</td>"+
@@ -139,7 +141,9 @@
                 let append_data = ele.Status == 'CFM'?                  
                     "<tr>"+
                         "<td>"+ele.NamaProdi+"</td>"+
+                        "<td>"+ele.Tempat+"</td>"+
                         "<td>"+ele.NamaSiswa+"</td>"+
+
                         "<td>"+
                             "<a href=\"/karyawan/tutor/kelas/show/"+ele.KodeKelas+"\" target=\"blank\"  class=\"btn text-white btn-sm btn-primary\">Kelas dimulai, buka</a>"+
                         "</td>"+
@@ -147,6 +151,7 @@
                     ele.Status == 'CLS'?                  
                     "<tr>"+
                         "<td>"+ele.NamaProdi+"</td>"+
+                        "<td>"+ele.Tempat+"</td>"+
                         "<td>"+ele.NamaSiswa+"</td>"+
                         "<td>"+
                             "<a class=\"btn btn-sm text-white btn-success\">Selesai</a>"+
@@ -154,6 +159,7 @@
                     "</tr>":
                     "<tr>"+
                         "<td>"+ele.NamaProdi+"</td>"+
+                        "<td>"+ele.Tempat+"</td>"+
                         "<td>"+ele.NamaSiswa+"</td>"+
                     "</tr>"
                 TableJadwal.append(append_data)

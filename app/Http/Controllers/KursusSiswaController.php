@@ -139,7 +139,7 @@ class KursusSiswaController extends Controller
             ]);
         }
 
-        public function adminIndexKursus(){
+        public function karyawanIndexKursus(){
 
             return view('karyawan.kursus_admin_index');
         }
@@ -194,42 +194,46 @@ class KursusSiswaController extends Controller
             ->get();
             $Data = [];
             foreach($Kursus as $ks){
-                $Status = '';
-                $RStatus = '';
-                if($ks->Status == 'OPN'){
-                    $Status = false ;
-                    $RStatus = 'Transaksi belum selesai';
-                }
-                if($ks->Status == 'CLS'){
-                    $Jadwal = DB::table('jadwal')->where('IDKursusSiswa',$ks->IDKursusSiswa)->get();
-                    if(count($Jadwal)==0){
-                        $Status = false;
-                        $RStatus = 'Belum buat jadwal';
+                if($ks->Status === 'CLS'){
+
+                    $Status = '';
+                    $RStatus = '';
+                    if($ks->Status == 'OPN'){
+                        $Status = false ;
+                        $RStatus = 'Transaksi belum selesai';
                     }
-                    if(count($Jadwal)>0){
-                        if($Jadwal[0]->Status == 'OPN'){
+                    if($ks->Status == 'CLS'){
+                        $Jadwal = DB::table('jadwal')->where('IDKursusSiswa',$ks->IDKursusSiswa)->get();
+                        if(count($Jadwal)==0){
                             $Status = false;
-                            $RStatus = 'Jadwal belum ada tutor';
-                        }else if($Jadwal[0]->Status == 'CFM'){
-                            $Status = true;
-                            $RStatus = 'Jadwal ada';
-                        }else{
-                            $Status = true;
-                            $RStatus = 'Jadwal ada';
+                            $RStatus = 'Belum buat jadwal';
+                        }
+                        if(count($Jadwal)>0){
+                            if($Jadwal[0]->Status == 'OPN'){
+                                $Status = false;
+                                $RStatus = 'Jadwal belum ada tutor';
+                            }else if($Jadwal[0]->Status == 'CFM'){
+                                $Status = true;
+                                $RStatus = 'Jadwal ada';
+                            }else{
+                                $Status = true;
+                                $RStatus = 'Jadwal ada';
+                            }
                         }
                     }
+                    array_push($Data,array(
+                        'UIDKursus'=>$ks->UIDKursus,
+                        'KodeKursus'=>$ks->KodeKursus,
+                        'TanggalOrder'=>$ks->TanggalOrder,
+                        'KodeSiswa'=>$ks->KodeSiswa,
+                        'NamaSiswa'=>$ks->NamaSiswa,
+                        'NamaProdi'=>$ks->NamaProdi,
+                        'Status'=>$Status,
+                        'ReadStatus'=>$RStatus,
+                    ));
                 }
-                array_push($Data,array(
-                    'UIDKursus'=>$ks->UIDKursus,
-                    'KodeKursus'=>$ks->KodeKursus,
-                    'TanggalOrder'=>$ks->TanggalOrder,
-                    'KodeSiswa'=>$ks->KodeSiswa,
-                    'NamaSiswa'=>$ks->NamaSiswa,
-                    'NamaProdi'=>$ks->NamaProdi,
-                    'Status'=>$Status,
-                    'ReadStatus'=>$RStatus,
-                ));
             }
+
             return response()->json($Data);
         }
         public function adminShowKursus($id){
