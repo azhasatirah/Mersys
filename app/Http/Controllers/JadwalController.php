@@ -612,7 +612,7 @@ class JadwalController extends Controller
         };
         $DataNotif = DB::table('kursus_siswa')->where('IDKursusSiswa',$request->idkursus[0])->get();
         DB::table('notif')->insert([
-            'Notif'=> session()->get('Username')." Membuat jadwal baru untuk kelas (".$DataNotif[0]->KodeKursus.")",
+            'Notif'=> session()->get('NamaUser')." Membuat jadwal baru untuk kelas (".$DataNotif[0]->KodeKursus.")",
             'NotifFrom'=> session()->get('UID'),
             'NotifTo'=>'admin',
             'IsRead'=>false,
