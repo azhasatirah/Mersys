@@ -702,9 +702,9 @@
             updateCreatePenggajian('gakok',6)
         
         }
+        //mark
         function getData(){
             $.get("/karyawan/owner/penggajian/karyawan/getdata/"+UIDKaryawan).done(ele=>{
-                console.log(ele)
                 KelasTutor = ele[0]
                 Penggajian = ele[1]
                 MasterPenggajian = ele[2]
@@ -769,7 +769,7 @@
         }
 
 
-        //penggajian
+        //penggajian mark
         function setDataCreatePenggajian(){
             //nkelas = kelas bulan ini yang sudah selesai
             //penaltyk = keterlambatan memulai kelas 
@@ -778,18 +778,18 @@
             let time_penggajian = $('#penggajian-bulan').val().split('-')
             NMonth = parseInt(time_penggajian[1]) - 1
             NYear = time_penggajian[0]
-            if(Penggajian.some(ele=>new Date(ele.Tanggal).getMonth()===NMonth)){
-                swal('Penggajian bulan '+getNameMonth(NMonth)+' sudah dibuat')
+            if(Penggajian.some(ele=>new Date(ele.Tanggal).getMonth()===NMonth && new Date(ele.Tanggal).getFullYear()==NYear)){
+                swal('Penggajian bulan '+getNameMonth(NMonth)+' tahun '+NYear+' sudah dibuat')
             }else{
                 $('#modal-create-penggajian').modal('show')
                 CreatePenggajian = []
                 let NKelas =KelasTutor.filter(ele=>new Date(ele.Tanggal).getMonth()==NMonth && new Date(ele.Tanggal).getFullYear()==NYear && ele.Kelas==true)
+                console.log(NKelas)
                 let penaltyk = NKelas.filter(ele=>{
                     let absen = new Date(ele.Tanggal.split(' ')[0]+' '+ele.AbsensiTutor).getTime() - new Date(ele.Tanggal).getTime() 
                     return MasterDendaKeterlambatan.some(dk=>{
                         return (absen>=dk.a&&absen<=dk.b)
-                    })
-        
+                    })     
                 }).map(ele=>{
                     let absen = new Date(ele.Tanggal.split(' ')[0]+' '+ele.AbsensiTutor).getTime() - new Date(ele.Tanggal).getTime() 
                     let penalty = MasterDendaKeterlambatan.filter(dk=>{
@@ -810,6 +810,7 @@
                             parseInt(mp.IDKategoriGlobalProgram) == parseInt(ele.IDKategoriGlobalProgram)&&
                             mp.JenisProgram.toLowerCase() == nkelas_jenisprogram.toLowerCase()
                     )
+                    let HargaHomeclass = ele.Homeclass !== false ? ele.Homeclass.filter(ele=>ele.Kode.split('-')[0]==='tth')[0].Total:0
                     return {
                         'IDJadwal':ele.IDJadwal,
                         'IDLevel':ele.IDLevel,
@@ -821,16 +822,37 @@
                         'NamaProdi':ele.NamaProdi,
                         'NoRecord':ele.NoRecord,
                         'Tanggal':ele.Tanggal,
-                        'Harga':nkelas_harga.length >0 ?nkelas_harga[0].Pendapatan:0
+                        'Harga':nkelas_harga.length >0 ?nkelas_harga[0].Pendapatan:0,
+                        'TotalPertemuan':ele.TotalPertemuan,
+                        'HargaHomeclass':HargaHomeclass/ele.TotalPertemuan,
+                        'Homeclass':ele.Tempat === 'homeclass'
                     }
                 })
+                GajiTransport = NKelas.filter(ele=>ele.Homeclass===true)
+                console.log(NKelas,GajiTransport)
+                GajiTransport.forEach(ele=>{
+                    console.log('homeclass')
+                    CreatePenggajian.push(
+                        {
+                            'id':new Date().getTime()+Math.random().toString(16).slice(2),
+                            'data':[
+                                'honortambahan',
+                                'Tunjangan transport di luar murid',
+                                ele.NamaProdi+' Pertemuan ke '+ele.NoRecord,
+                                ele.Tanggal.split(' ')[0],
+                                'Homeclass siswa '+ele.NamaSiswa,
+                                numberToIDR(ele.HargaHomeclass),
+                                numberToIDR(ele.HargaHomeclass)
+                            ]
+                        }
+                    )
+                })
                 NKelas.forEach(ele=>{
-                    let total_pertemuan = KelasTutor.filter(kt=>kt.IDKursusSiswa == ele.IDKursusSiswa).length
                     //ele.kelas boolean = true if kelas selesai
                     CreatePenggajian.push(
                         {
                             'id':new Date().getTime()+Math.random().toString(16).slice(2),
-                            'data':['program',ele.NamaSiswa,ele.NamaProdi,total_pertemuan,ele.NoRecord,ele.Tanggal,numberToIDR(ele.Harga)]
+                            'data':['program',ele.NamaSiswa,ele.NamaProdi,ele.TotalPertemuan,ele.NoRecord,ele.Tanggal,numberToIDR(ele.Harga)]
                         }
                     )
         

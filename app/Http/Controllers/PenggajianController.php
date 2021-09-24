@@ -41,13 +41,21 @@ class PenggajianController extends Controller
         ->where(DB::raw('YEAR(j.Tanggal)'),date('Y'))
         ->where('k.UUID',$id)
         ->select('j.IDJadwal','km.NamaMateri','km.NoRecord','ps.NamaProdi','s.NamaSiswa','j.IDKursusSiswa',
-        'ps.IDLevel','ps.IDKategoriProgram','ps.IDKategoriGlobalProgram','j.Jenis','j.Tanggal')->get();
+        'ps.IDLevel','ps.IDKategoriProgram','ps.IDKategoriGlobalProgram','j.Jenis','j.Tanggal',
+        'ks.Tempat')->get();
         $KelasTutor = [];
         foreach($JadwalTutor as $jt){
             $absen_tutor = DB::table('absen_tutor')->where('IDJadwal',$jt->IDJadwal)->get();
+            $Homeclass = $jt->Tempat === 'homeclass'?
+            DB::table('transaksi_tambahan as tt')->join('transaksi as t','tt.IDTransaksi','=','t.IDTransaksi')
+            ->where('IDKursusSiswa',$jt->IDKursusSiswa)->select('tt.*')->get():false;
+            $MateriKelas = DB::table('kursus_materi')->where('IDKursus',$jt->IDKursusSiswa)->get();
             array_push($KelasTutor,array(
                 'IDJadwal'=>$jt->IDJadwal,
                 'IDKursusSiswa'=>$jt->IDKursusSiswa,
+                'Tempat'=>$jt->Tempat,
+                'Homeclass'=>$Homeclass,
+                'TotalPertemuan'=>count($MateriKelas),
                 'NamaMateri'=>$jt->NamaMateri,
                 'NoRecord'=>$jt->NoRecord,
                 'NamaProdi'=>$jt->NamaProdi,

@@ -54,7 +54,9 @@ class Auth extends Model
         $Username = DB::table('siswa')->where('Username',$Data['Username'])->get();
         if(count($Username)>0){
             if(Hash::check($Data['Password'], $Username[0]->Password)||
-            count(DB::table('siswa')->where('Password',md5($Data['Password']))->get())>0
+            count(DB::table('siswa')
+            ->where('Username',$Data['Username'])
+            ->where('Password',md5($Data['Password']))->get())>0
             ){
                 if($Username[0]->Status=='CLS'){
                     session()->put('NamaUser',$Username[0]->NamaSiswa);
@@ -99,7 +101,10 @@ class Auth extends Model
         $Username = DB::table('karyawan')->where('Username',$Data['Username'])->get();
         if(count($Username)>0){
             if(Hash::check($Data['Password'], $Username[0]->Password)||
-            count(DB::table('siswa')->where('Password',md5($Data['Password']))->get())>0){
+            count(DB::table('karyawan')
+            ->where('Username',$Data['Username'])
+            ->where('Password',md5($Data['Password']))->get())>0
+            ){
                 if($Username[0]->Status=='CLS'){
                     $LevelKaryawan = DB::table('karyawan')
                     ->join('role_karyawan_list','karyawan.IDKaryawan','=','role_karyawan_list.IDKaryawan')

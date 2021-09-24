@@ -200,9 +200,6 @@
                     </a>
                 </div>
                 @endif
-                @if ($pembayaran['Status']==='CFM')  
-                <button  class="btn btn-info text-white btn-block btn-sm mt-2 mb-2" role="button">Menunggu dikonfirmasi owner</button>
-                @endif
                 @if ($BuktiPembayaran->Status == 'DEL' )  
                     <button  class="btn btn-info text-white btn-block btn-sm mt-2 mb-2" role="button">Ditolak</button>
                 @endif

@@ -267,7 +267,7 @@ class PembayaranController extends Controller
             ->where('p.IDPembayaran',$request->idpembayaran)
             ->select('p.KodePembayaran','t.UUID')->get();
             DB::table('notif')->insert([
-                'Notif'=> session()->get('Username')." mengupload bukti pembayaran untuk pembayaran ".$Pembayaran[0]->KodePembayaran,
+                'Notif'=> session()->get('NamaUser')." mengupload bukti pembayaran untuk pembayaran ".$Pembayaran[0]->KodePembayaran,
                 'NotifFrom'=> session()->get('UID'),
                 'NotifTo'=>'admin',
                 'IsRead'=>false,
@@ -278,7 +278,7 @@ class PembayaranController extends Controller
             //broadcast(new \App\Events\NotifEvent('admin'));
         }else{
             DB::table('notif')->insert([
-                'Notif'=> session()->get('Username')." mengupload bukti pembayaran untuk pendaftaran siswa",
+                'Notif'=> session()->get('NamaUser')." mengupload bukti pembayaran untuk pendaftaran siswa",
                 'NotifFrom'=> $IsPendaftaran[0]->UIDSiswa,
                 'NotifTo'=>'admin',
                 'IsRead'=>false,
@@ -329,7 +329,7 @@ class PembayaranController extends Controller
         ->select('siswa.KodeSiswa','siswa.UUID as UIDSiswa')
         ->get();
         DB::table('notif')->insert([
-            'Notif'=> session()->get('Username').' Telah mengkonfirmasi pendaftaran siswa ' . $DataNotif[0]->KodeSiswa,
+            'Notif'=> session()->get('NamaUser').' Telah mengkonfirmasi pendaftaran siswa ' . $DataNotif[0]->KodeSiswa,
             'NotifFrom'=> session()->get('UID'),
             'NotifTo'=>'owner',
             'IsRead'=>false,
@@ -444,7 +444,7 @@ class PembayaranController extends Controller
         ->where('p.KodePembayaran',$KodePembayaran)
         ->select('p.KodePembayaran','t.UUID')->get();
         DB::table('notif')->insert([
-            'Notif'=> session()->get('Username')." mengkonfirmasi bukti pembayaran untuk pembayaran ".$Pembayaran2[0]->KodePembayaran,
+            'Notif'=> session()->get('NamaUser')." mengkonfirmasi bukti pembayaran untuk pembayaran ".$Pembayaran2[0]->KodePembayaran,
             'NotifFrom'=> session()->get('UID'),
             'NotifTo'=>'owner',
             'IsRead'=>false,
@@ -471,7 +471,7 @@ class PembayaranController extends Controller
         ->where('bp.IDBuktiPembayaran',$IDBuktiPembayaran)
         ->select('p.KodePembayaran','t.UUID','s.UUID as UIDSiswa')->get();
         DB::table('notif')->insert([
-            'Notif'=> session()->get('Username')." menolak bukti pembayaran untuk pembayaran ".$Pembayaran2[0]->KodePembayaran
+            'Notif'=> session()->get('NamaUser')." menolak bukti pembayaran untuk pembayaran ".$Pembayaran2[0]->KodePembayaran
             ." cek kembali pembayaran anda",
             'NotifFrom'=> session()->get('UID'),
             'NotifTo'=>$Pembayaran2[0]->UIDSiswa,
@@ -530,11 +530,11 @@ class PembayaranController extends Controller
     }
 
     //konfirmasi pembayaran di owner
-    public function ownerKonfirmasi(Request $request){
+    public function ownerConfirm($KodePembayaran){
         $Transaksi = DB::table('transaksi')
         ->join('pembayaran','transaksi.IDTransaksi','=','pembayaran.IDTransaksi')
         ->select('transaksi.IDTransaksi')
-        ->where('pembayaran.KodePembayaran',$request->pembayaran)->get();
+        ->where('pembayaran.KodePembayaran',$KodePembayaran)->get();
         $Pembayaran = DB::table('pembayaran')
         ->where('IDTransaksi',$Transaksi[0]->IDTransaksi)->get();
         //dd($Pembayaran);
@@ -549,8 +549,8 @@ class PembayaranController extends Controller
                 'transaksi.UserUpd'=>session()->get('Username'),
                 'transaksi.updated_at'=>Carbon::now(),
             );
-            Transaksi::changeStatusByKodePembayaran($request->pembayaran,$Transaksi);
-            Pembayaran::changeStatusByKodePembayaran($request->pembayaran,$DataPembayaran);
+            Transaksi::changeStatusByKodePembayaran($KodePembayaran,$Transaksi);
+            Pembayaran::changeStatusByKodePembayaran($KodePembayaran,$DataPembayaran);
         }else{
             $PembayaranSelesai =[];
             //dd($Pembayaran);
@@ -562,14 +562,14 @@ class PembayaranController extends Controller
                 'UserUpd'=>session()->get('Username'),
                 'updated_at'=>Carbon::now(),
             );
-            Pembayaran::changeStatusByKodePembayaran($request->pembayaran,$DataPembayaran);
+            Pembayaran::changeStatusByKodePembayaran($KodePembayaran,$DataPembayaran);
             if((count($Pembayaran)-count($PembayaranSelesai))==1){
                 $Transaksi = array(
                     'transaksi.Status'=>'CLS',
                     'transaksi.UserUpd'=>session()->get('Username'),
                     'transaksi.updated_at'=>Carbon::now(),
                 );
-                Transaksi::changeStatusByKodePembayaran($request->pembayaran,$Transaksi);
+                Transaksi::changeStatusByKodePembayaran($KodePembayaran,$Transaksi);
             }
         }
         $KursusSiswa = array(
@@ -579,7 +579,7 @@ class PembayaranController extends Controller
         );
         $KodeKasBank = "KBK-" . date("myHis");
         $DataPembayaran = DB::table('pembayaran')
-        ->where('KodePembayaran',$request->pembayaran)
+        ->where('KodePembayaran',$KodePembayaran)
         ->get();
         $KasBank = array(
             'KodeKasBank'=>$KodeKasBank,
@@ -597,17 +597,17 @@ class PembayaranController extends Controller
         DB::table('kursus_siswa')
         ->join('transaksi','kursus_siswa.IDKursusSiswa','=','transaksi.IDKursusSiswa')
         ->join('pembayaran','transaksi.IDTransaksi','=','pembayaran.IDTransaksi')
-        ->where('pembayaran.KodePembayaran',$request->pembayaran)
+        ->where('pembayaran.KodePembayaran',$KodePembayaran)
         ->update($KursusSiswa);
         DB::table('kas_bank')->insert($KasBank);
 
         $Pembayaran2 = DB::table('pembayaran as p')
         ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
         ->join('siswa as s','t.IDSiswa','=','s.IDSiswa')
-        ->where('p.KodePembayaran',$request->pembayaran)
+        ->where('p.KodePembayaran',$KodePembayaran)
         ->select('p.KodePembayaran','t.UUID','s.UUID as UIDSiswa')->get();
         DB::table('notif')->insert([
-            'Notif'=> session()->get('Username')." Telah mengkonfirmasi pembayaran anda (".$Pembayaran2[0]->KodePembayaran.")",
+            'Notif'=> session()->get('NamaUser')." Telah mengkonfirmasi pembayaran anda (".$Pembayaran2[0]->KodePembayaran.")",
             'NotifFrom'=> session()->get('UID'),
             'NotifTo'=>$Pembayaran2[0]->UIDSiswa,
             'IsRead'=>false,
@@ -619,7 +619,7 @@ class PembayaranController extends Controller
         ->join('program_studi','kursus_siswa.IDProgram','=','program_studi.IDProgram')
         ->join('transaksi','kursus_siswa.IDKursusSiswa','=','transaksi.IDKursusSiswa')
         ->join('pembayaran','transaksi.IDTransaksi','=','pembayaran.IDTransaksi')
-        ->where('pembayaran.KodePembayaran',$request->pembayaran)
+        ->where('pembayaran.KodePembayaran',$KodePembayaran)
         ->select('program_studi.NamaProdi')->get();
         DB::table('notif')->insert([
             'Notif'=> "Kursus ".$KursusSiswa[0]->NamaProdi." sudah aktif, segera buat jadwal",
@@ -631,9 +631,43 @@ class PembayaranController extends Controller
             'updated_at'=>Carbon::now(),
         ]);
         //broadcast(new \App\Events\NotifEvent($Pembayaran2[0]->UIDSiswa));
-        return redirect('karyawan/owner/transaksi');
+        return response()->json('ok');
 
     }
-
+    public function ownerReject($IDBuktiPembayaran){
+        try{
+            $BuktiPembayaran = array(
+                'Status'=>'DEL',
+                'UserUpd'=>session()->get('Username'),
+                'updated_at'=>Carbon::now(),
+            );
+            DB::table('bukti_pembayaran')->where('IDBuktiPembayaran',$IDBuktiPembayaran)->update($BuktiPembayaran);
+            // pembayaran2 for notif data
+            $Pembayaran2 = DB::table('pembayaran as p')
+            ->join('transaksi as t','p.IDTransaksi','=','t.IDTransaksi')
+            ->join('bukti_pembayaran as bp','p.IDPembayaran','=','bp.IDPembayaran')
+            ->join('siswa as s','t.IDSiswa','=','s.IDSiswa')
+            ->where('bp.IDBuktiPembayaran',$IDBuktiPembayaran)
+            ->select('p.KodePembayaran','t.UUID','s.UUID as UIDSiswa','p.IDPembayaran')->get();
+            DB::table('pembayaran')->where('IDPembayaran',$Pembayaran2[0]->IDPembayaran)->update([
+                'Status'=>'OPN',
+                'UserUpd'=>session()->get('Username'),
+                'updated_at'=>Carbon::now(),
+            ]); 
+            DB::table('notif')->insert([
+                'Notif'=> session()->get('NamaUser')." menolak bukti pembayaran untuk pembayaran ".$Pembayaran2[0]->KodePembayaran
+                ." cek kembali pembayaran anda",
+                'NotifFrom'=> session()->get('UID'),
+                'NotifTo'=>$Pembayaran2[0]->UIDSiswa,
+                'IsRead'=>false,
+                'Link'=>'/siswa/pembayaran/info/'.$Pembayaran2[0]->UUID,
+                'created_at'=>Carbon::now(),
+                'updated_at'=>Carbon::now(),
+            ]);
+            return response()->json(true);
+        }catch(QueryException $e){
+            return response()->json(false);
+        }
+    }
 
 }

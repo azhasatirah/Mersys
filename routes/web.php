@@ -120,7 +120,11 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
 
         Route::get('/transaksi','TransaksiController@ownerIndex');
         Route::get('/transaksi/detail/{id}','PembayaranController@ownerDetailPembayaran');
-        Route::post('transaksi/konfirmasi','PembayaranController@ownerKonfirmasi');
+
+        Route::get('pembayaran/confirm/{id}','PembayaranController@ownerConfirm');
+        Route::get('pembayaran/reject/{id}','PembayaranController@ownerReject');
+
+
         Route::get('/transaksi/getdata','TransaksiController@ownerGetTransaksi');
         Route::get('/transaksi/selesai','TransaksiController@ownerGetTransaksiSelesai');
         Route::get('/transaksi/exchange','TransaksiController@ownerTransaksiExchange');
