@@ -61,10 +61,10 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     Route::get('/transaksi/getdata','TransaksiController@getData');
     Route::get('/pendaftaran/karyawan','AktifasiController@index');
     Route::get('/pendaftaran/karyawan/getdata','AktifasiController@getDataKaryawan');
-    Route::get('/owner/pendaftaran/karyawan/confirm/{id}','AktifasiController@ownerUpdate');
-    Route::get('/admin/pendaftaran/karyawan/confirm/{id}','AktifasiController@adminUpdate');
     //route owner
     Route::group(['middleware'=>['RoleKaryawan:1'],'prefix'=>'owner'],function(){
+        
+        Route::get('/pendaftaran/karyawan/confirm/{id}','AktifasiController@ownerUpdate');
         Route::get('stream/{id}','DocumentController@streamModul');
         Route::get('kasbank','KasBankController@index');
         Route::get('kasbank/getdata','KasBankController@getdata');
@@ -155,6 +155,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     //route admin
     Route::group(['middleware'=>['RoleKaryawan:2'],'prefix'=>'admin'],function(){
 
+        Route::get('/pendaftaran/karyawan/confirm/{id}','AktifasiController@adminUpdate');
         Route::get('pembayaran/confirm/{id}','PembayaranController@adminConfirm');
         Route::get('pembayaran/reject/{id}','PembayaranController@adminReject');
 
