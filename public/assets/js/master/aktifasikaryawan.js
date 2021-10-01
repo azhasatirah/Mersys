@@ -51,7 +51,7 @@ function showData(){
     })
 }
 function confirmKaryawan(id){
-    $.get('/karyawan/'+role+'/pendaftaran/karyawan/'+id,res=>{
+    $.get('/karyawan/'+role+'/pendaftaran/karyawan/confirm/'+id,res=>{
         swal(res)
         getData()
     })

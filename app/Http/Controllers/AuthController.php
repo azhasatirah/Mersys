@@ -139,7 +139,7 @@ class AuthController extends Controller
                     'NotifFrom'=> $UIDUser,
                     'NotifTo'=>'owner',
                     'IsRead'=>false,
-                    'Link'=>'/karyawan/owner/pendaftaran/karyawan/',
+                    'Link'=>'/karyawan/pendaftaran/karyawan',
                     'created_at'=>Carbon::now(),
                     'updated_at'=>Carbon::now(),
                 ]);

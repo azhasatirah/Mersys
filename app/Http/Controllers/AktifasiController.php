@@ -77,7 +77,7 @@ class AktifasiController extends Controller
         'IDKaryawan'=>$id,
         'Status'=>'OPN',
         'UserAdd'=>session()->get('Username'),
-        'UserUpd'=>session()->get('Usernamse'),
+        'UserUpd'=>session()->get('Username'),
         'created_at'=>Carbon::now(),
         'updated_at'=>Carbon::now()
       ]);
