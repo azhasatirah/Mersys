@@ -20,8 +20,14 @@ class NotifController extends Controller
             $tnotif->NotifTo != 'siswa'){
                 $Karyawan = DB::table('karyawan')->where('UUID',$tnotif->NotifFrom)->get();
                 $Siswa = DB::table('siswa')->where('UUID',$tnotif->NotifFrom)->get();
-                $PhotoProfile = count($Karyawan)>0?$Karyawan[0]->PhotoProfile:$Siswa[0]->PhotoProfile;
-                $From = count($Karyawan)>0?$Karyawan[0]->NamaKaryawan:$Siswa[0]->NamaSiswa;
+                $PhotoProfile = count($Karyawan)>0?$Karyawan[0]->PhotoProfile:$PhotoProfile;
+                $PhotoProfile = count($Siswa)>0?$Siswa[0]->PhotoProfile:$PhotoProfile;
+                if(count($Karyawan)>0){
+                    $Karyawan[0]->NamaKaryawan;
+                };
+                if(count($Siswa)>0){
+                    $Karyawan[0]->NamaSiswa;
+                };
             }else{
                 $From = $tnotif->NotifTo;
             }
@@ -49,8 +55,14 @@ class NotifController extends Controller
             $tnotif->NotifTo != 'siswa'){
                 $Karyawan = DB::table('karyawan')->where('UUID',$tnotif->NotifFrom)->get();
                 $Siswa = DB::table('siswa')->where('UUID',$tnotif->NotifFrom)->get();
-                $PhotoProfile = count($Karyawan)>0?$Karyawan[0]->PhotoProfile:$Siswa[0]->PhotoProfile;
-                $From = count($Karyawan)>0?$Karyawan[0]->NamaKaryawan:$Siswa[0]->NamaSiswa;
+                $PhotoProfile = count($Karyawan)>0?$Karyawan[0]->PhotoProfile:$PhotoProfile;
+                $PhotoProfile = count($Siswa)>0?$Siswa[0]->PhotoProfile:$PhotoProfile;
+                if(count($Karyawan)>0){
+                    $Karyawan[0]->NamaKaryawan;
+                };
+                if(count($Siswa)>0){
+                    $Karyawan[0]->NamaSiswa;
+                };
             }else{
                 $From = $tnotif->NotifTo;
             }
@@ -78,8 +90,14 @@ class NotifController extends Controller
             $tnotif->NotifTo != 'siswa'){
                 $Karyawan = DB::table('karyawan')->where('UUID',$tnotif->NotifFrom)->get();
                 $Siswa = DB::table('siswa')->where('UUID',$tnotif->NotifFrom)->get();
-                $PhotoProfile = count($Karyawan)>0?$Karyawan[0]->PhotoProfile:$Siswa[0]->PhotoProfile;
-                $From = count($Karyawan)>0?$Karyawan[0]->NamaKaryawan:$Siswa[0]->NamaSiswa;
+                $PhotoProfile = count($Karyawan)>0?$Karyawan[0]->PhotoProfile:$PhotoProfile;
+                $PhotoProfile = count($Siswa)>0?$Siswa[0]->PhotoProfile:$PhotoProfile;
+                if(count($Karyawan)>0){
+                    $Karyawan[0]->NamaKaryawan;
+                };
+                if(count($Siswa)>0){
+                    $Karyawan[0]->NamaSiswa;
+                };
             }else{
                 $From = $tnotif->NotifTo;
             }
@@ -107,8 +125,14 @@ class NotifController extends Controller
             $tnotif->NotifTo != 'siswa'){
                 $Karyawan = DB::table('karyawan')->where('UUID',$tnotif->NotifFrom)->get();
                 $Siswa = DB::table('siswa')->where('UUID',$tnotif->NotifFrom)->get();
-                $PhotoProfile = count($Karyawan)>0?$Karyawan[0]->PhotoProfile:$Siswa[0]->PhotoProfile;
-                $From = count($Karyawan)>0?$Karyawan[0]->NamaKaryawan:$Siswa[0]->NamaSiswa;
+                $PhotoProfile = count($Karyawan)>0?$Karyawan[0]->PhotoProfile:$PhotoProfile;
+                $PhotoProfile = count($Siswa)>0?$Siswa[0]->PhotoProfile:$PhotoProfile;
+                if(count($Karyawan)>0){
+                    $Karyawan[0]->NamaKaryawan;
+                };
+                if(count($Siswa)>0){
+                    $Karyawan[0]->NamaSiswa;
+                };
             }else{
                 $From = $tnotif->NotifTo;
             }
@@ -136,8 +160,14 @@ class NotifController extends Controller
             $tnotif->NotifTo != 'siswa'){
                 $Karyawan = DB::table('karyawan')->where('UUID',$tnotif->NotifFrom)->get();
                 $Siswa = DB::table('siswa')->where('UUID',$tnotif->NotifFrom)->get();
-                $PhotoProfile = count($Karyawan)>0?$Karyawan[0]->PhotoProfile:$Siswa[0]->PhotoProfile;
-                $From = count($Karyawan)>0?$Karyawan[0]->NamaKaryawan:$Siswa[0]->NamaSiswa;
+                $PhotoProfile = count($Karyawan)>0?$Karyawan[0]->PhotoProfile:$PhotoProfile;
+                $PhotoProfile = count($Siswa)>0?$Siswa[0]->PhotoProfile:$PhotoProfile;
+                if(count($Karyawan)>0){
+                    $Karyawan[0]->NamaKaryawan;
+                };
+                if(count($Siswa)>0){
+                    $Karyawan[0]->NamaSiswa;
+                };
             }else{
                 $From = $tnotif->NotifTo;
             }
