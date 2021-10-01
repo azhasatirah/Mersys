@@ -13,6 +13,7 @@ function showData(){
             var a=0;
             TabelData.clear().draw();
             Data['AkunKaryawan'].forEach((data) =>{
+                console.log(data)
                 var TombolAksi = "<a class=\"btn btn-primary btn-sm\"onClick=\"confirmKaryawan(\'"+data.IDKaryawan+"\')\">"+
                                 "<i class=\"fa fa-check\"></i></a>";
                 if(Data.Status === 'OPN' && role === 'admin'){
