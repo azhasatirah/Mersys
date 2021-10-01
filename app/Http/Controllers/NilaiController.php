@@ -251,7 +251,7 @@ class NilaiController extends Controller
                 'FinalEvaluasi'=>$FinalEvaluasi,
                 'Normal'=>$RaporNormal,
                 'Look'=>$RaporLook,
-                'Tanggal'=>strtotime($Sertifikasi[0]->Tanggal)
+                'Tanggal'=>count($Sertifikasi)>0?date('M Y',strtotime($Sertifikasi[0]->Tanggal)):'Sertifikat belum sah',
             ]
             );
         }else{

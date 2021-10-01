@@ -59,7 +59,7 @@ class SertifikatController extends Controller
                 'Nilai'=>$this->sumNilai($Nilai),
                 'Grade'=>$this->grade($this->sumNilai($Nilai))[0],
                 'Desc'=>$this->grade($this->sumNilai($Nilai))[1],
-                'Tanggal'=>strtotime($Sertifikasi[0]->Tanggal)
+                'Tanggal'=>count($Sertifikasi)>0?date('d M Y',strtotime($Sertifikasi[0]->Tanggal)):' '
             );
             return view('karyawan/sertifikat/depan',['Nilai'=>$DataNilai]);
         }else{
