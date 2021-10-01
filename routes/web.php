@@ -59,7 +59,10 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     Route::post('/undeleteakunsiswa','SiswaController@unDeleteSiswa');
     Route::post('password/update','AuthController@changePasswordKaryawan');
     Route::get('/transaksi/getdata','TransaksiController@getData');
- 
+    Route::get('/pendaftaran/karyawan','AktifasiController@indexOwner');
+    Route::get('/pendaftaran/karyawan/getdata','AktifasiController@getDataKaryawan');
+    Route::get('/owner/pendaftaran/karyawan/confirm/{id}','AktifasiController@ownerUpdate');
+    Route::get('/admin/pendaftaran/karyawan/confirm/{id}','AktifasiController@adminUpdate');
     //route owner
     Route::group(['middleware'=>['RoleKaryawan:1'],'prefix'=>'owner'],function(){
         Route::get('stream/{id}','DocumentController@streamModul');
@@ -138,9 +141,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
         Route::post('pendaftaran/siswa/konfirmasi','PembayaranController@ownerKonfirmasiPendaftaran');
 
 
-        Route::get('/pendaftaran/karyawan','AktifasiController@indexOwner');
-        Route::get('/pendaftaran/karyawan/update/{id}','AktifasiController@updateOwner');
-        Route::get('/pendaftaran/karyawan/getdata','AktifasiController@getDataOwner');
+
 
         Route::get('siswa/show/{id}','SiswaController@showSiswa');
         Route::get('siswa','SiswaController@indexSiswa');

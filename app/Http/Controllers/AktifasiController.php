@@ -11,13 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class AktifasiController extends Controller
 {
-    public function index()
-    {
-    $Aktifasi = Aktifasi::getAllAktifasi();
-    return view ('karyawan.master.aktifasi',['Aktifasi'=>$Aktifasi]);
-    }
-    public function indexOwner(){
-        return view('karyawan.master.aktifasiowner');
+    public function index(){
+        return view('karyawan.master.aktifasi_karyawan');
     }
 
     public function store(Request $request){
@@ -39,40 +34,56 @@ class AktifasiController extends Controller
         return redirect('/karyawan/master/aktifasi')->with(['Status'=>$Status]);
     }
 
-    public function getData(){
-        $Aktifasi = Aktifasi::getAllAktifasi();
-        return response()->json($Aktifasi);
-    }
 
-    public function getDataOwner(){
+    public function getDataKaryawan(){
         $Data = DB::table('karyawan')
         ->select('karyawan.IDKaryawan','karyawan.NamaKaryawan','karyawan.TanggalLahir','karyawan.TempatLahir',
         'karyawan.JenisKelamin','karyawan.Alamat','karyawan.NoHP')
-        ->where('karyawan.Status','OPN')->get();
+        ->where('karyawan.Status','!=','CLS')
+        ->where('karyawan.Status','!=','DEL')
+        ->get();
         $Aktifasi = array('Status'=>'success','AkunKaryawan'=>$Data);
         return response()->json($Aktifasi);
     }
 
-    public function update($id)
+    public function adminUpdate($id)
     {
       DB::table('karyawan')
-         ->where('IDKaryawan', $id)
-         ->update([
-           'Status' => "CFM"
-         ]); 
-
-         return redirect('karyawan/admin/master/aktifasi')->with('success', 'Akun Karyawan Telah Aktif');
+      ->where('IDKaryawan', $id)
+      ->update([
+        'Status' => "CFM"
+      ]);
+      $DataNotif = DB::table('karyawan')->where('IDKaryawan',$id)->get();
+      DB::table('notif')->insert([
+        'Notif'=> "Admin mengkonfirmasi pendaftaran ".$DataNotif[0]->NamaKaryawan." sebagai karyawan.",
+        'NotifFrom'=> session()->get('UID'),
+        'NotifTo'=>'admin',
+        'IsRead'=>false,
+        'Link'=>'/karyawan/pendaftaran/karyawan',
+        'created_at'=>Carbon::now(),
+        'updated_at'=>Carbon::now(),
+      ]);
+      return response()->json('Akun karyawan telah di konfiramsi, menunggu owner');
     }
 
-    public function updateOwner($id)
+    public function ownerUpdate($id)
     {
       DB::table('karyawan')
          ->where('IDKaryawan', $id)
          ->update([
            'Status' => "CLS"
-         ]); 
+      ]); 
+      DB::table('role_karyawan_list')->insert([
+        'IDRoleKaryawan'=>3,
+        'IDKaryawan'=>$id,
+        'Status'=>'OPN',
+        'UserAdd'=>session()->get('Username'),
+        'UserUpd'=>session()->get('Usernamse'),
+        'created_at'=>Carbon::now(),
+        'updated_at'=>Carbon::now()
+      ]);
 
-         return redirect('karyawan/owner/pendaftaran/karyawan')->with('success', 'Akun Karyawan Telah Aktif');
+      return response()->json('Akun karyawan telah di konfirmasi');
     }
  
 }

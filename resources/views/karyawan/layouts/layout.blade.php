@@ -101,7 +101,7 @@
                   <li><a><i class="fa fa-cog"></i> Pendaftaran <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{url('karyawan/owner/pendaftaran/siswa')}}">Pendaftaran Siswa</a></li>
-                      <li><a href="{{url('karyawan/owner/pendaftaran/karyawan')}}">Pendaftaran Karyawan</a></li>
+                      <li><a href="{{url('karyawan/pendaftaran/karyawan')}}">Pendaftaran Karyawan</a></li>
                     </ul>
                   </li>
                   <li><a href="{{url('karyawan/owner/kursus')}}"><i class="fa fa-book"></i>Daftar kursus</a></li>
@@ -124,7 +124,7 @@
                   <li><a><i class="fa fa-cog"></i> Pendaftaran <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{url('karyawan/admin/pendaftaran/siswa')}}">Pendaftaran Siswa</a></li>
-                      <li><a href="{{url('karyawan/admin/master/aktifasi')}}">Pendaftaran Karyawan</a></li>
+                      <li><a href="{{url('karyawan/pendaftaran/karyawan')}}">Pendaftaran Karyawan</a></li>
                     </ul>
                   </li>
                   <li>
