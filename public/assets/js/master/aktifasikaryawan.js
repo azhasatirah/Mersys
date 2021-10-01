@@ -10,10 +10,8 @@ $(document).ready(function(){
 
 function getData(){
     $.get('/karyawan/pendaftaran/karyawan/getdata').done((Data)=>{
-        console.log(Data,Data.Status)
         if(Data.Status=='success'){
             LocalData = Data['AkunKaryawan']
-            console.log(LocalData)
             showData()
         }
     })
@@ -22,8 +20,7 @@ function showData(){
     var a=0;
     TabelData.clear().draw();
     LocalData.forEach((data) =>{
-        console.log('loop all data')
-        var TombolAksi = "<a class=\"btn btn-primary btn-sm\"onClick=\"confirmKaryawan(\'"+data.IDKaryawan+"\')\">"+
+        var TombolAksi = "<a class=\"btn btn-primary text-white btn-sm\"onClick=\"confirmKaryawan(\'"+data.IDKaryawan+"\')\">"+
                         "<i class=\"fa fa-check\"></i></a>";
         if(data.Status === 'OPN' && role === 'admin'){
             a++;
