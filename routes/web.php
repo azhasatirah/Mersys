@@ -59,7 +59,7 @@ Route::group(['middleware'=>['Role:karyawan'],'prefix'=>'karyawan'],function(){
     Route::post('/undeleteakunsiswa','SiswaController@unDeleteSiswa');
     Route::post('password/update','AuthController@changePasswordKaryawan');
     Route::get('/transaksi/getdata','TransaksiController@getData');
-    Route::get('/pendaftaran/karyawan','AktifasiController@indexOwner');
+    Route::get('/pendaftaran/karyawan','AktifasiController@index');
     Route::get('/pendaftaran/karyawan/getdata','AktifasiController@getDataKaryawan');
     Route::get('/owner/pendaftaran/karyawan/confirm/{id}','AktifasiController@ownerUpdate');
     Route::get('/admin/pendaftaran/karyawan/confirm/{id}','AktifasiController@adminUpdate');
