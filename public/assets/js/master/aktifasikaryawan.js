@@ -25,8 +25,7 @@ function showData(){
         console.log('loop all data')
         var TombolAksi = "<a class=\"btn btn-primary btn-sm\"onClick=\"confirmKaryawan(\'"+data.IDKaryawan+"\')\">"+
                         "<i class=\"fa fa-check\"></i></a>";
-        if(Data.Status === 'OPN' && role === 'admin'){
-            console.log(data)
+        if(data.Status === 'OPN' && role === 'admin'){
             a++;
             TabelData.row.add([
                 a,
@@ -39,8 +38,7 @@ function showData(){
                 TombolAksi
             ]).draw();
         }
-        if(Data.Status === 'CFM' && role === 'owner'){
-            console.log(data)
+        if(data.Status === 'CFM' && role === 'owner'){
             a++;
             TabelData.row.add([
                 a,
