@@ -26,7 +26,7 @@ class NotifController extends Controller
                     $Karyawan[0]->NamaKaryawan;
                 };
                 if(count($Siswa)>0){
-                    $Karyawan[0]->NamaSiswa;
+                    $Siswa[0]->NamaSiswa;
                 };
             }else{
                 $From = $tnotif->NotifTo;
@@ -61,7 +61,7 @@ class NotifController extends Controller
                     $Karyawan[0]->NamaKaryawan;
                 };
                 if(count($Siswa)>0){
-                    $Karyawan[0]->NamaSiswa;
+                    $Siswa[0]->NamaSiswa;
                 };
             }else{
                 $From = $tnotif->NotifTo;
@@ -96,7 +96,7 @@ class NotifController extends Controller
                     $Karyawan[0]->NamaKaryawan;
                 };
                 if(count($Siswa)>0){
-                    $Karyawan[0]->NamaSiswa;
+                    $Siswa[0]->NamaSiswa;
                 };
             }else{
                 $From = $tnotif->NotifTo;
@@ -131,7 +131,7 @@ class NotifController extends Controller
                     $Karyawan[0]->NamaKaryawan;
                 };
                 if(count($Siswa)>0){
-                    $Karyawan[0]->NamaSiswa;
+                    $Siswa[0]->NamaSiswa;
                 };
             }else{
                 $From = $tnotif->NotifTo;
@@ -166,7 +166,7 @@ class NotifController extends Controller
                     $Karyawan[0]->NamaKaryawan;
                 };
                 if(count($Siswa)>0){
-                    $Karyawan[0]->NamaSiswa;
+                    $Siswa[0]->NamaSiswa;
                 };
             }else{
                 $From = $tnotif->NotifTo;
