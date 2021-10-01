@@ -37,8 +37,7 @@ class AktifasiController extends Controller
 
     public function getDataKaryawan(){
         $Data = DB::table('karyawan')
-        ->select('karyawan.IDKaryawan','karyawan.NamaKaryawan','karyawan.TanggalLahir','karyawan.TempatLahir',
-        'karyawan.JenisKelamin','karyawan.Alamat','karyawan.NoHP')
+        ->select('karyawan.*')
         ->where('karyawan.Status','!=','CLS')
         ->where('karyawan.Status','!=','DEL')
         ->get();
