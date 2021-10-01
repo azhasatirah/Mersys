@@ -7,7 +7,7 @@ $(document).ready(function(){
 });
 
 function showData(){
-    $.get('/karyawan/pendaftaran/karyawan/getdata',function(Data){
+    $.get('/karyawan/pendaftaran/karyawan/getdata').done(Data=>{
         console.log(Data,Data.Status)
         if(Data.Status=='success'){
             $('#datatabel').empty();
